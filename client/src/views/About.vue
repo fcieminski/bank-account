@@ -19,8 +19,8 @@
 	export default {
 		data() {
 			return {
-                updated: null,
-            };
+				updated: null
+			};
 		},
 		created() {
 			testService.get().then(response => console.log(response));
@@ -40,7 +40,7 @@
 						title: "asdaszzzzzzzzzzzzdas",
 						content: "asdf "
 					})
-					.then(response => this.updated = response);
+					.then(response => (this.updated = response));
 			},
 			findTest() {
 				testService.find("5e961aabbd2d6214d8b89fc0").then(response => console.log(response));
