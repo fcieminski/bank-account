@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const TestSchema = new Schema({
+const TestsSchema = new Schema({
     title: String,
-    description: String,
+    content: String,
 });
 
-const Test = mongoose.model("Test", TestSchema);
-module.exports = Test;
+const Tests = mongoose.model("Tests", TestsSchema);
+module.exports = Tests;

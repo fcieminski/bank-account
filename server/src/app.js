@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
-const Test = require("../models/test");
+const Tests = require("../models/test");
 
 const app = express();
 app.use(morgan("combined"));
@@ -20,16 +20,13 @@ mongoose
         console.log(`DB Connection Error: ${err.message}`);
     });
 
-app.post("/test", (req, res) => {
-    const db = req.db;
-    const title = req.body.title;
-    const description = req.body.description;
-    const testData = new Test({
-        title,
-        description,
+app.post("/tests", (req, res) => {
+    const { body } = req;
+    const testsData = new Tests({
+        ...body,
     });
 
-    testData.save((error) => {
+    testsData.save((error) => {
         if (error) {
             console.log(error);
         }
@@ -40,15 +37,51 @@ app.post("/test", (req, res) => {
     });
 });
 
-app.get("/test", (req, res) => {
-    Test.find({}, "title description", (error, posts) => {
+app.get("/tests", (req, res) => {
+    Tests.find((error, tests) => {
         if (error) {
             console.error(error);
         }
         res.send({
-            posts: posts,
+            tests,
         });
     }).sort({ _id: -1 });
+});
+
+app.put("/tests/:id", (req, res) => {
+    const { body } = req;
+    Tests.findById(req.params.id, (error, test) => {
+        if (error) {
+            res.status(500).send({
+                error,
+            });
+        }
+        test.title = body.title;
+        test.content = body.content;
+        test.save((error) => {
+            if (error) {
+                res.status(500).send({
+                    error,
+                });
+            } else {
+                res.send({
+                    test,
+                });
+            }
+        });
+    });
+});
+
+app.get("/tests/:id", (req, res) => {
+    console.log(req.params.id);
+    Tests.findById(req.params.id, (error, test) => {
+        if (error) {
+            console.error(error);
+        }
+        res.send({
+            test,
+        });
+    });
 });
 
 app.listen(process.env.PORT || 8081);
