@@ -1,6 +1,4 @@
 const Tests = require("../models/test");
-const express = require("express");
-const app = express();
 
 class TestController {
     index(_, res) {
