@@ -1,6 +1,9 @@
-// const User = require("../models/User");
-// const LocalStrategy = require("passport-local").Strategy;
+const User = require("../models/User");
+const LocalStrategy = require("passport-local").Strategy;
+const passport = require("passport");
 
-// passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+passport.use(new LocalStrategy(User.authenticate()));
 
-// module.exports = passport;
+module.exports = passport;

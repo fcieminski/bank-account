@@ -45,8 +45,8 @@
 			makeUser() {
 				authService
 					.create({
-						email: "test@tes.pl",
-						username: "KOWAL",
+						email: "test@tesx.pl",
+						username: "KOWALe",
 						surname: "Kowalski",
 						name: "Piotr",
                         phone: "784514555",
