@@ -1,6 +1,7 @@
 const Tests = require("../models/test");
 
 class TestController {
+
     index(_, res) {
         Tests.find((error, tests) => {
             if (error) {
@@ -11,6 +12,7 @@ class TestController {
             });
         });
     }
+
     createTest(req, res) {
         const { body } = req;
         const testsData = new Tests({
@@ -27,6 +29,7 @@ class TestController {
             });
         });
     }
+
     update(req, res) {
         const { body } = req;
         Tests.findById(req.params.id, (error, test) => {
@@ -50,6 +53,7 @@ class TestController {
             });
         });
     }
+    
     find(req, res) {
         Tests.findById(req.params.id, (error, test) => {
             if (error) {
