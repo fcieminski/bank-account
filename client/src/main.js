@@ -4,6 +4,9 @@ import "./registerServiceWorker";
 import router from "./router";
 import store from "./store";
 import "@/assets/styles/index.scss";
+import axios from "axios";
+
+window.axios = axios;
 
 Vue.config.productionTip = false;
 

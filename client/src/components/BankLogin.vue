@@ -3,10 +3,10 @@
 		<div>
 			<div class="login__title">
 				<h3 class="title__text">Zaloguj się do bankowości</h3>
-                <div>
-                <div for="login">Login</div>
-				<input class="title__input" name="login" type="text" />
-                </div>
+				<div class="title__">
+					<div for="login">Login</div>
+					<input class="title__input" name="login" type="text" />
+				</div>
 			</div>
 			<div class="input__password">
 				<div class="password__box" v-for="(password, index) in passwordProtect" :key="index">
@@ -22,11 +22,13 @@
 					<div class="input--protect input--disabled" v-else></div>
 				</div>
 			</div>
+			<button @click="makeUser">Log in</button>
 		</div>
 	</div>
 </template>
 
 <script>
+	import authService from "../services/AuthService";
 	export default {
 		name: "BankLogin",
 		data() {
@@ -39,7 +41,21 @@
 				return Array.from({ length: 15 }).map(ele => Math.floor(Math.random() * 2));
 			}
 		},
-		methods: {}
+		methods: {
+			makeUser() {
+				authService
+					.create({
+						email: "test@tes.pl",
+						username: "KOWAL",
+						surname: "Kowalski",
+						name: "Piotr",
+                        phone: "784514555",
+                        password: 'qwerty'
+					})
+					.then(respon => console.log(respo))
+					.catch(err => console.log(err));
+			}
+		}
 	};
 </script>
 
@@ -52,17 +68,17 @@
 		padding: 30px;
 	}
 	.login__title {
-        text-align: center;
-        margin-bottom: 36px;
+		text-align: center;
+		margin-bottom: 36px;
 	}
 	.title__text {
-        font-size: 2rem;
+		font-size: 2rem;
 		margin: 0 0 20px 0;
 	}
 	.title__input {
 		height: 56px;
-        padding: 20px;
-        font-size: 1rem;
+		padding: 20px;
+		font-size: 1rem;
 	}
 	.input__password {
 		display: flex;
