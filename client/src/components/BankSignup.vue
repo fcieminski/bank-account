@@ -23,7 +23,7 @@
 				</validation-provider>
 				<validation-provider rules="required" name="Numer telefonu" v-slot="{ errors }">
 					<label for="phone">Numer telefonu</label>
-					<input v-model="newUser.phone" type="text" name="phone" />
+					<input v-model.number="newUser.phone" min="0" type="number" name="phone" />
 					<span>{{ errors[0] }}</span>
 				</validation-provider>
 				<validation-provider rules="required" name="Hasło" v-slot="{ errors }">
@@ -61,7 +61,7 @@
 					password: "",
 					email: "",
 					surname: "",
-					phone: ""
+					phone: ''
 				}
 			};
 		},
