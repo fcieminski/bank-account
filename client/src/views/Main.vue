@@ -36,7 +36,7 @@
 		justify-content: center;
 		align-items: center;
 	}
-    	.login {
+	.login {
 		width: auto;
 		height: 400px;
 		background-color: white;

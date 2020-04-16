@@ -5,10 +5,13 @@ import router from "./router";
 import store from "./store";
 import "@/assets/styles/index.scss";
 import axios from "axios";
+import { ValidationProvider, ValidationObserver } from "vee-validate";
 
 window.axios = axios;
 
 Vue.config.productionTip = false;
+Vue.component("ValidationProvider", ValidationProvider);
+Vue.component("ValidationObserver", ValidationObserver);
 
 new Vue({
   router,
