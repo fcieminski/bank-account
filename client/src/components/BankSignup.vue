@@ -16,6 +16,7 @@
 					<input v-model="newUser.surname" type="text" name="surname" />
 					<span>{{ errors[0] }}</span>
 				</validation-provider>
+				<span v-if="username">{{ username }}</span>
 				<validation-provider rules="required|email" name="Adres e-mail" v-slot="{ errors }">
 					<label for="email">Adres e-mail</label>
 					<input v-model="newUser.email" type="text" name="email" />
@@ -36,6 +37,7 @@
 				</validation-provider>
 				<button :disabled="invalid" type="submit">Wyślij</button>
 			</form>
+			<button @click="checkAuth">isAuth?</button>
 		</validation-observer>
 	</div>
 </template>
@@ -43,6 +45,7 @@
 <script>
 	import { extend } from "vee-validate";
 	import { required, email, alpha } from "vee-validate/dist/rules";
+	import authService from "../services/AuthService";
 
 	extend("required", {
 		...required,
@@ -61,15 +64,39 @@
 					password: "",
 					email: "",
 					surname: "",
-					phone: ''
-				}
+					phone: ""
+				},
+				error: null
 			};
 		},
 		components: {},
 		created() {},
-		computed: {},
+		computed: {
+			username() {
+				if (this.newUser.name && this.newUser.surname) {
+					return this.newUser.name
+						.substr(0, 3)
+						.concat(this.newUser.surname.substr(0, 3))
+						.toUpperCase();
+				}
+				return null;
+			}
+		},
 		methods: {
-			submitForm(e) {}
+			submitForm(e) {
+				this.newUser.username = this.username;
+				authService
+					.create(this.newUser)
+					.then(({ data }) => {
+						console.log(data);
+					})
+					.catch(({ message }) => {
+						this.error = message;
+					});
+			},
+			checkAuth() {
+				authService.isAuth().then(response => console.log(response));
+			}
 		}
 	};
 </script>

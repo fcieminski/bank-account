@@ -28,19 +28,7 @@
 			}
 		},
 		methods: {
-			makeUser() {
-				authService
-					.create({
-						email: "test@tesx.pl",
-						username: "KOWALe",
-						surname: "Kowalski",
-						name: "Piotr",
-						phone: "784514555",
-						password: "qwerty"
-					})
-					.then(respon => console.log(respo))
-					.catch(err => console.log(err));
-			}
+
 		}
 	};
 </script>

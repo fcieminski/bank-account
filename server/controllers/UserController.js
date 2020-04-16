@@ -1,7 +1,7 @@
 const User = require("../models/User");
+const passport = require("passport");
 
 class UserController {
-
     create(req, res) {
         const Users = new User({
             email: req.body.email,
@@ -13,13 +13,25 @@ class UserController {
 
         User.register(Users, req.body.password, (err, user) => {
             if (err) {
-                res.json({ success: false, message: err });
+                res.send({ data: { success: false, message: err } });
             } else {
-                res.json({ success: true });
+                passport.authenticate("local-mongoose", req, res);
+                res.send({ data: { success: true, redirect: true, user } });
             }
         });
     }
-    
+
+    isAuth(req, res) {
+        if (req.isAuthenticated()) {
+            res.send({
+                user: req.user,
+            });
+        } else {
+            res.send({
+                error: "nope",
+            });
+        }
+    }
 }
 
 module.exports = new UserController();
