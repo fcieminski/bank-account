@@ -1,18 +1,20 @@
 <template>
 	<div class="main">
-		<bank-login />
+		<div class="login">
+			<bank-signup />
+		</div>
 	</div>
 </template>
 
 <script>
-	import BankLogin from "@/components/BankLogin.vue";
+	import BankSignup from "@/components/BankSignup.vue";
 	export default {
 		name: "Main",
 		data() {
 			return {};
 		},
 		components: {
-			BankLogin
+			BankSignup
 		},
 		created() {},
 		computed: {},
@@ -33,5 +35,12 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+	}
+    	.login {
+		width: auto;
+		height: 400px;
+		background-color: white;
+		border-radius: 4px;
+		padding: 30px;
 	}
 </style>
