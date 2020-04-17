@@ -80,13 +80,13 @@
 			submitForm(e) {
 				authService
 					.create(this.newUser)
-					.then((response) => {
-                        if(response.redirect){
-                            delete response.user.hash
-                            delete response.user.salt
-                            localStorage.setItem('user', JSON.stringify(response.user))
-                            this.$router.push({name: 'account'})
-                        }
+					.then(response => {
+						if (response.redirect) {
+							delete response.user.hash;
+							delete response.user.salt;
+							localStorage.setItem("user", JSON.stringify(response.user));
+							this.$router.push({ name: "account" });
+						}
 					})
 					.catch(({ message }) => {
 						this.error = message;
