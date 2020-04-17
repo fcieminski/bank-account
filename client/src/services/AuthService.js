@@ -9,6 +9,9 @@ class AuthService extends BaseService {
     return this.axios.post("/user").then(response => response.data);
   }
 
+  doLogin(params) {
+    return this.axios.post("/login", params).then(response => response.data);
+  }
 }
 
 const authService = new AuthService();

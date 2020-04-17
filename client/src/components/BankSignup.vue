@@ -95,7 +95,10 @@
 					});
 			},
 			checkAuth() {
-				authService.isAuth().then(response => console.log(response));
+				authService.doLogin({
+					username: "FILCHA",
+					password: "qwerty"
+				});
 			}
 		}
 	};

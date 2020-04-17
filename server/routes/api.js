@@ -1,9 +1,10 @@
 const TestController = require("../controllers/TestController");
-const UserController = require("../controllers/UserController");
-const app = require('../config/app');
+const AuthController = require("../controllers/Auth/AuthController");
+const app = require("../config/app");
 
-app.post("/register", UserController.create);
-app.post("/user", UserController.isAuth);
+app.post("/register", AuthController.create);
+app.post("/user", AuthController.isAuth);
+app.post("/login", AuthController.doLogin);
 
 app.get("/tests", TestController.index);
 app.put("/tests/:id", TestController.update);
