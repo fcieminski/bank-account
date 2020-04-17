@@ -16,7 +16,11 @@
 					<input v-model="newUser.surname" type="text" name="surname" />
 					<span>{{ errors[0] }}</span>
 				</validation-provider>
-				<span v-if="username">{{ username }}</span>
+				<validation-provider rules="required|alpha" name="Login" v-slot="{ errors }">
+					<label for="username">Login</label>
+					<input v-model="newUser.username" type="text" name="username" />
+					<span>{{ errors[0] }}</span>
+				</validation-provider>
 				<validation-provider rules="required|email" name="Adres e-mail" v-slot="{ errors }">
 					<label for="email">Adres e-mail</label>
 					<input v-model="newUser.email" type="text" name="email" />
@@ -37,7 +41,6 @@
 				</validation-provider>
 				<button :disabled="invalid" type="submit">Wyślij</button>
 			</form>
-			<button @click="checkAuth">isAuth?</button>
 		</validation-observer>
 	</div>
 </template>
@@ -62,6 +65,7 @@
 				newUser: {
 					name: "",
 					password: "",
+					username: "",
 					email: "",
 					surname: "",
 					phone: ""
@@ -71,34 +75,22 @@
 		},
 		components: {},
 		created() {},
-		computed: {
-			username() {
-				if (this.newUser.name && this.newUser.surname) {
-					return this.newUser.name
-						.substr(0, 3)
-						.concat(this.newUser.surname.substr(0, 3))
-						.toUpperCase();
-				}
-				return null;
-			}
-		},
+		computed: {},
 		methods: {
 			submitForm(e) {
-				this.newUser.username = this.username;
 				authService
 					.create(this.newUser)
-					.then(({ data }) => {
-						console.log(data);
+					.then((response) => {
+                        if(response.redirect){
+                            delete response.user.hash
+                            delete response.user.salt
+                            localStorage.setItem('user', JSON.stringify(response.user))
+                            this.$router.push({name: 'account'})
+                        }
 					})
 					.catch(({ message }) => {
 						this.error = message;
 					});
-			},
-			checkAuth() {
-				authService.doLogin({
-					username: "FILCHA",
-					password: "qwerty"
-				});
 			}
 		}
 	};
