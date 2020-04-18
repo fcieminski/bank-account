@@ -1,6 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import authService from '../services/AuthService'
+import authService from "../services/AuthService";
 const Main = () => import("@/views/Main.vue");
 const Account = () => import("@/views/Account.vue");
 
@@ -33,15 +33,17 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth) {
-    const user = localStorage.getItem("user");
-    authService.isAuth().then(respo => console.log(respo));
-    if (user) {
-      next();
-    } else {
-      next({
-        name: "main"
-      });
-    }
+    const user =
+      localStorage.getItem("user") && JSON.parse(localStorage.getItem("user"));
+    authService.isAuth().then(response => {
+      if (response.user.id === user.id) {
+        next();
+      } else {
+        next({
+          name: "main"
+        });
+      }
+    });
   } else {
     next();
   }

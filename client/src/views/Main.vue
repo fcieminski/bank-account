@@ -31,7 +31,6 @@
 		background-size: cover;
 		background-position: center;
 		background-repeat: no-repeat;
-		filter: opacity(60%);
 		display: flex;
 		justify-content: center;
 		align-items: center;

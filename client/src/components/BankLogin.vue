@@ -8,15 +8,16 @@
 						<validation-provider class="input__box" rules="required" name="Login" v-slot="{ errors }">
 							<label for="username">Login</label>
 							<input v-model="user.username" class="input__main" name="username" type="text" />
-							<div class="input__error">{{ errors[0] }}</div>
+							<input-error left :error="errors[0]" />
 						</validation-provider>
 						<validation-provider class="input__box" rules="required" name="Hasło" v-slot="{ errors }">
 							<label for="password">Hasło</label>
 							<input v-model="user.password" class="input__main" name="password" type="password" />
-							<div class="input__error">{{ errors[0] }}</div>
+							<input-error left :error="errors[0]" />
 						</validation-provider>
 						<button class="btn btn__login" :disabled="invalid" type="submit">Zaloguj</button>
 					</form>
+					<input-error center :error="error" />
 				</validation-observer>
 			</div>
 			<div class="input__password"></div>
@@ -27,11 +28,12 @@
 <script>
 	import { extend } from "vee-validate";
 	import { required, email, alpha } from "vee-validate/dist/rules";
-	import authService from "../services/AuthService";
+	import authService from "@/services/AuthService";
+	import InputError from "@/components/utils/InputError.vue";
 
 	extend("required", {
 		...required,
-		message: "This field is required"
+		message: "Pole obowiązkowe!"
 	});
 
 	export default {
@@ -45,7 +47,9 @@
 				error: null
 			};
 		},
-		components: {},
+		components: {
+			InputError
+		},
 		created() {},
 		computed: {},
 		methods: {
@@ -58,6 +62,9 @@
 						this.$router.push({ name: "account" });
 					} else {
 						this.error = response.message;
+						setTimeout(() => {
+							this.error = null;
+						}, 2000);
 					}
 				});
 			}
@@ -83,7 +90,7 @@
 		align-items: center;
 	}
 	.login__form {
-		padding: 0 30px 30px 30px;
+		padding: 0 30px 11px 30px;
 		display: flex;
 		flex-direction: column;
 		align-items: center;

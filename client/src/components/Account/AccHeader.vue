@@ -1,19 +1,14 @@
 <template>
-	<div>
-		<acc-header />
-	</div>
+	<div>HEllo</div>
 </template>
 
 <script>
-	import AccHeader from "@/components/Account/AccHeader.vue";
 	export default {
-		name: "Account",
+		name: "AccHeader",
 		data() {
 			return {};
 		},
-		components: {
-			AccHeader
-		},
+		components: {},
 		created() {},
 		computed: {},
 		methods: {}

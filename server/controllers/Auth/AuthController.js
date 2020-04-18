@@ -41,22 +41,18 @@ class AuthController {
     }
 
     async signIn(req, res) {
-        if (!req.body.username) {
-            res.json({ success: false, message: "Username was not given" });
-        } else if (!req.body.password) {
-            res.json({ success: false, message: "Password was not given" });
-        } else {
+        if (req.body.username && req.body.password) {
             passport.authenticate("local", (err, user) => {
                 if (err) {
-                    res.json({ success: false, message: "Error during authentication" });
+                    res.json({ success: false, message: "Problem z autentykacją" });
                 } else {
                     try {
                         req.login(user, (err) => {
                             if (!err) {
                                 res.send({ success: true, redirect: true, user });
-                                req.session.save()
+                                req.session.save();
                             } else {
-                                res.json({ success: false, message: "Wrong password or username" });
+                                res.json({ success: false, message: "Niepoprawne hasło lub login" });
                             }
                         });
                     } catch (err) {

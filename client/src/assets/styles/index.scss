@@ -72,13 +72,6 @@ i {
     }
 }
 
-.input__error {
-    font-size: 0.9rem;
-    text-align: left;
-    color: red;
-    height: 19px;
-}
-
 .input__main {
     transition: all 0.2s;
     height: 50px;
@@ -90,4 +83,13 @@ i {
     &:focus {
         border: 2px solid $accent;
     }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.5s;
+}
+.fade-enter,
+.fade-leave-to {
+    opacity: 0;
 }

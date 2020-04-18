@@ -1,4 +1,4 @@
-const Tests = require("../models/test");
+
 
 class TestController {
 

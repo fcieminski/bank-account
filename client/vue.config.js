@@ -1,3 +1,5 @@
+const path = require("path");
+
 module.exports = {
   css: {
     loaderOptions: {
@@ -8,5 +10,12 @@ module.exports = {
   },
   devServer: {
     proxy: "http://localhost:8081"
+  },
+  configureWebpack: {
+    resolve: {
+      alias: {
+        "@utils": path.resolve(__dirname, "src/components/utils"),
+      }
+    }
   }
 };
