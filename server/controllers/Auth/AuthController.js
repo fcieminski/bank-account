@@ -54,6 +54,7 @@ class AuthController {
                         req.login(user, (err) => {
                             if (!err) {
                                 res.send({ success: true, redirect: true, user });
+                                req.session.save()
                             } else {
                                 res.json({ success: false, message: err });
                             }
@@ -73,8 +74,7 @@ class AuthController {
             });
         } else {
             res.status(403).send({
-                // error: "not Authorized",
-                user: req.user,
+                error: "not Authorized",
             });
         }
     }
