@@ -48,7 +48,7 @@ class AuthController {
         } else {
             passport.authenticate("local", (err, user) => {
                 if (err) {
-                    res.json({ success: false, message: err });
+                    res.json({ success: false, message: "Error during authentication" });
                 } else {
                     try {
                         req.login(user, (err) => {
@@ -56,7 +56,7 @@ class AuthController {
                                 res.send({ success: true, redirect: true, user });
                                 req.session.save()
                             } else {
-                                res.json({ success: false, message: err });
+                                res.json({ success: false, message: "Wrong password or username" });
                             }
                         });
                     } catch (err) {
@@ -71,6 +71,7 @@ class AuthController {
         if (req.isAuthenticated()) {
             res.send({
                 user: req.user,
+                authenticated: req.isAuthenticated(),
             });
         } else {
             res.status(403).send({
