@@ -8,6 +8,7 @@ import axios from "axios";
 import { ValidationProvider, ValidationObserver } from "vee-validate";
 
 window.axios = axios;
+axios.defaults.withCredentials = true;
 
 Vue.config.productionTip = false;
 Vue.component("ValidationProvider", ValidationProvider);

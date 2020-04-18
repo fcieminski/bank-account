@@ -1,6 +1,8 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import authService from '../services/AuthService'
 const Main = () => import("@/views/Main.vue");
+const Account = () => import("@/views/Account.vue");
 
 Vue.use(VueRouter);
 
@@ -8,7 +10,18 @@ const routes = [
   {
     path: "/",
     name: "main",
-    component: Main
+    component: Main,
+    meta: {
+      requiresAuth: false
+    }
+  },
+  {
+    path: "/account",
+    name: "account",
+    component: Account,
+    meta: {
+      requiresAuth: true
+    }
   }
 ];
 
@@ -16,6 +29,22 @@ const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
   routes
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth) {
+    const user = localStorage.getItem("user");
+    authService.isAuth().then(respo => console.log(respo));
+    if (user) {
+      next();
+    } else {
+      next({
+        name: "main"
+      });
+    }
+  } else {
+    next();
+  }
 });
 
 export default router;

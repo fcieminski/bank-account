@@ -4,7 +4,7 @@ const app = require("../config/app");
 
 app.post("/register", AuthController.create);
 app.post("/user", AuthController.isAuth);
-app.post("/login", AuthController.doLogin);
+app.post("/login", AuthController.signIn);
 
 app.get("/tests", TestController.index);
 app.put("/tests/:id", TestController.update);

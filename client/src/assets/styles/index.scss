@@ -65,9 +65,9 @@ i {
     text-transform: uppercase;
     letter-spacing: 2px;
     color: white;
-     border: 1px solid white;
+    border: 1px solid white;
     cursor: pointer;
-    &:hover{
+    &:hover {
         border: 1px solid $accent;
     }
 }

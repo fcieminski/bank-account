@@ -40,7 +40,7 @@ class AuthController {
         });
     }
 
-    async doLogin(req, res) {
+    async signIn(req, res) {
         if (!req.body.username) {
             res.json({ success: false, message: "Username was not given" });
         } else if (!req.body.password) {
@@ -73,7 +73,8 @@ class AuthController {
             });
         } else {
             res.status(403).send({
-                error: "not Authorized",
+                // error: "not Authorized",
+                user: req.user,
             });
         }
     }

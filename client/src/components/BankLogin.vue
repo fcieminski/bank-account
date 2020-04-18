@@ -41,8 +41,8 @@
 				user: {
 					username: "",
 					password: ""
-                },
-                error: null
+				},
+				error: null
 			};
 		},
 		components: {},
@@ -50,7 +50,7 @@
 		computed: {},
 		methods: {
 			logIn(e) {
-				authService.doLogin(this.user).then(response => {
+				authService.signIn(this.user).then(response => {
 					if (response.redirect) {
 						delete response.user.hash;
 						delete response.user.salt;
