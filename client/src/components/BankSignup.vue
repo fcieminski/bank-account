@@ -53,6 +53,7 @@
 	import { extend } from "vee-validate";
 	import { required, email, alpha } from "vee-validate/dist/rules";
 	import authService from "../services/AuthService";
+	import accountService from "../services/AccountService";
 	import InputError from "@utils/InputError.vue";
 
 	extend("required", {
@@ -92,7 +93,8 @@
 							delete response.user.hash;
 							delete response.user.salt;
 							localStorage.setItem("user", JSON.stringify(response.user));
-							this.$router.push({ name: "account" });
+							accountService.create({owner: response.user}).then(response => console.log(response));
+							// this.$router.push({ name: "account" });
 						}
 					})
 					.catch(({ message }) => {
@@ -120,9 +122,9 @@
 			position: absolute;
 			right: 13px;
 			top: 13px;
-        }
-        .input__main{
-            padding-right: 40px;
-        }
+		}
+		.input__main {
+			padding-right: 40px;
+		}
 	}
 </style>
