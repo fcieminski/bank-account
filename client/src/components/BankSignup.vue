@@ -1,45 +1,49 @@
 <template>
-	<div>
-		<div>
-			<h2>Zarejestruj swoje konto</h2>
-			<div></div>
-		</div>
+	<div class="signup__title">
+		<h3 class="title__text">Zarejestruj swoje konto</h3>
 		<validation-observer v-slot="{ invalid }">
 			<form class="signup__form" @submit.prevent="submitForm($event)" action="">
-				<validation-provider rules="required|alpha" name="Imię" v-slot="{ errors }">
+				<validation-provider class="input__box" rules="required|alpha" name="Imię" v-slot="{ errors }">
 					<label for="name">Imię</label>
-					<input v-model="newUser.name" type="text" name="name" />
-					<span>{{ errors[0] }}</span>
+					<input class="input__main" v-model="newUser.name" type="text" name="name" />
+					<input-error left :error="errors[0]" />
 				</validation-provider>
-				<validation-provider rules="required|alpha" name="Nazwisko" v-slot="{ errors }">
+				<validation-provider class="input__box" rules="required|alpha" name="Nazwisko" v-slot="{ errors }">
 					<label for="surname">Nazwisko</label>
-					<input v-model="newUser.surname" type="text" name="surname" />
-					<span>{{ errors[0] }}</span>
+					<input class="input__main" v-model="newUser.surname" type="text" name="surname" />
+					<input-error left :error="errors[0]" />
 				</validation-provider>
-				<validation-provider rules="required|alpha" name="Login" v-slot="{ errors }">
+				<validation-provider class="input__box" rules="required|alpha" name="Login" v-slot="{ errors }">
 					<label for="username">Login</label>
-					<input v-model="newUser.username" type="text" name="username" />
-					<span>{{ errors[0] }}</span>
+					<input class="input__main" v-model="newUser.username" type="text" name="username" />
+					<input-error left :error="errors[0]" />
 				</validation-provider>
-				<validation-provider rules="required|email" name="Adres e-mail" v-slot="{ errors }">
+				<validation-provider class="input__box" rules="required|email" name="Adres e-mail" v-slot="{ errors }">
 					<label for="email">Adres e-mail</label>
-					<input v-model="newUser.email" type="text" name="email" />
-					<span>{{ errors[0] }}</span>
+					<input class="input__main" v-model="newUser.email" type="text" name="email" />
+					<input-error left :error="errors[0]" />
 				</validation-provider>
-				<validation-provider rules="required" name="Numer telefonu" v-slot="{ errors }">
+				<validation-provider class="input__box" rules="required" name="Numer telefonu" v-slot="{ errors }">
 					<label for="phone">Numer telefonu</label>
-					<input v-model.number="newUser.phone" min="0" type="number" name="phone" />
-					<span>{{ errors[0] }}</span>
+					<input class="input__main" v-model.number="newUser.phone" min="0" type="number" name="phone" />
+					<input-error left :error="errors[0]" />
 				</validation-provider>
-				<validation-provider rules="required" name="Hasło" v-slot="{ errors }">
+				<validation-provider class="input__box" rules="required" name="Hasło" v-slot="{ errors }">
 					<label for="password">Hasło</label>
-					<i @click="reveal = !reveal" class="cp material-icons">{{
-						reveal ? "visibility_off" : "visibility"
-					}}</i>
-					<input v-model="newUser.password" :type="reveal ? 'text' : 'password'" name="password" />
-					<span>{{ errors[0] }}</span>
+					<div class="password__reveal">
+						<i @click="reveal = !reveal" class="cp material-icons">{{
+							reveal ? "visibility_off" : "visibility"
+						}}</i>
+						<input
+							class="input__main"
+							v-model="newUser.password"
+							:type="reveal ? 'text' : 'password'"
+							name="password"
+						/>
+					</div>
+					<input-error left :error="errors[0]" />
 				</validation-provider>
-				<button :disabled="invalid" type="submit">Wyślij</button>
+				<button class="btn btn__login" :disabled="invalid" type="submit">Wyślij</button>
 			</form>
 		</validation-observer>
 	</div>
@@ -49,10 +53,11 @@
 	import { extend } from "vee-validate";
 	import { required, email, alpha } from "vee-validate/dist/rules";
 	import authService from "../services/AuthService";
+	import InputError from "@utils/InputError.vue";
 
 	extend("required", {
 		...required,
-		message: "This field is required"
+		message: "Pole obowiązkowe!"
 	});
 	extend("email", { ...email });
 	extend("alpha", { ...alpha });
@@ -73,7 +78,9 @@
 				error: null
 			};
 		},
-		components: {},
+		components: {
+			InputError
+		},
 		created() {},
 		computed: {},
 		methods: {
@@ -97,9 +104,25 @@
 </script>
 
 <style lang='scss' scoped>
-	.signup__form {
+	.signup__title {
+		text-align: center;
+	}
+	.title__text {
+		font-size: 2rem;
+		margin: 0 0 40px 0;
 	}
 	label {
 		display: block;
+	}
+	.password__reveal {
+		position: relative;
+		.material-icons.cp {
+			position: absolute;
+			right: 13px;
+			top: 13px;
+        }
+        .input__main{
+            padding-right: 40px;
+        }
 	}
 </style>

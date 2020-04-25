@@ -1,20 +1,18 @@
 <template>
 	<div class="main">
 		<div class="login">
-			<bank-login />
+            <router-view />
 		</div>
 	</div>
 </template>
 
 <script>
-	import BankLogin from "@/components/BankLogin.vue";
 	export default {
 		name: "Main",
 		data() {
 			return {};
 		},
 		components: {
-			BankLogin
 		},
 		created() {},
 		computed: {},

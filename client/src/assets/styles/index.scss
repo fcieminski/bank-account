@@ -93,3 +93,21 @@ i {
 .fade-leave-to {
     opacity: 0;
 }
+
+.login__form,
+.signup__form {
+    padding: 0 30px 11px 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    label {
+        display: block;
+        text-align: left;
+        margin-bottom: 5px;
+    }
+}
+
+.input__box {
+    margin-bottom: 20px;
+    width: 100%;
+}
