@@ -4,7 +4,7 @@ class CardsController {
     create(req, res) {
         const Card = new Cards({
             cardName: "Visa",
-            cardNumber: 123456789,
+            cardNumber: 123456783339,
             cardValid: true,
             expirationDate: new Date(),
             holder: req.body.user,
@@ -19,6 +19,7 @@ class CardsController {
 
         Card.save((error) => {
             if (error) res.send(error);
+            else res.send('ok')
         });
     }
 }

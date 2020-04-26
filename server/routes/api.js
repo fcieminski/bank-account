@@ -3,6 +3,7 @@ const AuthController = require("../controllers/Auth/AuthController");
 const AccountController = require("../controllers/AccountController");
 const UserController = require("../controllers/UserController");
 const CardsController = require("../controllers/CardsController");
+const isAuthenticated = require("../middleware/AuthMiddleware");
 const app = require("../config/app");
 
 app.post("/register", UserController.create);
@@ -13,15 +14,7 @@ app.post("/logout", AuthController.logOut);
 
 app.get("/account-owner", AccountController.find);
 
-app.post("/create-new-card", (req, res) => {
-    if (req.body.user) {
-        CardsController.create(req, res);
-    } else {
-        res.status(403).send({
-            error: "not Authorized",
-        });
-    }
-});
+app.post("/create-new-card", isAuthenticated, CardsController.create);
 
 app.get("/tests", TestController.index);
 app.put("/tests/:id", TestController.update);
