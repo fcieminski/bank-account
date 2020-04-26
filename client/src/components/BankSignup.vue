@@ -93,6 +93,7 @@
 							delete response.user.hash;
 							delete response.user.salt;
 							localStorage.setItem("user", JSON.stringify(response.user));
+							this.$store.dispatch("setUser", response.user);
 							this.$router.push({ name: "account" });
 						}
 					})

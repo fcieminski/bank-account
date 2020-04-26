@@ -16,7 +16,7 @@ app.get("/account-owner", AccountController.find);
 
 app.post("/create-new-card", isAuthenticated, CardsController.create);
 
-app.get("/tests", TestController.index);
-app.put("/tests/:id", TestController.update);
-app.get("/tests/:id", TestController.find);
-app.post("/tests", TestController.createTest);
+// app.get("/tests", TestController.index);
+// app.put("/tests/:id", TestController.update);
+// app.get("/tests/:id", TestController.find);
+// app.post("/tests", TestController.createTest);

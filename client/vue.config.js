@@ -15,7 +15,7 @@ module.exports = {
     resolve: {
       alias: {
         "@utils": path.resolve(__dirname, "src/components/utils"),
-        "@services": path.resolve(__dirname, "src/components/services"),
+        "@services": path.resolve(__dirname, "src/components/services")
       }
     }
   }

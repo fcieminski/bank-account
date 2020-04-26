@@ -72,6 +72,29 @@ i {
     }
 }
 
+.btn--transparent {
+    transition: all 0.2s;
+    border: none;
+    width: 100%;
+    border-radius: 10px;
+    font-size: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: $mainColor;
+    cursor: pointer;
+    &:hover {
+        background-color: #8080800d;
+    }
+}
+
+.btn--small {
+    height: 30px;
+    padding: 0 5px;
+}
+
 .input__main {
     transition: all 0.2s;
     height: 50px;
