@@ -1,10 +1,6 @@
 import BaseService from "./BaseService";
 
 class AuthService extends BaseService {
-  create(params) {
-    return this.axios.post("/register", params).then(response => response.data);
-  }
-
   signIn(params) {
     return this.axios.post("/login", params).then(response => response.data);
   }

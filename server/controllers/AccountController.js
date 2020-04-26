@@ -11,25 +11,6 @@ class AccountController {
             });
         });
     }
-
-    create(req, res) {
-        const Accounts = new Account({
-            owner: req.body.owner,
-            balance: 0,
-            cards: [],
-            history: [],
-            plannedTransfers: [],
-            blockedTransactions: [],
-        });
-
-        Accounts.save((error) => {
-            if (error) {
-                res.send({ error });
-            } else {
-                res.send("created");
-            }
-        });
-    }
 }
 
 module.exports = new AccountController();

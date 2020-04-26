@@ -52,7 +52,7 @@
 <script>
 	import { extend } from "vee-validate";
 	import { required, email, alpha } from "vee-validate/dist/rules";
-	import authService from "../services/AuthService";
+	import userService from "../services/UserService";
 	import accountService from "../services/AccountService";
 	import InputError from "@utils/InputError.vue";
 
@@ -86,15 +86,14 @@
 		computed: {},
 		methods: {
 			submitForm(e) {
-				authService
+				userService
 					.create(this.newUser)
 					.then(response => {
 						if (response.redirect) {
 							delete response.user.hash;
 							delete response.user.salt;
 							localStorage.setItem("user", JSON.stringify(response.user));
-							accountService.create({owner: response.user}).then(response => console.log(response));
-							// this.$router.push({ name: "account" });
+							this.$router.push({ name: "account" });
 						}
 					})
 					.catch(({ message }) => {
