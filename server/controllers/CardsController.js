@@ -19,7 +19,6 @@ class CardsController {
 
         Card.save((error) => {
             if (error) res.send(error);
-            res.send("ok");
         });
     }
 }

@@ -4,6 +4,7 @@ mongoose
     .connect(process.env.MONGO_URI || "mongodb://localhost:27017/bank-account", {
         useUnifiedTopology: true,
         useNewUrlParser: true,
+        useCreateIndex: true,
     })
     .then(() => console.log("DB Connected!"))
     .catch((err) => {

@@ -24,6 +24,11 @@ class AuthController {
         }
     }
 
+    logOut(req, res) {
+        req.logout();
+        res.send({ redirect: true });
+    }
+
     isAuth(req, res) {
         if (req.isAuthenticated()) {
             res.send({

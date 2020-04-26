@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const CardsSchema = new Schema({
     cardName: String,
-    cardNumber: Number,
+    cardNumber: { type: Number, unique: true },
     cardValid: Boolean,
     expirationDate: Date,
     holder: { type: Schema.Types.ObjectId, ref: "User" },

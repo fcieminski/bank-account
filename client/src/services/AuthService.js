@@ -5,6 +5,10 @@ class AuthService extends BaseService {
     return this.axios.post("/login", params).then(response => response.data);
   }
 
+  logout() {
+    return this.axios.post("/logout").then(response => response.data);
+  }
+
   isAuth() {
     return this.axios.post("/user").then(response => response.data);
   }
