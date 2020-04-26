@@ -1,5 +1,5 @@
 const User = require("../models/User");
-const Account = require("../models/Account");
+const AccountController = require("./AccountController");
 const passport = require("passport");
 
 class UserController {
@@ -17,26 +17,22 @@ class UserController {
                 res.send({ success: false, message: err });
             } else {
                 try {
-                    const Accounts = new Account({
-                        owner: user.id,
-                    });
-
-                    await Accounts.save((error) => {
-                        if (error) {
-                            res.send({ error });
-                        }
-                    });
-
                     await passport.authenticate("local", (err, user) => {
                         if (err) {
                             res.send({ success: false, message: "error in auth" });
                         } else {
                             try {
-                                req.login(user, (err) => {
+                                req.login(user, async (err) => {
                                     if (!err) {
-                                        user.account = Accounts._id;
-                                        user.save();
-                                        res.send({ success: true, redirect: true, user });
+                                        AccountController.create(req)
+                                            .then((response) => {
+                                                user.account = response._id;
+                                                user.save();
+                                                res.send({ success: true, redirect: true, user });
+                                            })
+                                            .catch(() => {
+                                                res.send({ success: false, message: "error in auth" });
+                                            });
                                     } else {
                                         res.send({ success: false, message: "error in auth" });
                                     }
