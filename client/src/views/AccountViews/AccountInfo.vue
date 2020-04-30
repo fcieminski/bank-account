@@ -1,5 +1,5 @@
 <template>
-	<section class="account">
+	<section v-if="account" class="account">
 		<div class="account__info-box">
 			<div class="info-box__account-data">
 				<div>{{ user.name }} {{ user.surname }}</div>
@@ -14,7 +14,7 @@
 						<div class="text--white">{{ account.balance }} PLN</div>
 					</div>
 				</div>
-                <div class="divider"></div>
+				<div class="divider"></div>
 				<div class="account-content__content">
 					<div class="content-box">
 						<div class="small--box text--white">
@@ -44,10 +44,58 @@
 			</div>
 		</div>
 		<div class="account__history-box">
-			history
+			<div v-if="history">
+				<div class="history-box__element" v-for="element in history" :key="element._id">
+					<div class="element__about">
+						<div>{{ element.date }}</div>
+						<div class="wrap--text">{{ element.to }}</div>
+						<div class="wrap--text">{{ element.accountType }}</div>
+						<div class="wrap--text text--end" :class="{ 'amount--less': element.type !== 'transfer' }">
+							{{ element.type === "transfer" ? "" : "-" }} {{ element.amount }} zł
+						</div>
+					</div>
+					<div>{{ element.title }}</div>
+				</div>
+			</div>
+			<div v-else>
+				Twoja historia jest pusta, wkonaj pierwszy przelew!
+			</div>
 		</div>
 		<div class="account__more-box">
-			more
+			<div class="more-box__widgets">
+				<div class="widget--margin">
+					<div class="widget--title">
+						Przelewy zaplanowane
+					</div>
+					<div>
+						<span class="pt-2">MAJ 2020</span>
+						<div class="d-flex justify-between pt-2">
+							<span>Ilość: 3</span>
+							<span>Łączna kwota: 549 zł</span>
+						</div>
+					</div>
+				</div>
+				<div class="widget--margin">
+					<div class="widget--title">
+						Stan konta w tym miesiącu
+					</div>
+					<div>
+						<div class="d-flex justify-between pt-2">
+							<span>Przychód:</span>
+							<span>6542 zł</span>
+						</div>
+						<div class="d-flex justify-between pt-2">
+							<span>Wydatki:</span>
+							<span class="amount--less">- 3210 zł</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="actions--container">
+				<div class="btn pa-2">
+					dodaj widget
+				</div>
+			</div>
 		</div>
 	</section>
 </template>
@@ -59,7 +107,36 @@
 		name: "AccountInfo",
 		data() {
 			return {
-				account: null
+				account: null,
+				history: [
+					{
+						_id: 131244512,
+						type: "widthdraw",
+						date: new Date().toLocaleDateString(),
+						to: "Testowo test",
+						title: "Przelew środków za zakupy",
+						accountType: "Konto główne",
+						amount: 125.5
+					},
+					{
+						_id: 1314512,
+						type: "transfer",
+						date: new Date().toLocaleDateString(),
+						to: "Aliexpress Hannover Square SA",
+						title: "Zwrot z zakupów",
+						accountType: "Konto główne",
+						amount: 1500
+					},
+					{
+						_id: 1312445,
+						type: "widthdraw",
+						date: new Date().toLocaleDateString(),
+						to: "Testowo test",
+						title: "Opłata skarbowa",
+						accountType: "Konto główne",
+						amount: 79.64
+					}
+				]
 			};
 		},
 		components: {},
@@ -85,20 +162,27 @@
 	.account {
 		margin-top: 30px;
 		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		grid-template-rows: repeat(3, 1fr);
+		grid-template-columns: repeat(3, auto);
+		grid-template-rows: repeat(3, auto);
 		grid-template-areas:
 			"info info info"
 			"info info info"
 			"history history more";
 		.account__info-box {
 			grid-area: info;
-			// border-bottom: 1px solid #a954ee;
 		}
 		.account__history-box {
+			margin-top: 16px;
+			padding-right: 16px;
 			grid-area: history;
+			// border-right: 2px solid $secondaryColor;
 		}
 		.account__more-box {
+			margin-top: 16px;
+			padding-left: 16px;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
 			grid-area: more;
 		}
 		.info-box__account-data {
@@ -116,6 +200,7 @@
 			justify-content: center;
 			flex: 1;
 			.big--box {
+				box-shadow: $mainShadow;
 				height: 250px;
 				width: 250px;
 				border-radius: 10px;
@@ -135,6 +220,7 @@
 			flex: 1;
 
 			.small--box {
+				box-shadow: $mainShadow;
 				height: 100px;
 				width: 100px;
 				border-radius: 10px;
@@ -155,9 +241,39 @@
 					margin: 20px;
 				}
 				.content__info {
-                    margin-top: 10px;
+					margin-top: 10px;
 					font-size: 0.8rem;
 				}
+			}
+		}
+		.history-box__element {
+			&:first-of-type {
+				padding: 0 0 16px 0;
+			}
+			padding: 16px 0;
+			border-bottom: 2px solid $secondaryColor;
+			.element__about {
+				display: flex;
+				margin-bottom: 10px;
+				div {
+					&:first-of-type {
+						flex: 0;
+						margin-right: 20px;
+					}
+					flex: 1;
+					margin-right: 5px;
+					font-size: 1rem;
+				}
+			}
+		}
+
+		.more-box__widgets {
+			.widget--margin {
+				margin-bottom: 16px;
+			}
+			.widget--title {
+                line-height: 18px;
+                margin-bottom: 5px;
 			}
 		}
 	}

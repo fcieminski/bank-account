@@ -51,6 +51,42 @@ i {
     }
 }
 
+@for $margin from 1 to 10 {
+    .ma-#{$margin} {
+        margin: #{$margin * 3}px !important;
+    }
+    .mb-#{$margin} {
+        margin-bottom: #{$margin * 3}px !important;
+    }
+    .mt-#{$margin} {
+        margin-top: #{$margin * 3}px !important;
+    }
+    .mr-#{$margin} {
+        margin-right: #{$margin * 3}px !important;
+    }
+    .ml-#{$margin} {
+        margin-left: #{$margin * 3}px !important;
+    }
+}
+
+@for $padding from 1 to 10 {
+    .pa-#{$padding} {
+        padding: #{$padding * 3}px !important;
+    }
+    .pb-#{$padding} {
+        padding-bottom: #{$padding * 3}px !important;
+    }
+    .pt-#{$padding} {
+        padding-top: #{$padding * 3}px !important;
+    }
+    .pr-#{$padding} {
+        padding-right: #{$padding * 3}px !important;
+    }
+    .pl-#{$padding} {
+        padding-left: #{$padding * 3}px !important;
+    }
+}
+
 .cp {
     cursor: pointer;
 }
@@ -140,12 +176,46 @@ i {
     width: 100%;
 }
 
-.text--white{
+.text--white {
     color: white;
 }
 
-.divider{
+.divider {
     width: 2px;
     background-color: $secondaryColor;
     height: 200px;
+}
+
+.wrap--text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.amount--less {
+    color: $mainColor;
+}
+
+.text--end {
+    text-align: end;
+}
+
+.d-flex {
+    display: flex;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+.actions--container {
+    display: flex;
+    justify-content: end;
+    div{
+        box-shadow: $mainShadow;
+        width: 150px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 }
