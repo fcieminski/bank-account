@@ -4,7 +4,7 @@
 			<div class="box__top">
 				<div class="header__logo"></div>
 				<div class="header__user">
-					<span>{{ $store.state.user.name }}</span>
+					<span class="mr-3">{{ $store.state.user.name }}</span>
 					<div class="btn--transparent btn--small" @click="logout">Wyloguj</div>
 				</div>
 			</div>

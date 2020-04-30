@@ -208,11 +208,30 @@ i {
     justify-content: space-between;
 }
 
+.align-center {
+    align-items: center;
+}
+
+.material-icons {
+    color: #606060;
+}
+
+.material-icons.icon--xsmall {
+    font-size: 18px;
+}
+
+.material-icons.icon--big {
+    font-size: 40px;
+}
+
+.material-icons.icon--white {
+    color: white;
+}
+
 .actions--container {
     display: flex;
     justify-content: end;
-    div{
-        box-shadow: $mainShadow;
+    div {
         width: 150px;
         display: flex;
         justify-content: center;

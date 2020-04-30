@@ -2,12 +2,18 @@
 	<section v-if="account" class="account">
 		<div class="account__info-box">
 			<div class="info-box__account-data">
-				<div>{{ user.name }} {{ user.surname }}</div>
-				<div>54 2490 0005 0627 1988 8043 1753</div>
+				<span>{{ user.name }} {{ user.surname }}</span>
+				<div class="d-flex align-center">
+					<div class="mr-2">
+						54 2490 0005 0627 1988 8043 1753
+					</div>
+					<i class="material-icons icon--xsmall">file_copy</i>
+				</div>
 			</div>
 			<div class="info-box__account-content">
 				<div class="account-content_account-balance">
 					<div class="big--box">
+						<i class="material-icons icon--white icon--big">account_balance_wallet</i>
 						<div class="text--white">
 							Stan konta
 						</div>
@@ -18,6 +24,7 @@
 				<div class="account-content__content">
 					<div class="content-box">
 						<div class="small--box text--white">
+                            <i class="material-icons icon--white">credit_card</i>
 							Karty
 						</div>
 						<div class="content__info">
@@ -26,6 +33,7 @@
 					</div>
 					<div class="content-box">
 						<div class="small--box text--white">
+                            <i class="material-icons icon--white">account_balance</i>
 							Oszczędności
 						</div>
 						<div class="content__info">
@@ -34,6 +42,7 @@
 					</div>
 					<div class="content-box">
 						<div class="small--box text--white">
+                            <i class="material-icons icon--white">smartphone</i>
 							Blik
 						</div>
 						<div class="content__info">
@@ -172,13 +181,12 @@
 			grid-area: info;
 		}
 		.account__history-box {
-			margin-top: 16px;
+			margin-top: 30px;
 			padding-right: 16px;
 			grid-area: history;
-			// border-right: 2px solid $secondaryColor;
 		}
 		.account__more-box {
-			margin-top: 16px;
+			margin-top: 30px;
 			padding-left: 16px;
 			display: flex;
 			flex-direction: column;
@@ -272,8 +280,8 @@
 				margin-bottom: 16px;
 			}
 			.widget--title {
-                line-height: 18px;
-                margin-bottom: 5px;
+				line-height: 18px;
+				margin-bottom: 5px;
 			}
 		}
 	}
