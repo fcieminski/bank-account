@@ -4,8 +4,8 @@ import authService from "../services/AuthService";
 const Main = () => import("@/views/Main.vue");
 const BankSignup = () => import("@/components/BankSignup.vue");
 const BankLogin = () => import("@/components/BankLogin.vue");
-const Account = () => import("@/views/Account.vue");
-const AccInfo = () => import("@/components/Account/AccInfo.vue");
+const Account = () => import("@account/Account.vue");
+const AccountInfo = () => import("@account/AccountInfo.vue");
 
 Vue.use(VueRouter);
 
@@ -43,11 +43,11 @@ const routes = [
     component: Account,
     children: [
       {
-        path: "start",
+        path: "/account",
         name: "account.start",
-        component: AccInfo,
+        component: AccountInfo,
         meta: {
-          requiresAuth: false
+          requiresAuth: true
         }
       }
     ],

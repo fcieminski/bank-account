@@ -42,6 +42,8 @@
 		methods: {
 			logout() {
 				authService.logout();
+				localStorage.removeItem("user");
+				this.$router.push("/");
 			}
 		}
 	};
@@ -81,7 +83,7 @@
 					margin-right: 16px;
 					display: inline-block;
 					&:not(.router-link-exact-active)::after {
-                        transition: all 0.2s;
+						transition: all 0.2s;
 						content: "";
 						display: block;
 						background-color: $accent;

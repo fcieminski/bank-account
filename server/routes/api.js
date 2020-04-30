@@ -12,7 +12,7 @@ app.post("/user", AuthController.isAuth);
 app.post("/login", AuthController.signIn);
 app.post("/logout", AuthController.logOut);
 
-app.get("/account-owner", AccountController.find);
+app.post("/account-owner", AccountController.find);
 
 app.post("/create-new-card", isAuthenticated, CardsController.create);
 

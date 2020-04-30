@@ -1,4 +1,5 @@
 const Account = require("../models/Account");
+const User = require("../models/User");
 
 class AccountController {
     async create(req) {
@@ -8,21 +9,22 @@ class AccountController {
             const Accounts = new Account({
                 owner: user.id,
             });
-
             const newAccount = await Accounts.save();
-
             return newAccount;
         }
     }
     find(req, res) {
-        Account.findOwner(req.body.owner, (error, account) => {
-            if (error) {
-                res.send({ error });
-            }
-            res.send({
-                account,
+        const owner = req.body.owner;
+        
+        User.findOne({ _id: owner._id })
+            .populate("account")
+            .exec((error, user) => {
+                if (error) {
+                    res.send({ error: "no record" });
+                } else {
+                    res.send({ user });
+                }
             });
-        });
     }
 }
 
