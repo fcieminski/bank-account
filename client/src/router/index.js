@@ -5,6 +5,7 @@ const Main = () => import("@/views/Main.vue");
 const BankSignup = () => import("@/components/BankSignup.vue");
 const BankLogin = () => import("@/components/BankLogin.vue");
 const Account = () => import("@/views/Account.vue");
+const AccInfo = () => import("@/components/Account/AccInfo.vue");
 
 Vue.use(VueRouter);
 
@@ -40,6 +41,16 @@ const routes = [
     path: "/account",
     name: "account",
     component: Account,
+    children: [
+      {
+        path: "start",
+        name: "account.start",
+        component: AccInfo,
+        meta: {
+          requiresAuth: false
+        }
+      }
+    ],
     meta: {
       requiresAuth: true
     }
