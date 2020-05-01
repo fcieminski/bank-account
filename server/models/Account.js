@@ -1,8 +1,14 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+const accountNumber = () => {
+    const numberArr = Array.from({ length: 26 });
+    return numberArr.map(ele => ele = Math.floor(Math.random() * 10)).join('')
+}
+
 const AccountSchema = new Schema({
     owner: { type: Schema.Types.ObjectId, ref: "User" },
+    description: { type: String, default: "Konto Przyjazne" },
     balance: { type: Number, default: 0 },
     cards: [
         {
@@ -10,10 +16,28 @@ const AccountSchema = new Schema({
             ref: "Cards",
         },
     ],
-    history: { type: Array, default: [{}] },
-    plannedTransfers: { type: Array, default: [{}] },
-    blockedTransactions: { type: Array, default: [{}] },
+    history: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "History",
+        },
+    ],
+    plannedTransfers: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "PlannedTransfers",
+        },
+    ],
+    blockedTransactions: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "BlockedTransactions",
+        },
+    ],
+    accountNumber: { type: String, default: accountNumber },
+    currencyName: { type: String, default: 'PLN' }
 });
+
 
 const Account = mongoose.model("Account", AccountSchema);
 
