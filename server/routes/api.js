@@ -3,6 +3,7 @@ const AuthController = require("../controllers/Auth/AuthController");
 const AccountController = require("../controllers/AccountController");
 const UserController = require("../controllers/UserController");
 const CardsController = require("../controllers/CardsController");
+const HistoryController = require("../controllers/HistoryController");
 const isAuthenticated = require("../middleware/AuthMiddleware");
 const app = require("../config/app");
 
@@ -15,6 +16,8 @@ app.post("/logout", AuthController.logOut);
 app.post("/account-owner", AccountController.find);
 
 app.post("/create-new-card", isAuthenticated, CardsController.create);
+
+app.post('/add-to-history/:userId', isAuthenticated, HistoryController.makeTransfer);
 
 // app.get("/tests", TestController.index);
 // app.put("/tests/:id", TestController.update);

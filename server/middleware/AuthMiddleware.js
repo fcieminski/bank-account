@@ -1,5 +1,5 @@
 const isAuthenticated = (req, res, next) => {
-    if (req.body.user) {
+    if (req.isAuthenticated()) {
         next();
     } else {
         res.status(403).send({

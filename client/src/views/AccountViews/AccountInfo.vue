@@ -24,7 +24,7 @@
 				<div class="account-content__content">
 					<div class="content-box">
 						<div class="small--box text--white">
-                            <i class="material-icons icon--white">credit_card</i>
+							<i class="material-icons icon--white">credit_card</i>
 							Karty
 						</div>
 						<div class="content__info">
@@ -33,7 +33,7 @@
 					</div>
 					<div class="content-box">
 						<div class="small--box text--white">
-                            <i class="material-icons icon--white">account_balance</i>
+							<i class="material-icons icon--white">account_balance</i>
 							Oszczędności
 						</div>
 						<div class="content__info">
@@ -42,7 +42,7 @@
 					</div>
 					<div class="content-box">
 						<div class="small--box text--white">
-                            <i class="material-icons icon--white">smartphone</i>
+							<i class="material-icons icon--white">smartphone</i>
 							Blik
 						</div>
 						<div class="content__info">
@@ -101,7 +101,7 @@
 				</div>
 			</div>
 			<div class="actions--container">
-				<div class="btn pa-2">
+				<div @click="checkHistory" class="btn pa-2">
 					dodaj widget
 				</div>
 			</div>
@@ -111,6 +111,7 @@
 
 <script>
 	import accountService from "../../services/AccountService";
+	import historyService from "@services/HistoryService";
 	import { mapState } from "vuex";
 	export default {
 		name: "AccountInfo",
@@ -163,7 +164,24 @@
 		computed: {
 			...mapState(["user"])
 		},
-		methods: {}
+		methods: {
+			checkHistory() {
+				historyService
+					.create(this.user._id, {
+						date: new Date().toLocaleDateString(),
+						name: "First transfer",
+						amount: 345,
+						currency: "PLN",
+						title: "Transfer pieniędzy za pożyczkę",
+						from: this.user.name,
+						to: {
+							name: "Bank Millenium",
+							accountNumber: "54249000050627198880431753"
+						}
+					})
+					.then(response => this.history = response.history);
+			}
+		}
 	};
 </script>
 

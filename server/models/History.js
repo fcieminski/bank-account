@@ -8,7 +8,10 @@ const HistorySchema = new Schema({
     currency: String,
     title: String,
     from: String,
-    to: String,
+    to: {
+        name: String,
+        accountNumber: String,
+    },
 })
 
 const History = mongoose.model('History', HistorySchema);

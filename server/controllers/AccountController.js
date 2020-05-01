@@ -15,7 +15,7 @@ class AccountController {
     }
     find(req, res) {
         const owner = req.body.owner;
-        
+
         User.findOne({ _id: owner._id })
             .populate("account")
             .exec((error, user) => {

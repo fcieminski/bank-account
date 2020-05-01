@@ -11,7 +11,6 @@ class AuthController {
                         req.login(user, (err) => {
                             if (!err) {
                                 res.send({ success: true, redirect: true, user });
-                                req.session.save();
                             } else {
                                 res.json({ success: false, message: "Niepoprawne hasło lub login" });
                             }
