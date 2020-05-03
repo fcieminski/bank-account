@@ -12,13 +12,13 @@
 			</div>
 			<div class="info-box__account-content">
 				<div class="account-content_account-balance">
-					<div class="big--box">
+					<router-link tag="div" :to="{ name: 'account.transfer' }"  class="cp big--box">
 						<i class="material-icons icon--white icon--big">account_balance_wallet</i>
 						<div class="text--white">
 							Stan konta
 						</div>
 						<div class="text--white">{{ account.balance }} PLN</div>
-					</div>
+					</router-link>
 				</div>
 				<div class="divider"></div>
 				<div class="account-content__content">
@@ -60,7 +60,7 @@
 						<div class="wrap--text">{{ element.to.name }}</div>
 						<div class="wrap--text">{{ element.accountType }}</div>
 						<div class="wrap--text text--end" :class="{ 'amount--less': element.type !== 'transfer' }">
-							{{ element.type === "transfer" ? "" : "-" }} {{ element.amount }} {{element.currency}}
+							{{ element.type === "transfer" ? "" : "-" }} {{ element.amount }} {{ element.currency }}
 						</div>
 					</div>
 					<div>{{ element.title }}</div>

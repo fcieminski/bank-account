@@ -16,7 +16,7 @@
 					<router-link to="/">
 						Historia
 					</router-link>
-					<router-link to="/">
+					<router-link :to="{ name: 'account.transfer' }">
 						Przelew
 					</router-link>
 					<router-link to="/">
