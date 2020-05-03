@@ -1,6 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import authService from "../services/AuthService";
+import authService from "@services/AuthService";
 const Main = () => import("@/views/Main.vue");
 const BankSignup = () => import("@/components/BankSignup.vue");
 const BankLogin = () => import("@/components/BankLogin.vue");
@@ -80,8 +80,15 @@ router.beforeEach((to, from, next) => {
             if (response.user.id === user.id) {
                 next();
             } else {
+                localStorage.removeItem("user")
                 next({
-                    name: "main"
+                    name: "main.login"
+                });
+            }
+        }).catch((error) => {
+            if (error.response.status === 403) {
+                next({
+                    name: "main.login"
                 });
             }
         });

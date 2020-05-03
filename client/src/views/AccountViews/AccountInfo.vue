@@ -119,21 +119,12 @@
 		name: "AccountInfo",
 		data() {
 			return {
-				account: null,
 				history: null
 			};
 		},
 		components: {},
 		created() {
 			const user = JSON.parse(localStorage.getItem("user"));
-			accountService
-				.getUserAccount({ owner: user })
-				.then(response => {
-					this.account = response.user.account;
-				})
-				.catch(error => {
-					console.error("error!");
-				});
 			historyService
 				.getHistory(user._id)
 				.then(response => {
@@ -144,7 +135,7 @@
 				});
 		},
 		computed: {
-			...mapState(["user"])
+			...mapState(["user", "account"])
 		},
 		methods: {}
 	};

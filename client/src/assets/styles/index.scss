@@ -40,7 +40,9 @@ h3,
 p,
 div,
 span,
-label {
+label,
+input,
+textarea {
     font-family: "Basic", sans-serif;
     cursor: default;
 }
@@ -151,7 +153,7 @@ i {
 
 .fade-enter-active,
 .fade-leave-active {
-    transition: opacity 0.5s;
+    transition: opacity 0.2s;
 }
 .fade-enter,
 .fade-leave-to {
@@ -171,13 +173,22 @@ i {
     }
 }
 
-.cp {
-    cursor: pointer;
+.input__container--right {
+    display: flex;
+    justify-content: end;
 }
 
 .input__box {
     margin-bottom: 20px;
     width: 100%;
+    &.input__box--small {
+        width: 150px;
+        margin: 0;
+    }
+}
+
+input[type="number"] {
+    appearance: textfield;
 }
 
 .text--white {
@@ -188,6 +199,13 @@ i {
     width: 2px;
     background-color: $secondaryColor;
     height: 200px;
+}
+
+.horizontal--divider {
+    width: 100%;
+    background-color: $secondaryColor;
+    margin: 20px 0;
+    height: 2px;
 }
 
 .wrap--text {
@@ -261,5 +279,25 @@ i {
         &::after {
             width: 100%;
         }
+    }
+}
+
+.info--data {
+    background-color: #8080802b;
+    padding: 30px;
+    border-radius: 4px;
+}
+
+.account--name {
+    transition: all 0.1s;
+    padding: 10px;
+    background-color: $mainGray;
+    margin: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: $mainShadow;
+    &.active {
+        background-color: $mainColor;
+        color: white;
     }
 }
