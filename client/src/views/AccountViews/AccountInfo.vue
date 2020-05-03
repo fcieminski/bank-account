@@ -56,18 +56,20 @@
 			<div v-if="history">
 				<div class="history-box__element" v-for="element in history" :key="element._id">
 					<div class="element__about">
-						<div>{{ element.date }}</div>
-						<div class="wrap--text">{{ element.to }}</div>
+						<div>{{ new Date(element.date).toLocaleDateString() }}</div>
+						<div class="wrap--text">{{ element.to.name }}</div>
 						<div class="wrap--text">{{ element.accountType }}</div>
 						<div class="wrap--text text--end" :class="{ 'amount--less': element.type !== 'transfer' }">
-							{{ element.type === "transfer" ? "" : "-" }} {{ element.amount }} zł
+							{{ element.type === "transfer" ? "" : "-" }} {{ element.amount }} {{element.currency}}
 						</div>
 					</div>
 					<div>{{ element.title }}</div>
 				</div>
 			</div>
-			<div v-else>
-				Twoja historia jest pusta, wkonaj pierwszy przelew!
+			<div class="d-flex align-center" v-else>
+				<i class="material-icons mr-2">history</i>
+				Twoja historia jest pusta, wkonaj pierwszy
+				<router-link class="link__inline ml-2" to="/">przelew!</router-link>
 			</div>
 		</div>
 		<div class="account__more-box">
@@ -101,7 +103,7 @@
 				</div>
 			</div>
 			<div class="actions--container">
-				<div @click="checkHistory" class="btn pa-2">
+				<div class="btn pa-2">
 					dodaj widget
 				</div>
 			</div>
@@ -118,35 +120,7 @@
 		data() {
 			return {
 				account: null,
-				history: [
-					{
-						_id: 131244512,
-						type: "widthdraw",
-						date: new Date().toLocaleDateString(),
-						to: "Testowo test",
-						title: "Przelew środków za zakupy",
-						accountType: "Konto główne",
-						amount: 125.5
-					},
-					{
-						_id: 1314512,
-						type: "transfer",
-						date: new Date().toLocaleDateString(),
-						to: "Aliexpress Hannover Square SA",
-						title: "Zwrot z zakupów",
-						accountType: "Konto główne",
-						amount: 1500
-					},
-					{
-						_id: 1312445,
-						type: "widthdraw",
-						date: new Date().toLocaleDateString(),
-						to: "Testowo test",
-						title: "Opłata skarbowa",
-						accountType: "Konto główne",
-						amount: 79.64
-					}
-				]
+				history: null
 			};
 		},
 		components: {},
@@ -160,28 +134,19 @@
 				.catch(error => {
 					console.error("error!");
 				});
+			historyService
+				.getHistory(user._id)
+				.then(response => {
+					this.history = response.history;
+				})
+				.catch(error => {
+					console.error("error!");
+				});
 		},
 		computed: {
 			...mapState(["user"])
 		},
-		methods: {
-			checkHistory() {
-				historyService
-					.create(this.user._id, {
-						date: new Date().toLocaleDateString(),
-						name: "First transfer",
-						amount: 345,
-						currency: "PLN",
-						title: "Transfer pieniędzy za pożyczkę",
-						from: this.user.name,
-						to: {
-							name: "Bank Millenium",
-							accountNumber: "54249000050627198880431753"
-						}
-					})
-					.then(response => this.history = response.history);
-			}
-		}
+		methods: {}
 	};
 </script>
 
@@ -189,7 +154,7 @@
 	.account {
 		margin-top: 30px;
 		display: grid;
-		grid-template-columns: repeat(3, auto);
+		grid-template-columns: repeat(3, 1fr);
 		grid-template-rows: repeat(3, auto);
 		grid-template-areas:
 			"info info info"
@@ -201,6 +166,7 @@
 		.account__history-box {
 			margin-top: 30px;
 			padding-right: 16px;
+			width: 100%;
 			grid-area: history;
 		}
 		.account__more-box {

@@ -4,7 +4,7 @@ const Account = require("../models/Account");
 
 class HistoryController {
     index(req, res) {
-        const userId = req.body.id;
+        const { userId } = req.params;
         Account.findOne({
             owner: userId,
         })
@@ -13,7 +13,7 @@ class HistoryController {
                 if (error) {
                     res.send({ error: "no record" });
                 } else {
-                    res.send({ account });
+                    res.send({ history: account.history });
                 }
             });
     }

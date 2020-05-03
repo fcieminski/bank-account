@@ -17,7 +17,8 @@ app.post("/account-owner", AccountController.find);
 
 app.post("/create-new-card", isAuthenticated, CardsController.create);
 
-app.post('/add-to-history/:userId', isAuthenticated, HistoryController.makeTransfer);
+app.post("/history/:userId", isAuthenticated, HistoryController.index);
+app.post("/add-to-history/:userId", isAuthenticated, HistoryController.makeTransfer);
 
 // app.get("/tests", TestController.index);
 // app.put("/tests/:id", TestController.update);

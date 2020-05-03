@@ -30,7 +30,8 @@
 <style lang='scss' scoped>
 	.main__container {
 		display: flex;
-		justify-content: center;
+        justify-content: center;
+        margin-bottom: 20px;
 		.container__content {
 			width: $pageWidth;
 			padding: $contentPadding;
