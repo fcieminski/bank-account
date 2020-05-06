@@ -1,6 +1,6 @@
 <template>
-	<section v-if="account" class="account">
-		<div class="account__info-box">
+	<section class="account">
+		<div v-if="!loading" class="account__info-box">
 			<div class="info-box__account-data">
 				<span>{{ user.name }} {{ user.surname }}</span>
 				<div class="d-flex align-center">
@@ -12,7 +12,7 @@
 			</div>
 			<div class="info-box__account-content">
 				<div class="account-content_account-balance">
-					<router-link tag="div" :to="{ name: 'account.transfer' }"  class="cp big--box">
+					<router-link tag="div" :to="{ name: 'account.transfer' }" class="cp big--box">
 						<i class="material-icons icon--white icon--big">account_balance_wallet</i>
 						<div class="text--white">
 							Stan konta
@@ -52,7 +52,8 @@
 				</div>
 			</div>
 		</div>
-		<div class="account__history-box">
+		<loading-indicator v-else />
+		<div v-if="!loading" class="account__history-box">
 			<div v-if="history">
 				<div class="history-box__element" v-for="element in history" :key="element._id">
 					<div class="element__about">
@@ -72,7 +73,8 @@
 				<router-link class="link__inline ml-2" to="/">przelew!</router-link>
 			</div>
 		</div>
-		<div class="account__more-box">
+		<loading-indicator v-else />
+		<div v-if="!loading" class="account__more-box">
 			<div class="more-box__widgets">
 				<div class="widget--margin">
 					<div class="widget--title">
@@ -108,6 +110,7 @@
 				</div>
 			</div>
 		</div>
+		<loading-indicator v-else />
 	</section>
 </template>
 
@@ -119,23 +122,27 @@
 		name: "AccountInfo",
 		data() {
 			return {
-				history: null
+				history: null,
+				account: null,
+				loading: false
 			};
 		},
 		components: {},
-		created() {
-			const user = JSON.parse(localStorage.getItem("user"));
-			historyService
-				.getHistory(user._id)
-				.then(response => {
-					this.history = response.history;
-				})
-				.catch(error => {
-					console.error("error!");
-				});
+		async created() {
+			this.loading = true;
+			try {
+				const account = await accountService.findUserAccount(this.user._id);
+				const history = await historyService.getHistory(this.user._id);
+                this.history = history;
+				this.account = account;
+			} catch {
+				console.error("error!");
+			} finally {
+				this.loading = false;
+			}
 		},
 		computed: {
-			...mapState(["user", "account"])
+			...mapState(["user"])
 		},
 		methods: {}
 	};

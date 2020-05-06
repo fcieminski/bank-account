@@ -13,7 +13,7 @@ class HistoryController {
                 if (error) {
                     res.send({ error: "no record" });
                 } else {
-                    res.send({ history: account.history });
+                    res.send(account.history);
                 }
             });
     }

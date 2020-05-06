@@ -13,16 +13,29 @@ class AccountController {
             return newAccount;
         }
     }
-    find(req, res) {
-        const owner = req.body.owner;
 
-        User.findOne({ _id: owner._id })
-            .populate("account")
+    findAccount(req, res) {
+        const userId = req.params.userId;
+
+        Account.findOne({ owner: userId }, (error, account) => {
+            if (error) {
+                res.send({ error: "no record" });
+            } else {
+                res.send(account);
+            }
+        });
+    }
+
+    findAllUserAccounts(req, res) {
+        const userId = req.params.userId;
+
+        User.findOne({ _id: userId })
+            .populate("accounts")
             .exec((error, user) => {
                 if (error) {
                     res.send({ error: "no record" });
                 } else {
-                    res.send({ user });
+                    res.send(user.accounts);
                 }
             });
     }

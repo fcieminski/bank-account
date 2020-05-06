@@ -8,7 +8,7 @@ const UserSchema = new Schema({
     surname: { type: String, required: true },
     email: { type: String, required: true },
     phone: String,
-    account: { type: Schema.Types.ObjectId, ref: "Account" },
+    accounts: [{ type: Schema.Types.ObjectId, ref: "Account" }],
 });
 
 UserSchema.plugin(passportLocalMongoose);

@@ -13,7 +13,8 @@ app.post("/user", AuthController.isAuth);
 app.post("/login", AuthController.signIn);
 app.post("/logout", AuthController.logOut);
 
-app.post("/account-owner", AccountController.find);
+app.get("/user-accounts/:userId", AccountController.findAllUserAccounts);
+app.get("/account/:userId", AccountController.findAccount);
 
 app.post("/create-new-card", isAuthenticated, CardsController.create);
 

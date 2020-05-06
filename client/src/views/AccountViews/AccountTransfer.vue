@@ -7,11 +7,11 @@
 				<div>
 					Wybierz konto
 				</div>
-				<div @click="makeActiveAccount" class="account--name">
+				<div v-for="(account, key) in accounts" :key="key" @click="makeActiveAccount($event, account)" class="account--name">
 					{{ account.description }}
 				</div>
 			</div>
-            <div class="divider mr-5 ml-5"></div>
+			<div class="divider mr-5 ml-5"></div>
 			<div class="container__data">
 				<transition name="fade" mode="out-in">
 					<div :key="1" v-if="!activeAccount" class="d-flex align-center info--data">
@@ -92,19 +92,33 @@
 		name: "AccountTransfer",
 		data() {
 			return {
-				activeAccount: null
+				activeAccount: null,
+				accounts: null
 			};
 		},
 		components: {
 			InputError
 		},
-		created() {},
+		created() {
+            this.loading = true;
+			accountService
+				.getUserAccounts(this.user._id)
+				.then(account => {
+					this.accounts = account;
+				})
+				.catch((e) => {
+					console.error("error!");
+				})
+				.finally(() => {
+					this.loading = false;
+				});
+		},
 		computed: {
-			...mapState(["user", "account"])
+			...mapState(["user"])
 		},
 		methods: {
-			makeActiveAccount(event) {
-				this.activeAccount = this.account;
+			makeActiveAccount(event, account) {
+				this.activeAccount = account;
 				event.target.classList.toggle("active");
 			}
 		}
