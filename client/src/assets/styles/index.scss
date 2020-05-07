@@ -302,3 +302,51 @@ input[type="number"] {
     }
 }
 
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+select:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 #000;
+}
+
+select {
+    background: transparent;
+}
+
+.modal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #8080806e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    .modal__card {
+        width: 50%;
+        height: 50%;
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        .card__title {
+        }
+        .card__content {
+            margin-top: 20px;
+        }
+        .card__actions {
+            display: flex;
+            justify-content: end;
+            button {
+                max-width: 200px;
+            }
+        }
+    }
+}

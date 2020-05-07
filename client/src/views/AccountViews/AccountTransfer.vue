@@ -25,7 +25,7 @@
 						</div>
 						<div :key="2" v-else-if="activeAccount && !transferDone">
 							<validation-observer v-slot="{ invalid }">
-								<form @submit.prevent="makeTransfer" action="">
+								<form @submit.prevent="modal = true" action="">
 									<validation-provider
 										class="input__box"
 										rules="required"
@@ -81,6 +81,21 @@
 										/>
 										<input-error left :error="errors[0]" />
 									</validation-provider>
+
+									<validation-provider
+										class="input__box"
+										rules="required"
+										name="Rodzaj przelewu"
+										v-slot="{ errors }"
+									>
+										<label for="type">Rodzaj przelewu</label>
+										<select v-model="transferType" class="input__main" name="type" type="text">
+											<option value="express">Przelew ekspressowy + 5 zł</option>
+											<option value="normal">Przelew zwykły</option>
+										</select>
+										<input-error left :error="errors[0]" />
+									</validation-provider>
+
 									<div class="input__container--right">
 										<validation-provider
 											class="input__box input__box--small"
@@ -114,6 +129,30 @@
 			</div>
 		</div>
 		<loading-indicator v-else />
+		<div class="modal" v-if="modal">
+			<div class="modal__card">
+				<div class="card__title">
+					Przepisz kod, aby potwierdzić przelew
+				</div>
+				<div class="card__content">
+					<div>
+						<div>
+							{{ code }}
+						</div>
+						<div>
+							<label for="code">Wprowadź kod</label>
+							<input v-model="checkCode" class="input__main" name="code" type="text" />
+							<!-- <input-error left :error="errors[0]" /> -->
+						</div>
+					</div>
+				</div>
+				<div class="card__actions">
+					<button :disabled="code !== checkCode" @click="makeTransfer" class="btn pa-2">
+						Wykonaj
+					</button>
+				</div>
+			</div>
+		</div>
 	</section>
 </template>
 
@@ -148,7 +187,11 @@
 						accountNumber: ""
 					}
 				},
-				transferDone: false
+				transferType: null,
+				transferDone: false,
+				modal: false,
+                checkCode: "",
+                code: "adFG12"
 			};
 		},
 		components: {
@@ -177,6 +220,7 @@
 				event.target.classList.toggle("active");
 			},
 			makeTransfer() {
+                this.modal = false;
 				const transfer = { ...this.transferData, from: this.user, currency: "PLN", name: "transfer" };
 				historyService
 					.create(this.user._id, transfer)
