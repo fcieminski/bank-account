@@ -2,8 +2,8 @@ import BaseService from "./BaseService";
 
 class HistoryService extends BaseService {
 
-    getHistory(userId) {
-        return this.axios.post(`/history/${userId}`).then(response => response.data)
+    getHistory(userId, query) {
+        return this.axios.post(`/history/${userId}${query}`).then(response => response.data)
     }
 
     create(userId, params) {

@@ -9,6 +9,9 @@ class HistoryController {
 
     index(req, res) {
         const { userId } = req.params;
+        let limit = +req.query.limit;
+        let offset = +req.query.offset;
+        console.log(req.query)
         Account.findOne({
             owner: userId,
         })
@@ -17,6 +20,14 @@ class HistoryController {
                 if (error) {
                     res.send({ error: "no record" });
                 } else {
+                    if (offset > 0) {
+                        account.history = account.history.slice(offset);
+                    }
+
+                    if (limit > 0) {
+                        account.history = account.history.slice(0, limit);
+                    }
+
                     res.send(account.history);
                 }
             });
@@ -73,7 +84,7 @@ class HistoryController {
         } else {
             res.send({ status: "failure" });
         }
-    }
+    };
 
     makeTransferCode(length, id) {
         let result = "";

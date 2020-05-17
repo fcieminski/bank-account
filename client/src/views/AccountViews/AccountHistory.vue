@@ -5,14 +5,14 @@
 			<div class="horizontal--divider"></div>
 			<section>
 				<history v-if="history" :history="history" />
-                <div class="d-flex align-center" v-else>
-			<i class="material-icons mr-2">history</i>
-			Twoja historia jest pusta, wkonaj pierwszy
-			<router-link class="link__inline ml-2" to="/">przelew!</router-link>
-		</div>
+				<div class="d-flex align-center" v-else>
+					<i class="material-icons mr-2">history</i>
+					Twoja historia jest pusta, wkonaj pierwszy
+					<router-link class="link__inline ml-2" to="/">przelew!</router-link>
+				</div>
 			</section>
 		</div>
-		<loading-indicator v-else />
+		<loading-indicator v-else-if="!history && !error" />
 		<div v-if="error">
 			{{ error }}
 		</div>
@@ -38,7 +38,7 @@
 		created() {
 			this.loading = true;
 			historyService
-				.getHistory(this.user._id)
+				.getHistory(this.user._id, "?limit=10&offset=10" )
 				.then(data => {
 					this.history = data;
 				})
