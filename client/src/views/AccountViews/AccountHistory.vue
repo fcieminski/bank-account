@@ -4,7 +4,12 @@
 			<div>Historia</div>
 			<div class="horizontal--divider"></div>
 			<section>
-				<history :history="history" />
+				<history v-if="history" :history="history" />
+                <div class="d-flex align-center" v-else>
+			<i class="material-icons mr-2">history</i>
+			Twoja historia jest pusta, wkonaj pierwszy
+			<router-link class="link__inline ml-2" to="/">przelew!</router-link>
+		</div>
 			</section>
 		</div>
 		<loading-indicator v-else />

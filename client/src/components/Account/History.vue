@@ -1,6 +1,6 @@
 <template>
 	<div class="account__history-box">
-		<div v-if="history">
+		<div>
 			<div class="history-box__element" v-for="element in history" :key="element._id">
 				<div class="element__about">
 					<div>{{ new Date(element.date).toLocaleDateString() }}</div>
@@ -10,13 +10,32 @@
 						{{ element.type === "transfer" ? "" : "-" }} {{ element.amount }} {{ element.currency }}
 					</div>
 				</div>
-				<div>{{ element.title }}</div>
+				<div class="d-flex justify-between align-center">
+					<div>
+						{{ element.title }}
+					</div>
+					<i @click="toggleExpand(element._id)" class="material-icons cp">{{
+						expandElement.id === element._id ? "expand_less" : "expand_more"
+					}}</i>
+				</div>
+				<div class="expand__panel mt-5" :class="[expandElement.id === element._id ? 'expand' : 'hidden']">
+					<div>
+						<div class="d-flex justify-between">
+							<div>Do: {{ element.to.name }}</div>
+						</div>
+						<div class="d-flex justify-between">
+							<div>Tytuł: {{ element.title }}</div>
+							<div>Konto: {{ element.to.accountNumber }}</div>
+						</div>
+						<div class="text--end mt-5">
+							Wygeneruj potwierdzenie
+						</div>
+						<div class="text--end mt-5">
+							Powtórz przelew
+						</div>
+					</div>
+				</div>
 			</div>
-		</div>
-		<div class="d-flex align-center" v-else>
-			<i class="material-icons mr-2">history</i>
-			Twoja historia jest pusta, wkonaj pierwszy
-			<router-link class="link__inline ml-2" to="/">przelew!</router-link>
 		</div>
 	</div>
 </template>
@@ -25,7 +44,11 @@
 	export default {
 		name: "History",
 		data() {
-			return {};
+			return {
+				expandElement: {
+					id: null
+				}
+			};
 		},
 		props: {
 			history: {
@@ -36,7 +59,15 @@
 		components: {},
 		created() {},
 		computed: {},
-		methods: {}
+		methods: {
+			toggleExpand(id) {
+				if (this.expandElement.id === id) {
+					this.expandElement.id = "";
+				} else {
+					this.expandElement.id = id;
+				}
+			}
+		}
 	};
 </script>
 
@@ -65,6 +96,19 @@
 				margin-right: 5px;
 				font-size: 1rem;
 			}
+		}
+	}
+	.expand__panel {
+		transition: all 0.2s;
+		overflow: hidden;
+		div {
+			font-size: 1rem;
+		}
+		&.hidden {
+			height: 0px;
+		}
+		&.expand {
+			height: 150px;
 		}
 	}
 </style>

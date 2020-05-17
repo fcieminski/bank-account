@@ -54,6 +54,11 @@
 		</div>
 		<loading-indicator v-else />
 		<history v-if="!loading" :history="history" />
+		<div class="d-flex align-center" v-else-if="!history">
+			<i class="material-icons mr-2">history</i>
+			Twoja historia jest pusta, wkonaj pierwszy
+			<router-link class="link__inline ml-2" to="/">przelew!</router-link>
+		</div>
 		<loading-indicator v-else />
 		<div v-if="!loading" class="account__more-box">
 			<div class="more-box__widgets">
