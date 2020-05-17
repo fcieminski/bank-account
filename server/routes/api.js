@@ -20,6 +20,8 @@ app.post("/create-new-card", isAuthenticated, CardsController.create);
 
 app.post("/history/:userId", isAuthenticated, HistoryController.index);
 app.post("/add-to-history/:userId", isAuthenticated, HistoryController.makeTransfer);
+app.get("/add-to-history/:userId/get-code", isAuthenticated, HistoryController.sendTransferCode);
+app.post("/add-to-history/:userId/send-code", isAuthenticated, HistoryController.compareUserCode);
 
 // app.get("/tests", TestController.index);
 // app.put("/tests/:id", TestController.update);

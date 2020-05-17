@@ -28,7 +28,7 @@
 								<form @submit.prevent="modal = true" action="">
 									<validation-provider
 										class="input__box"
-										rules="required"
+										:rules="{ required: true, numeric: true, length: 16 }"
 										name="Numer konta"
 										v-slot="{ errors }"
 									>
@@ -37,7 +37,7 @@
 											v-model="transferData.to.accountNumber"
 											class="input__main"
 											name="accountNumber"
-											type="number"
+											type="text"
 										/>
 										<input-error left :error="errors[0]" />
 									</validation-provider>
@@ -90,8 +90,8 @@
 									>
 										<label for="type">Rodzaj przelewu</label>
 										<select v-model="transferType" class="input__main" name="type" type="text">
-											<option value="express">Przelew ekspressowy + 5 zł</option>
-											<option value="normal">Przelew zwykły</option>
+											<option :value="1">Przelew ekspressowy + 5 zł</option>
+											<option :value="0">Przelew zwykły</option>
 										</select>
 										<input-error left :error="errors[0]" />
 									</validation-provider>
@@ -99,7 +99,7 @@
 									<div class="input__container--right">
 										<validation-provider
 											class="input__box input__box--small"
-											rules="required"
+											rules="required|numeric"
 											name="Kwota"
 											v-slot="{ errors }"
 										>
@@ -142,12 +142,12 @@
 						<div>
 							<label for="code">Wprowadź kod</label>
 							<input v-model="checkCode" class="input__main" name="code" type="text" />
-							<!-- <input-error left :error="errors[0]" /> -->
+                            <input-error left :error="codeError" />
 						</div>
 					</div>
 				</div>
 				<div class="card__actions">
-					<button :disabled="code !== checkCode" @click="makeTransfer" class="btn pa-2">
+					<button @click="makeTransfer" class="btn pa-2">
 						Wykonaj
 					</button>
 				</div>
@@ -160,14 +160,7 @@
 	import accountService from "@services/AccountService";
 	import historyService from "@services/HistoryService";
 	import InputError from "@utils/InputError";
-	import { extend } from "vee-validate";
-	import { required, email, alpha } from "vee-validate/dist/rules";
 	import { mapState } from "vuex";
-
-	extend("required", {
-		...required,
-		message: "Pole obowiązkowe!"
-	});
 
 	export default {
 		name: "AccountTransfer",
@@ -177,7 +170,7 @@
 				accounts: null,
 				loading: false,
 				transferData: {
-					date: new Date().toLocaleDateString(),
+					date: Date.now(),
 					amount: null,
 					currency: "",
 					title: "",
@@ -190,8 +183,9 @@
 				transferType: null,
 				transferDone: false,
 				modal: false,
+                code: "",
                 checkCode: "",
-                code: "adFG12"
+                codeError: null,
 			};
 		},
 		components: {
@@ -214,22 +208,47 @@
 		computed: {
 			...mapState(["user"])
 		},
+		watch: {
+			modal(value) {
+				if (value) {
+					historyService
+						.getCode(this.user._id)
+						.then(data => {
+							this.code = data.code;
+						})
+						.catch(() => {
+							console.error("error!");
+						});
+				}
+			}
+		},
 		methods: {
 			makeActiveAccount(event, account) {
 				this.activeAccount = account;
 				event.target.classList.toggle("active");
 			},
 			makeTransfer() {
-                this.modal = false;
-				const transfer = { ...this.transferData, from: this.user, currency: "PLN", name: "transfer" };
 				historyService
-					.create(this.user._id, transfer)
-					.then(data => {
-						this.transferDone = true;
-						this.activeAccount = null;
+					.sendCode(this.user._id, {
+						code: this.checkCode
 					})
-					.catch(() => {
-						console.error("error!");
+					.then(data => {
+						if(data.status === "success"){
+                            this.modal = false;
+                            const transfer = { ...this.transferData, from: this.user, currency: "PLN", name: "transfer" };
+                            setTimeout(
+                                () => {
+                                    historyService.create(this.user._id, transfer).catch(() => {
+                                        console.error("error!");
+                                    });
+                                },
+                                this.transferType === 0 ? 5000 : 10
+                            );
+                            this.transferDone = true;
+                            this.activeAccount = null;
+                        } else {
+                            this.codeError = "Kod nieprawidłowy!"
+                        }
 					});
 			}
 		}

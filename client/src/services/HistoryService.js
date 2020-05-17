@@ -10,6 +10,14 @@ class HistoryService extends BaseService {
         return this.axios.post(`/add-to-history/${userId}`, params).then(response => response.data);
     }
 
+    getCode(userId) {
+        return this.axios.get(`/add-to-history/${userId}/get-code`).then(response => response.data);
+    }
+
+    sendCode(userId, params) {
+        return this.axios.post(`/add-to-history/${userId}/send-code`, params).then(response => response.data);
+    }
+
 }
 
 const historyService = new HistoryService();

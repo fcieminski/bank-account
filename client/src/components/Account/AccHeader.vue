@@ -13,7 +13,7 @@
 					<router-link :to="{ name: 'account.start' }">
 						Start
 					</router-link>
-					<router-link to="/">
+					<router-link :to="{ name: 'account.history' }">
 						Historia
 					</router-link>
 					<router-link :to="{ name: 'account.transfer' }">

@@ -5,7 +5,10 @@ import router from "./router";
 import store from "./store";
 import "@/assets/styles/index.scss";
 import axios from "axios";
-import { ValidationProvider, ValidationObserver } from "vee-validate";
+import {
+  ValidationProvider,
+  ValidationObserver
+} from "vee-validate/dist/vee-validate.full";
 import LoadingIndicator from "@utils/LoadingIndicator";
 
 window.axios = axios;
