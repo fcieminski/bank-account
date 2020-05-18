@@ -1,6 +1,7 @@
 const History = require("../models/History");
 const User = require("../models/User");
 const Account = require("../models/Account");
+const PDFDocument = require("pdfkit");
 
 class HistoryController {
     constructor() {
@@ -11,7 +12,7 @@ class HistoryController {
         const { userId } = req.params;
         let limit = +req.query.limit;
         let offset = +req.query.offset;
-        console.log(req.query)
+        console.log(req.query);
         Account.findOne({
             owner: userId,
         })
@@ -97,6 +98,18 @@ class HistoryController {
             id,
             code: result,
         };
+    }
+
+    getTransferPDF(req, res) {
+        const doc = new PDFDocument();
+        res.writeHead(200, {
+            "Content-Type": "application/pdf",
+            "Content-Disposition": "attachment; filename=sample.pdf",
+        });
+        doc.text("blablablas").fontSize(50);
+
+        doc.end();
+        doc.pipe(res);
     }
 }
 

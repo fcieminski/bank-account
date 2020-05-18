@@ -1,4 +1,3 @@
-const TestController = require("../controllers/TestController");
 const AuthController = require("../controllers/Auth/AuthController");
 const AccountController = require("../controllers/AccountController");
 const UserController = require("../controllers/UserController");
@@ -6,6 +5,7 @@ const CardsController = require("../controllers/CardsController");
 const HistoryController = require("../controllers/HistoryController");
 const isAuthenticated = require("../middleware/AuthMiddleware");
 const app = require("../config/app");
+const router = require("express").Router();
 
 app.post("/register", UserController.create);
 
@@ -23,7 +23,4 @@ app.post("/add-to-history/:userId", isAuthenticated, HistoryController.makeTrans
 app.get("/add-to-history/:userId/get-code", isAuthenticated, HistoryController.sendTransferCode);
 app.post("/add-to-history/:userId/send-code", isAuthenticated, HistoryController.compareUserCode);
 
-// app.get("/tests", TestController.index);
-// app.put("/tests/:id", TestController.update);
-// app.get("/tests/:id", TestController.find);
-// app.post("/tests", TestController.createTest);
+app.use("/pdf", router.post("/", HistoryController.getTransferPDF));

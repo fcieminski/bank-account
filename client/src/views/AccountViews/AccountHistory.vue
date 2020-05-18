@@ -38,7 +38,7 @@
 		created() {
 			this.loading = true;
 			historyService
-				.getHistory(this.user._id, "?limit=10&offset=10" )
+				.getHistory(this.user._id, "?limit=10&offset=10")
 				.then(data => {
 					this.history = data;
 				})

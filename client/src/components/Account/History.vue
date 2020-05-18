@@ -27,7 +27,7 @@
 							<div>Tytuł: {{ element.title }}</div>
 							<div>Konto: {{ element.to.accountNumber }}</div>
 						</div>
-						<div class="text--end mt-5">
+						<div @click="getPDF" class="text--end mt-5">
 							Wygeneruj potwierdzenie
 						</div>
 						<div class="text--end mt-5">
@@ -41,6 +41,7 @@
 </template>
 
 <script>
+	import historyService from "@services/HistoryService";
 	export default {
 		name: "History",
 		data() {
@@ -66,6 +67,9 @@
 				} else {
 					this.expandElement.id = id;
 				}
+			},
+			getPDF() {
+				historyService.getPDF().then(data => console.log(data));
 			}
 		}
 	};
