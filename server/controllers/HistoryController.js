@@ -2,6 +2,7 @@ const History = require("../models/History");
 const User = require("../models/User");
 const Account = require("../models/Account");
 const PDFDocument = require("pdfkit");
+const path = require("path");
 
 class HistoryController {
     constructor() {
@@ -100,17 +101,57 @@ class HistoryController {
         };
     }
 
-    getTransferPDF(req, res) {
-        const doc = new PDFDocument();
-        res.writeHead(200, {
-            "Content-Type": "application/pdf",
-            "Content-Disposition": "attachment; filename=sample.pdf",
+    getTransferPDF = async (req, res) => {
+        const doc = new PDFDocument({ size: "A4", margin: 50 });
+        res.setHeader("Content-Type", "application/pdf");
+        const elements = Object.values(req.query);
+        const transactionsPromises = elements.map((ele) => {
+            return new Promise((res, rej) =>
+                History.findById(ele).exec((err, transaction) => {
+                    if (err) {
+                        rej;
+                    }
+                    res(transaction);
+                })
+            );
         });
-        doc.text("blablablas").fontSize(50);
+        Promise.all(transactionsPromises).then((transactions) => {
+            const logo = path.resolve(__dirname, "../src/img/logo.png");
+            const font = path.resolve(__dirname, "../src/fonts/Basic.ttf");
+            this.getHeader(doc, logo, font);
+            this.getPDFContent(doc, font, transactions);
+            doc.pipe(res);
+            doc.end();
+        });
+    };
 
-        doc.end();
-        doc.pipe(res);
-    }
+    getHeader = (doc, logo, font) => {
+        doc.image(logo, 50, 45, { width: 50 })
+            .fillColor("#444444")
+            .moveDown()
+            .fontSize(20)
+            .font(font)
+            .text("Purple Bank", 110, 57)
+            .fontSize(10)
+            .font(font)
+            .text("ul. Piękna 32", 200, 65, { align: "right" })
+            .text("50-506, Wrocław", 200, 80, { align: "right" })
+            .moveDown();
+    };
+
+    getPDFContent = (doc, font, content) => {
+        doc.font(font)
+            .text(`Data zestawienia: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`, 50, 200)
+            .text(
+                `Kwota zestawienia: ${content
+                    .map((ele) => ele.amount)
+                    .reduce((prev, curr) => {
+                        return prev + curr;
+                    })} PLN`,
+                50,
+                215
+            );
+    };
 }
 
 module.exports = new HistoryController();

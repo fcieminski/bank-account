@@ -27,7 +27,7 @@
 							<div>Tytuł: {{ element.title }}</div>
 							<div>Konto: {{ element.to.accountNumber }}</div>
 						</div>
-						<div @click="getPDF" class="text--end mt-5">
+						<div @click="getPDF(element)" class="text--end mt-5">
 							Wygeneruj potwierdzenie
 						</div>
 						<div class="text--end mt-5">
@@ -68,8 +68,19 @@
 					this.expandElement.id = id;
 				}
 			},
-			getPDF() {
-				historyService.getPDF().then(data => console.log(data));
+			getPDF(transaction) {
+				const { amount, date, title, _id } = transaction;
+				const { accountNumber, name } = transaction.to;
+				const ids = [_id];
+				historyService.getPDF(ids).then(response => {
+					const blob = new Blob([response.data], { type: '"application/pdf' });
+					const link = document.createElement("a");
+					link.href = URL.createObjectURL(blob);
+					link.download = "transaction.pdf";
+					document.body.append(link);
+					link.click();
+					link.remove();
+				});
 			}
 		}
 	};
