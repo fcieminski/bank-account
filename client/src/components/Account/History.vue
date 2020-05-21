@@ -30,7 +30,7 @@
 						<div @click="getPDF(element)" class="text--end mt-5 cp">
 							Wygeneruj potwierdzenie
 						</div>
-						<div @click='makeTransactionAgain(element)' class="text--end mt-5 cp">
+						<div @click="makeTransactionAgain(element)" class="text--end mt-5 cp">
 							Powtórz przelew
 						</div>
 					</div>
@@ -82,7 +82,15 @@
 					link.click();
 					link.remove();
 				});
-			}
+            },
+            makeTransactionAgain(transaction){
+                this.$router.push({
+                    name: 'account.transfer',
+                    params: {
+                        transaction
+                    }
+                })
+            }
 		}
 	};
 </script>

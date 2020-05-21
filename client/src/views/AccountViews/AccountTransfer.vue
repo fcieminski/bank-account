@@ -142,7 +142,7 @@
 						<div>
 							<label for="code">Wprowadź kod</label>
 							<input v-model="checkCode" class="input__main" name="code" type="text" />
-                            <input-error left :error="codeError" />
+							<input-error left :error="codeError" />
 						</div>
 					</div>
 				</div>
@@ -183,9 +183,9 @@
 				transferType: null,
 				transferDone: false,
 				modal: false,
-                code: "",
-                checkCode: "",
-                codeError: null,
+				code: "",
+				checkCode: "",
+				codeError: null
 			};
 		},
 		components: {
@@ -197,6 +197,7 @@
 				.getUserAccounts(this.user._id)
 				.then(account => {
 					this.accounts = account;
+					this.checkTransactionParams();
 				})
 				.catch(e => {
 					console.error("error!");
@@ -233,23 +234,37 @@
 						code: this.checkCode
 					})
 					.then(data => {
-						if(data.status === "success"){
-                            this.modal = false;
-                            const transfer = { ...this.transferData, from: this.user, currency: "PLN", name: "transfer" };
-                            setTimeout(
-                                () => {
-                                    historyService.create(this.user._id, transfer).catch(() => {
-                                        console.error("error!");
-                                    });
-                                },
-                                this.transferType === 0 ? 5000 : 10
-                            );
-                            this.transferDone = true;
-                            this.activeAccount = null;
-                        } else {
-                            this.codeError = "Kod nieprawidłowy!"
-                        }
+						if (data.status === "success") {
+							this.modal = false;
+							const transfer = { ...this.transferData, from: this.user, currency: "PLN", name: "transfer" };
+							setTimeout(
+								() => {
+									historyService.create(this.user._id, transfer).catch(() => {
+										console.error("error!");
+									});
+								},
+								this.transferType === 0 ? 5000 : 10
+							);
+							this.transferDone = true;
+							this.activeAccount = null;
+						} else {
+							this.codeError = "Kod nieprawidłowy!";
+						}
 					});
+			},
+			checkTransactionParams() {
+				if (this.$route.params?.transaction) {
+					const { _id, amount, title, to, currency, from } = this.$route.params.transaction;
+					this.activeAccount = this.accounts.find(account => account.history.includes(_id));
+					this.transferData = {
+						date: Date.now(),
+						amount,
+						currency,
+						title,
+						from,
+						to
+					};
+				}
 			}
 		}
 	};
