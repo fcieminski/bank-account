@@ -27,10 +27,10 @@
 							<div>Tytuł: {{ element.title }}</div>
 							<div>Konto: {{ element.to.accountNumber }}</div>
 						</div>
-						<div @click="getPDF(element)" class="text--end mt-5">
+						<div @click="getPDF(element)" class="text--end mt-5 cp">
 							Wygeneruj potwierdzenie
 						</div>
-						<div class="text--end mt-5">
+						<div @click='makeTransactionAgain(element)' class="text--end mt-5 cp">
 							Powtórz przelew
 						</div>
 					</div>
@@ -68,10 +68,11 @@
 					this.expandElement.id = id;
 				}
 			},
-			getPDF(transaction) {
-				const { amount, date, title, _id } = transaction;
-				const { accountNumber, name } = transaction.to;
-				const ids = [_id];
+			getPDF(transactions) {
+				if (typeof transactions === "object") {
+					transactions = [transactions];
+				}
+				const ids = transactions.map(ele => ele._id);
 				historyService.getPDF(ids).then(response => {
 					const blob = new Blob([response.data], { type: '"application/pdf' });
 					const link = document.createElement("a");

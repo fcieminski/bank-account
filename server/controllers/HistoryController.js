@@ -106,23 +106,27 @@ class HistoryController {
         res.setHeader("Content-Type", "application/pdf");
         const elements = Object.values(req.query);
         const transactionsPromises = elements.map((ele) => {
-            return new Promise((res, rej) =>
+            return new Promise((resolve, reject) =>
                 History.findById(ele).exec((err, transaction) => {
                     if (err) {
-                        rej;
+                        reject;
                     }
-                    res(transaction);
+                    resolve(transaction);
                 })
             );
         });
-        Promise.all(transactionsPromises).then((transactions) => {
-            const logo = path.resolve(__dirname, "../src/img/logo.png");
-            const font = path.resolve(__dirname, "../src/fonts/Basic.ttf");
-            this.getHeader(doc, logo, font);
-            this.getPDFContent(doc, font, transactions);
-            doc.pipe(res);
-            doc.end();
-        });
+        Promise.all(transactionsPromises)
+            .then((transactions) => {
+                const logo = path.resolve(__dirname, "../src/img/logo.png");
+                const font = path.resolve(__dirname, "../src/fonts/Basic.ttf");
+                this.getHeader(doc, logo, font);
+                this.getPDFContent(doc, font, transactions);
+                doc.pipe(res);
+                doc.end();
+            })
+            .catch((error) => {
+                res.send("Błąd!");
+            });
     };
 
     getHeader = (doc, logo, font) => {
@@ -151,6 +155,15 @@ class HistoryController {
                 50,
                 215
             );
+        let position = 315;
+        content.forEach((ele, index) => {
+            console.log(ele);
+            doc.fontSize(10)
+                .font(font)
+                .text(ele.to.name, 50, position + (index + 1) * 30)
+                .text(ele.to.accountNumber, 150, position + (index + 1) * 30)
+                .text(`${ele.amount} ${ele.currency}`, 0, position + (index + 1) * 30, { align: "right" });
+        });
     };
 }
 
