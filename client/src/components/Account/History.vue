@@ -82,15 +82,15 @@
 					link.click();
 					link.remove();
 				});
-            },
-            makeTransactionAgain(transaction){
-                this.$router.push({
-                    name: 'account.transfer',
-                    params: {
-                        transaction
-                    }
-                })
-            }
+			},
+			makeTransactionAgain(transaction) {
+				this.$router.push({
+					name: "account.transfer",
+					params: {
+						transaction
+					}
+				});
+			}
 		}
 	};
 </script>

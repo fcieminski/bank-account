@@ -13,26 +13,32 @@ class HistoryController {
         const { userId } = req.params;
         let limit = +req.query.limit;
         let offset = +req.query.offset;
-        console.log(req.query);
-        Account.findOne({
+        const options = {
+            sort: {
+                _id: "desc",
+            },
+            skip: offset,
+            limit,
+        };
+        const currentAccount = Account.findOne({
             owner: userId,
-        })
-            .populate("history")
-            .exec((error, account) => {
-                if (error) {
-                    res.send({ error: "no record" });
-                } else {
-                    if (offset > 0) {
-                        account.history = account.history.slice(offset);
+        });
+        currentAccount.exec((err, acc) => {
+            currentAccount
+                .populate([
+                    {
+                        path: "history",
+                        options,
+                    },
+                ])
+                .exec((error, account) => {
+                    if (error || err) {
+                        res.send({ error: "no record" });
+                    } else {
+                        res.send({ history: account.history, pagination: acc.history.length });
                     }
-
-                    if (limit > 0) {
-                        account.history = account.history.slice(0, limit);
-                    }
-
-                    res.send(account.history);
-                }
-            });
+                });
+        });
     }
 
     async makeTransfer(req, res) {
