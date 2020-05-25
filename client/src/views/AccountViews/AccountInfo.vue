@@ -4,10 +4,13 @@
 			<div class="info-box__account-data">
 				<span>{{ user.name }} {{ user.surname }}</span>
 				<div class="d-flex align-center">
-					<div class="mr-2">
+					<div id="account-number" class="mr-2">
 						54 2490 0005 0627 1988 8043 1753
 					</div>
-					<i class="material-icons icon--xsmall">file_copy</i>
+					<i @click="copyAccountNumber" class="material-icons icon--xsmall cp">file_copy</i>
+					<transition name="fade">
+						<small v-if="copiedInfo" class="ml-2">{{ copiedInfo }}</small>
+					</transition>
 				</div>
 			</div>
 			<div class="info-box__account-content">
@@ -53,7 +56,7 @@
 			</div>
 		</div>
 		<loading-indicator v-else />
-		<history v-if="!loading" :history="history" :more-info="false"/>
+		<history v-if="!loading" :history="history" :more-info="false" />
 		<div class="d-flex align-center" v-else-if="!history">
 			<i class="material-icons mr-2">history</i>
 			Twoja historia jest pusta, wkonaj pierwszy
@@ -111,7 +114,8 @@
 			return {
 				history: null,
 				account: null,
-				loading: false
+				loading: false,
+				copiedInfo: ""
 			};
 		},
 		components: {
@@ -121,7 +125,7 @@
 			this.loading = true;
 			try {
 				const account = await accountService.findUserAccount(this.user._id);
-				const {history} = await historyService.getHistory(this.user._id, "?limit=4");
+				const { history } = await historyService.getHistory(this.user._id, "?limit=4");
 				this.history = history;
 				this.account = account;
 			} catch {
@@ -133,7 +137,22 @@
 		computed: {
 			...mapState(["user"])
 		},
-		methods: {}
+		methods: {
+			copyAccountNumber() {
+				const ele = document.querySelector("#account-number");
+				const field = document.createElement("textarea");
+				field.setAttribute("readonly", "");
+				field.value = `Mój numer konta w Purple Banku to: ${ele.textContent}`;
+				document.body.appendChild(field);
+				field.select();
+				document.execCommand("copy");
+				document.body.removeChild(field);
+				this.copiedInfo = "Zawartość skopiowana!";
+				setTimeout(() => {
+					this.copiedInfo = null;
+				}, 2000);
+			}
+		}
 	};
 </script>
 
