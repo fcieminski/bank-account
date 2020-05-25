@@ -341,18 +341,17 @@ select {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        .card__title {
-        }
-        .card__content {
-            margin-top: 20px;
-        }
-        .card__actions {
-            display: flex;
-            justify-content: end;
-            button {
-                max-width: 200px;
-            }
-        }
+    }
+}
+
+.card__content {
+    margin-top: 20px;
+}
+.card__actions {
+    display: flex;
+    justify-content: end;
+    button {
+        max-width: 200px;
     }
 }
 
@@ -367,4 +366,14 @@ select {
     justify-content: center;
     align-items: center;
     overflow: hidden;
+}
+
+.mx-table.mx-table-date {
+    div {
+        font-size: 16px;
+    }
+}
+
+.mx-datepicker.mx-datepicker-range {
+    display: block;
 }

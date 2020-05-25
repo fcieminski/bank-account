@@ -7,6 +7,12 @@ class HistoryService extends BaseService {
       .then(response => response.data);
   }
 
+  searchInHistory(userId, params) {
+    return this.axios
+      .post(`/history/${userId}/search`, params)
+      .then(response => response.data);
+  }
+
   create(userId, params) {
     return this.axios
       .post(`/add-to-history/${userId}`, params)
@@ -27,7 +33,7 @@ class HistoryService extends BaseService {
 
   getPDF(params) {
     return this.axios
-      .get("/pdf", {params, responseType: "arraybuffer" })
+      .get("/pdf", { params, responseType: "arraybuffer" })
       .then(response => response);
   }
 }

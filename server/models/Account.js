@@ -3,8 +3,8 @@ const Schema = mongoose.Schema;
 
 const accountNumber = () => {
     const numberArr = Array.from({ length: 26 });
-    return numberArr.map(ele => ele = Math.floor(Math.random() * 10)).join('')
-}
+    return numberArr.map((ele) => (ele = Math.floor(Math.random() * 10))).join("");
+};
 
 const AccountSchema = new Schema({
     owner: { type: Schema.Types.ObjectId, ref: "User" },
@@ -35,9 +35,8 @@ const AccountSchema = new Schema({
         },
     ],
     accountNumber: { type: String, default: accountNumber },
-    currencyName: { type: String, default: 'PLN' }
+    currencyName: { type: String, default: "PLN" },
 });
-
 
 const Account = mongoose.model("Account", AccountSchema);
 

@@ -6,8 +6,8 @@
 					<div>{{ new Date(element.date).toLocaleDateString() }}</div>
 					<div class="wrap--text">{{ element.to.name }}</div>
 					<div class="wrap--text">{{ element.accountType }}</div>
-					<div class="wrap--text text--end" :class="{ 'amount--less': element.type !== 'transfer' }">
-						{{ element.type === "transfer" ? "" : "-" }} {{ element.amount }} {{ element.currency }}
+					<div class="wrap--text text--end" :class="{ 'amount--less': element.name !== 'income' }">
+						{{ element.name === "income" ? "" : "-" }} {{ element.amount }} {{ element.currency }}
 					</div>
 				</div>
 				<div class="d-flex justify-between align-center">

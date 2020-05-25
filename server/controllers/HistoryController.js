@@ -41,20 +41,31 @@ class HistoryController {
         });
     }
 
-    async makeTransfer(req, res) {
-        const { date, name, amount, currency, title, from, to } = req.body;
+    searchInHistory(req, res) {
         const { userId } = req.params;
-        const Histories = new History({
+        const { searchQuery } = req.body;
+        History.find({ from: userId, ...(searchQuery.title && { title: { $regex: searchQuery.title, $options: "i" } }) }).exec((error, history) => {
+            res.send(history);
+        });
+    }
+
+    makeTransfer = async (req, res) => {
+        const { date, name, amount, currency, title, to } = req.body;
+        const { userId } = req.params;
+        const history = {
             date,
             name,
             amount,
             currency,
             title,
-            from,
-            to,
-        });
+            from: userId,
+            to: {
+                name: to.name,
+                accountNumber: to.accountNumber.toString(),
+            },
+        };
         try {
-            const historySaved = await Histories.save();
+            const historySaved = await new History(history).save();
             Account.findOne({ owner: userId })
                 .populate("history")
                 .exec((error, account) => {
@@ -66,9 +77,30 @@ class HistoryController {
                         res.send({ history: account.history });
                     }
                 });
+            Account.findOne({ accountNumber: to.accountNumber.toString() })
+                .populate("history")
+                .exec((error, account) => {
+                    if (error) {
+                        return;
+                    } else {
+                        this.receiveTransfer(history, account);
+                    }
+                });
         } catch (error) {
             console.log(error);
             res.status(404).send();
+        }
+    };
+
+    async receiveTransfer(history, acc) {
+        try {
+            const newHistory = await new History({ ...history, name: "income" }).save();
+            acc.history.push(newHistory._id);
+            acc.balance += newHistory.amount;
+            acc.save();
+        } catch (err) {
+            console.log(err);
+            return;
         }
     }
 

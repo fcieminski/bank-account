@@ -28,7 +28,7 @@
 								<form @submit.prevent="modal = true" action="">
 									<validation-provider
 										class="input__box"
-										:rules="{ required: true, numeric: true, length: 16 }"
+										:rules="{ required: true, numeric: true, length: 26 }"
 										name="Numer konta"
 										v-slot="{ errors }"
 									>
@@ -122,7 +122,7 @@
 							</validation-observer>
 						</div>
 						<div v-else>
-							Przelew wykonany!
+							Przelew w trakcie realizacji...
 						</div>
 					</transition>
 				</div>

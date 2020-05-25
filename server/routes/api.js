@@ -19,9 +19,9 @@ app.get("/account/:userId", AccountController.findAccount);
 app.post("/create-new-card", isAuthenticated, CardsController.create);
 
 app.post("/history/:userId", isAuthenticated, HistoryController.index);
+app.post("/history/:userId/search", isAuthenticated, HistoryController.searchInHistory);
 app.post("/add-to-history/:userId", isAuthenticated, HistoryController.makeTransfer);
 app.get("/add-to-history/:userId/get-code", isAuthenticated, HistoryController.sendTransferCode);
 app.post("/add-to-history/:userId/send-code", isAuthenticated, HistoryController.compareUserCode);
 
 app.get("/pdf", HistoryController.getTransferPDF);
-// app.use("/pdf/:transferId", router.get("/", HistoryController.getTransferPDF));
