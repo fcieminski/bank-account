@@ -14,11 +14,11 @@
 					<div>
 						{{ element.title }}
 					</div>
-					<i @click="toggleExpand(element._id)" class="material-icons cp">{{
+					<i v-if="moreInfo" @click="toggleExpand(element._id)" class="material-icons cp">{{
 						expandElement.id === element._id ? "expand_less" : "expand_more"
 					}}</i>
 				</div>
-				<div class="expand__panel mt-5" :class="[expandElement.id === element._id ? 'expand' : 'hidden']">
+				<div v-if="moreInfo" class="expand__panel mt-5" :class="[expandElement.id === element._id ? 'expand' : 'hidden']">
 					<div>
 						<div class="d-flex justify-between">
 							<div>Do: {{ element.to.name }}</div>
@@ -55,7 +55,11 @@
 			history: {
 				type: Array,
 				default: () => []
-			}
+            },
+            moreInfo:{
+                type: Boolean,
+                default: true,
+            }
 		},
 		components: {},
 		created() {},
@@ -98,7 +102,6 @@
 <style lang='scss' scoped>
 	.account__history-box {
 		margin-top: 30px;
-		padding-right: 16px;
 		width: 100%;
 		grid-area: history;
 	}

@@ -53,7 +53,7 @@
 			</div>
 		</div>
 		<loading-indicator v-else />
-		<history v-if="!loading" :history="history" />
+		<history v-if="!loading" :history="history" :more-info="false"/>
 		<div class="d-flex align-center" v-else-if="!history">
 			<i class="material-icons mr-2">history</i>
 			Twoja historia jest pusta, wkonaj pierwszy
@@ -121,7 +121,7 @@
 			this.loading = true;
 			try {
 				const account = await accountService.findUserAccount(this.user._id);
-				const history = await historyService.getHistory(this.user._id, "?limit=4");
+				const {history} = await historyService.getHistory(this.user._id, "?limit=4");
 				this.history = history;
 				this.account = account;
 			} catch {

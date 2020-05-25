@@ -85,7 +85,7 @@
 							this.loadingMoreHistory = false;
 						});
 				}
-			},
+			}
 		}
 	};
 </script>
