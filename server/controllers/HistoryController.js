@@ -44,13 +44,19 @@ class HistoryController {
     searchInHistory(req, res) {
         const { userId } = req.params;
         const { searchQuery } = req.body;
-        History.find({ from: userId, ...(searchQuery.title && { title: { $regex: searchQuery.title, $options: "i" } }) }).exec((error, history) => {
+        History.find({
+            from: userId,
+            ...(searchQuery.title && { title: { $regex: searchQuery.title, $options: "i" } }),
+            ...(searchQuery.date && { date: { $gte: searchQuery.date[0], $lt: searchQuery.date[1] } }),
+            ...(searchQuery.amountFrom && { amount: { $gte: searchQuery.amountFrom, $lt: searchQuery.amountTo } }),
+            ...(searchQuery.type !== 0 && { name: searchQuery.type === 1 ? "income" : "transfer" }),
+        }).exec((error, history) => {
             res.send(history);
         });
     }
 
     makeTransfer = async (req, res) => {
-        const { date, name, amount, currency, title, to } = req.body;
+        const { date, name, amount, currency, title, to, accountId } = req.body;
         const { userId } = req.params;
         const history = {
             date,
@@ -66,7 +72,7 @@ class HistoryController {
         };
         try {
             const historySaved = await new History(history).save();
-            Account.findOne({ owner: userId })
+            Account.findOne({ _id: accountId })
                 .populate("history")
                 .exec((error, account) => {
                     if (error) {

@@ -7,7 +7,7 @@
 				<span>
 					Wyszukiwarka
 				</span>
-				<form @submit.prevent="searchInHistory">
+				<form>
 					<label for="date">Data</label>
 					<date-picker
 						value-type="timestamp"
@@ -19,20 +19,24 @@
 					<label for="title">Tytuł</label>
 					<input class="input__main" name="title" v-model="searchQuery.title" />
 					<label for="type">Typ transakcji</label>
-					<select class="input__main" name="type" type="text">
+					<select v-model="searchQuery.type" class="input__main" name="type" type="text">
+						<option :value="0">Wszystkie</option>
 						<option :value="1">Uznania</option>
-						<option :value="0">Obciążenia</option>
+						<option :value="2">Obciążenia</option>
 					</select>
 					<label for="amount-from">Kwota od</label>
 					<input v-model="searchQuery.amountFrom" class="input__main" name="amount-from" />
 					<label for="amount-to">Kwota do</label>
 					<input v-model="searchQuery.amountTo" class="input__main" name="amount-to" />
-					<div class="card__actions mt-4">
-						<button class="btn pa-2">
-							Szukaj
-						</button>
-					</div>
 				</form>
+				<div class="card__actions mt-4">
+					<button @click="clearForm" class="btn--transparent pa-2 mr-4">
+						Wyczyść
+					</button>
+					<button @click="searchInHistory" class="btn pa-2">
+						Szukaj
+					</button>
+				</div>
 			</section>
 			<div class="horizontal--divider"></div>
 
@@ -45,6 +49,9 @@
 				</div>
 				<div v-if="loadingMoreHistory" class="loading__box">
 					<loading-indicator />
+				</div>
+				<div v-if="searchInfo">
+					{{ searchInfo }}
 				</div>
 			</section>
 		</div>
@@ -80,7 +87,8 @@
 					amountFrom: null,
 					amountTo: null,
 					title: null
-				}
+				},
+				searchInfo: ""
 			};
 		},
 		components: {
@@ -89,25 +97,28 @@
 		},
 		created() {
 			this.loading = true;
-			historyService
-				.getHistory(this.user._id, `?limit=10&offset=0`)
-				.then(data => {
-					this.history = data.history;
-					this.pagination = data.pagination;
-					document.addEventListener("scroll", this.loadMore);
-				})
-				.catch(() => {
-					this.error = "Błąd ładowania danych!";
-				})
-				.finally(() => {
-					this.loading = false;
-				});
+			this.getHistory();
 		},
 		mounted() {},
 		computed: {
 			...mapState(["user"])
 		},
 		methods: {
+			getHistory() {
+				historyService
+					.getHistory(this.user._id, `?limit=10&offset=0`)
+					.then(data => {
+						this.history = data.history;
+						this.pagination = data.pagination;
+						document.addEventListener("scroll", this.loadMore);
+					})
+					.catch(() => {
+						this.error = "Błąd ładowania danych!";
+					})
+					.finally(() => {
+						this.loading = false;
+					});
+			},
 			loadMore(e) {
 				const { target } = e;
 				if (
@@ -132,10 +143,28 @@
 				}
 			},
 			searchInHistory() {
-				historyService.searchInHistory(this.user._id, {
-					searchQuery: this.searchQuery
-				});
+				historyService
+					.searchInHistory(this.user._id, {
+						searchQuery: this.searchQuery
+					})
+					.then(data => {
+						this.history = data;
+						document.removeEventListener("scroll", this.loadMore);
+					});
+			},
+			clearForm() {
+				this.searchQuery = {
+					date: null,
+					type: null,
+					amountFrom: null,
+					amountTo: null,
+					title: null
+				};
+				this.getHistory();
 			}
+		},
+		destroyed() {
+			document.removeEventListener("scroll", this.loadMore);
 		}
 	};
 </script>
