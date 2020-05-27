@@ -16,18 +16,42 @@
 						name="date"
 						range
 					/>
-					<label for="title">Tytuł</label>
-					<input class="input__main" name="title" v-model="searchQuery.title" />
-					<label for="type">Typ transakcji</label>
-					<select v-model="searchQuery.type" class="input__main" name="type" type="text">
-						<option :value="0">Wszystkie</option>
-						<option :value="1">Uznania</option>
-						<option :value="2">Obciążenia</option>
-					</select>
-					<label for="amount-from">Kwota od</label>
-					<input v-model="searchQuery.amountFrom" class="input__main" name="amount-from" />
-					<label for="amount-to">Kwota do</label>
-					<input v-model="searchQuery.amountTo" class="input__main" name="amount-to" />
+					<div class="d-flex">
+						<div class="column mr-2">
+							<label for="title">Tytuł</label>
+							<input class="input__main" name="title" v-model="searchQuery.title" />
+						</div>
+						<div class="column ml-2">
+							<label for="type">Typ transakcji</label>
+							<select v-model="searchQuery.type" class="input__main" name="type" type="text">
+								<option :value="0">Wszystkie</option>
+								<option :value="1">Uznania</option>
+								<option :value="2">Obciążenia</option>
+							</select>
+						</div>
+					</div>
+					<div class="d-flex">
+						<div class="column mr-2">
+							<label for="amount-from">Kwota od</label>
+							<input
+								v-model.number="searchQuery.amountFrom"
+								@keypress="isNumber"
+								type="number"
+								class="input__main"
+								name="amount-from"
+							/>
+						</div>
+						<div class="column ml-2">
+							<label for="amount-to">Kwota do</label>
+							<input
+								v-model.number="searchQuery.amountTo"
+								@keypress="isNumber"
+								type="number"
+								class="input__main"
+								name="amount-to"
+							/>
+						</div>
+					</div>
 				</form>
 				<div class="card__actions mt-4">
 					<button @click="clearForm" class="btn--transparent pa-2 mr-4">
@@ -56,7 +80,10 @@
 					:raports="raports"
 					@addElementToRaports="reportFromElements"
 				/>
-				<div class="d-flex align-center" v-else>
+				<div v-if="searchMessage">
+					{{ searchMessage }}
+				</div>
+				<div class="d-flex align-center" v-else-if="!error">
 					<i class="material-icons mr-2">history</i>
 					Twoja historia jest pusta, wkonaj pierwszy
 					<router-link class="link__inline ml-2" to="/">przelew!</router-link>
@@ -80,7 +107,6 @@
 	import DatePicker from "vue2-datepicker";
 	import "vue2-datepicker/index.css";
 	import "vue2-datepicker/locale/pl";
-
 	import { mapState } from "vuex";
 	import historyService from "@services/HistoryService";
 	import History from "@/components/Account/History";
@@ -104,7 +130,8 @@
 				},
 				searchInfo: "",
 				raports: false,
-				raportIds: []
+				raportIds: [],
+				searchMessage: ""
 			};
 		},
 		components: {
@@ -163,8 +190,9 @@
 					.searchInHistory(this.user._id, {
 						searchQuery: this.searchQuery
 					})
-					.then(data => {
-						this.history = data;
+					.then(({ history }) => {
+						this.history = history;
+						this.searchMessage = history.length === 0 ? "Brak wyników" : "Wyniki wyszukiwania:";
 						document.removeEventListener("scroll", this.loadMore);
 					});
 			},
@@ -175,7 +203,8 @@
 					amountFrom: null,
 					amountTo: null,
 					title: null
-				};
+                };
+                	this.searchMessage = ""
 				this.getHistory();
 			},
 			reportFromElements(e) {
@@ -193,6 +222,15 @@
 						link.click();
 						link.remove();
 					});
+				}
+			},
+			isNumber(evt) {
+				evt = evt ? evt : window.event;
+				const charCode = evt.which ? evt.which : evt.keyCode;
+				if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode !== 46) {
+					evt.preventDefault();
+				} else {
+					return true;
 				}
 			}
 		},

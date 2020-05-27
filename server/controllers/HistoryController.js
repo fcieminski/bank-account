@@ -51,7 +51,7 @@ class HistoryController {
             ...(searchQuery.amountFrom && { amount: { $gte: searchQuery.amountFrom, $lt: searchQuery.amountTo } }),
             ...(searchQuery.type !== 0 && { name: searchQuery.type === 1 ? "income" : "transfer" }),
         }).exec((error, history) => {
-            res.send(history);
+            res.send({history});
         });
     }
 

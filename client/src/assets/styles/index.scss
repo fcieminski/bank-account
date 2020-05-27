@@ -138,7 +138,7 @@ i {
     }
 }
 
-.btn--auto{
+.btn--auto {
     width: auto;
 }
 
@@ -233,6 +233,9 @@ input[type="number"] {
 
 .d-flex {
     display: flex;
+    .column {
+        flex: 1;
+    }
 }
 
 .justify-between {
