@@ -14,11 +14,25 @@
 					<div>
 						{{ element.title }}
 					</div>
-					<i v-if="moreInfo" @click="toggleExpand(element._id)" class="material-icons cp">{{
-						expandElement.id === element._id ? "expand_less" : "expand_more"
-					}}</i>
+					<div class="d-flex justify-between align-center">
+						<input
+							@change="$emit('addElementToRaports', raport)"
+							v-if="raports"
+							type="checkbox"
+							name="raport"
+							v-model="raport"
+							:value="element._id"
+						/>
+						<i v-if="moreInfo" @click="toggleExpand(element._id)" class="material-icons cp">{{
+							expandElement.id === element._id ? "expand_less" : "expand_more"
+						}}</i>
+					</div>
 				</div>
-				<div v-if="moreInfo" class="expand__panel mt-5" :class="[expandElement.id === element._id ? 'expand' : 'hidden']">
+				<div
+					v-if="moreInfo"
+					class="expand__panel mt-5"
+					:class="[expandElement.id === element._id ? 'expand' : 'hidden']"
+				>
 					<div>
 						<div class="d-flex justify-between">
 							<div>Do: {{ element.to.name }}</div>
@@ -48,18 +62,23 @@
 			return {
 				expandElement: {
 					id: null
-				}
+				},
+				raport: []
 			};
 		},
 		props: {
 			history: {
 				type: Array,
 				default: () => []
-            },
-            moreInfo:{
-                type: Boolean,
-                default: true,
-            }
+			},
+			moreInfo: {
+				type: Boolean,
+				default: true
+			},
+			raports: {
+				type: Boolean,
+				default: false
+			}
 		},
 		components: {},
 		created() {},

@@ -38,10 +38,24 @@
 					</button>
 				</div>
 			</section>
+			<section>
+				<div>
+					<input name="raports" v-model="raports" type="checkbox" />
+					<label @click="raports = !raports" for="raports" class="ml-4">Raport zbiorowy</label>
+				</div>
+				<button v-if="raports" @click="createRaports" class="btn btn--auto pa-2 mt-5">
+					Generuj raport
+				</button>
+			</section>
 			<div class="horizontal--divider"></div>
 
 			<section class="pr">
-				<history v-if="history" :history="history" />
+				<history
+					v-if="history"
+					:history="history"
+					:raports="raports"
+					@addElementToRaports="reportFromElements"
+				/>
 				<div class="d-flex align-center" v-else>
 					<i class="material-icons mr-2">history</i>
 					Twoja historia jest pusta, wkonaj pierwszy
@@ -88,7 +102,9 @@
 					amountTo: null,
 					title: null
 				},
-				searchInfo: ""
+				searchInfo: "",
+				raports: false,
+				raportIds: []
 			};
 		},
 		components: {
@@ -161,6 +177,23 @@
 					title: null
 				};
 				this.getHistory();
+			},
+			reportFromElements(e) {
+				this.raportIds = e;
+			},
+
+			createRaports() {
+				if (this.raportIds.length !== 0) {
+					historyService.getPDF(this.raportIds).then(response => {
+						const blob = new Blob([response.data], { type: '"application/pdf' });
+						const link = document.createElement("a");
+						link.href = URL.createObjectURL(blob);
+						link.download = "transaction.pdf";
+						document.body.append(link);
+						link.click();
+						link.remove();
+					});
+				}
 			}
 		},
 		destroyed() {
