@@ -203,8 +203,8 @@
 					amountFrom: null,
 					amountTo: null,
 					title: null
-                };
-                	this.searchMessage = ""
+				};
+				this.searchMessage = "";
 				this.getHistory();
 			},
 			reportFromElements(e) {

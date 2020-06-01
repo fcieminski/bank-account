@@ -32,6 +32,7 @@ class AccountController {
         User.findOne({ _id: userId })
             .populate("accounts")
             .exec((error, user) => {
+                console.log(user)
                 if (error) {
                     res.send({ error: "no record" });
                 } else {

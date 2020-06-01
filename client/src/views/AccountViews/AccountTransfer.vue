@@ -236,7 +236,7 @@
 					.then(data => {
 						if (data.status === "success") {
 							this.modal = false;
-							const transfer = { ...this.transferData, from: this.user, currency: "PLN", name: "transfer" };
+							const transfer = { ...this.transferData, from: this.user, currency: "PLN", name: "transfer", accountId: this.activeAccount._id };
 							setTimeout(
 								() => {
 									historyService.create(this.user._id, transfer).catch(() => {

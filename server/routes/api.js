@@ -5,7 +5,6 @@ const CardsController = require("../controllers/CardsController");
 const HistoryController = require("../controllers/HistoryController");
 const isAuthenticated = require("../middleware/AuthMiddleware");
 const app = require("../config/app");
-const router = require("express").Router();
 
 app.post("/register", UserController.create);
 

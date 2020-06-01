@@ -56,7 +56,7 @@ class HistoryController {
     }
 
     makeTransfer = async (req, res) => {
-        const { date, name, amount, currency, title, to, accountId } = req.body;
+        const { date, name, amount, currency, title, to, accountId, from } = req.body;
         const { userId } = req.params;
         const history = {
             date,
@@ -64,13 +64,14 @@ class HistoryController {
             amount,
             currency,
             title,
-            from: userId,
+            from: `${from.name} ${from.surname}`,
             to: {
                 name: to.name,
                 accountNumber: to.accountNumber.toString(),
             },
         };
         try {
+            console.log(accountId)
             const historySaved = await new History(history).save();
             Account.findOne({ _id: accountId })
                 .populate("history")
