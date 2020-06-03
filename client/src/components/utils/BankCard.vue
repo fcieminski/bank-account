@@ -1,5 +1,5 @@
 <template>
-	<div class="card">
+	<div @click="$emit('editCardLimits', card._id)" class="card">
 		<div class="card__container">
 			<div class="cointainer__top">
 				<div class="container__mark"></div>
@@ -8,18 +8,18 @@
 				</div>
 			</div>
 			<div class="container__number">
-				{{card.cardNumber | formatCardNumber}}
+				{{ card.cardNumber | formatCardNumber }}
 			</div>
 			<div class="container__bottom">
 				<div>
-					John Kowalski
+					{{ card.user }}
 				</div>
 				<div class="bottom__valid">
 					<div>
 						valid
 					</div>
 					<div>
-						12/02
+						{{ card.expDate }}
 					</div>
 				</div>
 			</div>
@@ -38,22 +38,27 @@
 				type: Object,
 				default: () => {}
 			}
-        },
-        
+		},
+
 		components: {},
 		created() {},
 		computed: {},
-        methods: {},
-        filters: {
-            formatCardNumber(value){
-                return value.replace(/(.{4})/g, "$1 ")
-            }
-        }
+		methods: {},
+		filters: {
+			formatCardNumber(value) {
+				return value.replace(/(.{4})/g, "$1 ");
+			}
+		}
 	};
 </script>
 
 <style lang='scss' scoped>
 	.card {
+		transition: all 0.5s;
+		cursor: pointer;
+		&:hover {
+			transform: rotate3d(1, 1, 1, -10deg);
+		}
 		width: 350px;
 		height: 200px;
 		max-width: 100%;
@@ -62,6 +67,7 @@
 		box-shadow: $mainShadow;
 		border-radius: 10px;
 		.card__container {
+			cursor: inherit;
 			width: 80%;
 			height: 80%;
 			margin: auto;
@@ -69,10 +75,13 @@
 			flex-direction: column;
 			justify-content: space-between;
 			.cointainer__top {
+				cursor: inherit;
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
 				.container__logo {
+					cursor: inherit;
+
 					width: 100px;
 					height: 50px;
 					display: flex;
@@ -82,6 +91,7 @@
 					}
 				}
 				.container__mark {
+					cursor: inherit;
 					width: 50px;
 					height: 35px;
 					border-radius: 5px;
@@ -101,6 +111,7 @@
 				}
 			}
 			.container__number {
+				cursor: inherit;
 				background: linear-gradient(90deg, rgba(204, 204, 204, 1) 0%, rgba(245, 245, 245, 1) 54%);
 				background-clip: text;
 				color: transparent;
@@ -108,6 +119,7 @@
 				word-spacing: 12px;
 			}
 			.container__bottom {
+				cursor: inherit;
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
@@ -115,6 +127,7 @@
 				background-clip: text;
 				color: transparent;
 				.bottom__valid {
+					cursor: inherit;
 					div {
 						font-size: 14px;
 					}
