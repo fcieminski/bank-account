@@ -23,4 +23,6 @@ app.post("/add-to-history/:userId", isAuthenticated, HistoryController.makeTrans
 app.get("/add-to-history/:userId/get-code", isAuthenticated, HistoryController.sendTransferCode);
 app.post("/add-to-history/:userId/send-code", isAuthenticated, HistoryController.compareUserCode);
 
+app.post("/find-card/:userId", isAuthenticated, CardsController.findUserCards);
+
 app.get("/pdf", HistoryController.getTransferPDF);

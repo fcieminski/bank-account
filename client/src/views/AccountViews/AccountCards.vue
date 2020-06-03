@@ -3,12 +3,17 @@
 		<div>
 			<div>Twoje karty</div>
 			<div class="horizontal--divider"></div>
-			<div class="d-flex align-center" v-if="!cards">
-				<i class="material-icons mr-2">credit_card</i>
-				Nie masz jeszcze żadnych kart, złóż wniosek o swoją pierwszą kartę!
-			</div>
-			<button class="btn btn--auto mt-5" @click="createCard = true">Złóż wniosek</button>
-			<div v-if="createCard" class="mt-5">
+			<section v-if="!cards">
+				<div class="d-flex align-center">
+					<i class="material-icons mr-2">credit_card</i>
+					Nie masz jeszcze żadnych kart, złóż wniosek o swoją pierwszą kartę!
+				</div>
+				<button class="btn btn--auto mt-5" @click="createCardForm = true">Złóż wniosek</button>
+			</section>
+			<section v-else>
+				<div>Twoje karty</div>
+			</section>
+			<div v-if="createCardForm" class="mt-5">
 				<div class="input__box" name="Numer konta">
 					<label for="accountNumber">Waluta karty</label>
 					<select v-model="currency" class="input__main" name="type" type="text">
@@ -21,12 +26,9 @@
 						<option value="MasterCard">MasterCard</option>
 						<option value="Visa">Visa</option>
 					</select>
-					<!-- <input
-						v-model="transferData.to.accountNumber"
-						class="input__main"
-						name="accountNumber"
-						type="text"
-					/> -->
+					<div class="actions--container">
+						<button class="btn btn--auto mt-5" @click="createCard">Wyślij</button>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -35,20 +37,44 @@
 
 <script>
 	import cardsService from "@services/CardsService";
+	import { mapState } from "vuex";
 	export default {
 		name: "AccountCards",
 		data() {
 			return {
 				cards: null,
-				createCard: false,
-                currency: "PLN",
-                cardType: 'Visa'
+				createCardForm: false,
+				currency: "PLN",
+				cardType: "Visa"
 			};
 		},
 		components: {},
-		created() {},
-		computed: {},
-		methods: {}
+		created() {
+			cardsService
+				.find(this.user._id)
+				.then(({ cards }) => (this.cards = cards))
+				.catch(error => {
+					console.warn(error);
+				});
+		},
+		computed: {
+			...mapState(["user"])
+		},
+		methods: {
+			createCard() {
+				cardsService
+					.create({
+						userId: this.user._id,
+						accountId: this.user.accounts[0],
+						cardCurrency: this.currency,
+						cardType: this.cardType
+					})
+					.then(({ card }) => this.cards.push(card))
+					.catch(error => {
+						console.warn(error);
+					});
+			}
+		}
 	};
 </script>
 
