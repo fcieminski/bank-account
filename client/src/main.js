@@ -10,6 +10,7 @@ import {
   ValidationObserver
 } from "vee-validate/dist/vee-validate.full";
 import LoadingIndicator from "@utils/LoadingIndicator";
+import InputError from "@utils/InputError.vue";
 
 window.axios = axios;
 axios.defaults.withCredentials = true;
@@ -18,6 +19,7 @@ Vue.config.productionTip = false;
 Vue.component("ValidationProvider", ValidationProvider);
 Vue.component("ValidationObserver", ValidationObserver);
 Vue.component("loading-indicator", LoadingIndicator);
+Vue.component("input-error", InputError);
 
 new Vue({
   router,

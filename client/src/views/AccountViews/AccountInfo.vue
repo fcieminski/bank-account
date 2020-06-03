@@ -26,7 +26,7 @@
 				<div class="divider"></div>
 				<div class="account-content__content">
 					<div class="content-box">
-						<router-link tag="div" :to="{ name: 'account.cards' }" class=" cp small--box text--white">
+						<router-link tag="div" :to="{ name: 'account.cards' }" class="cp small--box text--white">
 							<i class="material-icons icon--white">credit_card</i>
 							Karty
 						</router-link>
