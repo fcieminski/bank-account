@@ -1,5 +1,5 @@
 <template>
-	<div @click="$emit('editCardLimits', card._id)" class="card">
+	<div @click="$emit('showCardInfo', card._id)" :class="[card.cardValid ? 'card' : 'card card--disabled']">
 		<div class="card__container">
 			<div class="cointainer__top">
 				<div class="container__mark"></div>
@@ -54,9 +54,12 @@
 
 <style lang='scss' scoped>
 	.card {
+		&.card--disabled {
+			filter: grayscale(100%);
+		}
 		transition: all 0.5s;
 		cursor: pointer;
-		&:hover {
+		&:not(.card--disabled):hover {
 			transform: rotate3d(1, 1, 1, -10deg);
 		}
 		width: 350px;

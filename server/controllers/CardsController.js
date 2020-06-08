@@ -52,17 +52,19 @@ class CardsController {
         });
     }
 
-    updateCard(req, res){
+    updateCard(req, res) {
         const { cardId } = req.params;
         const { cardToUpdate } = req.body;
 
-        Cards.findOne({_id: cardId}).exec((error, card) => {
-            if(error) res.send({error});
+        Cards.findOne({ _id: cardId }).exec((error, card) => {
+            if (error) res.send({ error });
             else {
                 card.limits = cardToUpdate.limits;
+                card.cardValid = cardToUpdate.cardValid;
                 card.save();
+                res.send({ card });
             }
-        })
+        });
     }
 }
 

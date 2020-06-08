@@ -129,30 +129,22 @@
 			</div>
 		</div>
 		<loading-indicator v-else />
-		<div class="modal" v-if="modal">
-			<div class="modal__card">
-				<div class="card__title">
-					Przepisz kod, aby potwierdzić przelew
+		<warning-modal
+            @yes="makeTransfer"
+			v-if="modal"
+			:modal="{ text: 'Przepisz kod, aby potwierdzić przelew', yes: 'Wykonaj' }"
+		>
+			<div>
+				<div>
+					{{ code }}
 				</div>
-				<div class="card__content">
-					<div>
-						<div>
-							{{ code }}
-						</div>
-						<div>
-							<label for="code">Wprowadź kod</label>
-							<input v-model="checkCode" class="input__main" name="code" type="text" />
-							<input-error left :error="codeError" />
-						</div>
-					</div>
-				</div>
-				<div class="card__actions">
-					<button @click="makeTransfer" class="btn pa-2">
-						Wykonaj
-					</button>
+				<div>
+					<label for="code">Wprowadź kod</label>
+					<input v-model="checkCode" class="input__main" name="code" type="text" />
+					<input-error left :error="codeError" />
 				</div>
 			</div>
-		</div>
+		</warning-modal>
 	</section>
 </template>
 
@@ -236,7 +228,13 @@
 					.then(data => {
 						if (data.status === "success") {
 							this.modal = false;
-							const transfer = { ...this.transferData, from: this.user, currency: "PLN", name: "transfer", accountId: this.activeAccount._id };
+							const transfer = {
+								...this.transferData,
+								from: this.user,
+								currency: "PLN",
+								name: "transfer",
+								accountId: this.activeAccount._id
+							};
 							setTimeout(
 								() => {
 									historyService.create(this.user._id, transfer).catch(() => {
@@ -262,8 +260,8 @@
 						currency,
 						title,
 						from,
-                        to,
-                        accountId: activeAccount._id
+						to,
+						accountId: activeAccount._id
 					};
 				}
 			}

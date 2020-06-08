@@ -7,7 +7,7 @@
 				<div class="d-flex">
 					<div class="column" v-for="card in cards" :key="card._id">
 						<p class="mb-2">{{ card.cardType }} {{ card.cardCurrency }}</p>
-						<bank-card @editCardLimits="editCardLimits" :card="card" />
+						<bank-card @showCardInfo="showCardInfo" :card="card" />
 					</div>
 				</div>
 				<div class="horizontal--divider"></div>
@@ -42,9 +42,19 @@
 						</button>
 					</div>
 					<div class="mt-5">Inne opcje</div>
-					<button class="btn btn--auto mt-5">
+					<button @click="blockCardWarning = true" class="btn btn--auto mt-5">
 						Zablokuj kartę
 					</button>
+					<warning-modal
+						@yes="blockCard(editCard._id)"
+						@no="blockCardWarning = false"
+						v-if="blockCardWarning"
+						:modal="{ text: 'Jesteś pewien?', yes: 'Tak', no: 'Nie' }"
+					>
+						<div>
+							Czy na pewno chcesz zablokować kartę? Tej operacji nie da się odwrócić!
+						</div>
+					</warning-modal>
 				</section>
 			</transition>
 			<transition name="fade">
@@ -83,7 +93,8 @@
 				createCardForm: false,
 				currency: "PLN",
 				cardType: "Visa",
-				editCard: null
+				editCard: null,
+				blockCardWarning: false
 			};
 		},
 		components: {
@@ -124,8 +135,8 @@
 						this.createCardForm = false;
 					});
 			},
-			editCardLimits(e) {
-				this.editCard = this.cards.find(card => card._id === e);
+			showCardInfo(e) {
+				this.editCard = this.cards.filter(card => card.cardValid).find(card => card._id === e);
 			},
 			changeCardLimits() {
 				cardsService
@@ -133,8 +144,29 @@
 						cardToUpdate: this.editCard
 					})
 					.then(({ card }) => {
-                        let current = this.cards.find(current => current._id === card._id);
-                        current.limits = card.limits
+						let current = this.cards.find(current => current._id === card._id);
+						current.limits = card.limits;
+					})
+					.catch(error => {
+						console.warn(error);
+					});
+			},
+			blockCard(id) {
+				this.editCard.cardValid = false;
+				cardsService
+					.update(id, {
+						cardToUpdate: this.editCard
+					})
+					.then(({ card }) => {
+						let current = this.cards.find(current => current._id === card._id);
+						current.cardValid = card.cardValid;
+					})
+					.catch(error => {
+						console.warn(error);
+					})
+					.finally(() => {
+						this.blockCardWarning = false;
+						this.editCard = null;
 					});
 			},
 			mapCard(card) {
