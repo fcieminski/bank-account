@@ -28,7 +28,7 @@
 					<div class="content-box">
 						<router-link tag="div" :to="{ name: 'account.cards' }" class="cp small--box text--white">
 							<i class="material-icons icon--white">credit_card</i>
-							Karty
+							Karty {{this.account.cards.len}}
 						</router-link>
 						<div class="content__info">
 							Twoje karty

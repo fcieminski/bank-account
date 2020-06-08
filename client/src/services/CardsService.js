@@ -12,6 +12,12 @@ class CardsService extends BaseService {
       .post(`/find-card/${userId}`)
       .then(response => response.data);
   }
+
+  update(cardId, params) {
+    return this.axios
+      .patch(`/update/${cardId}`, params)
+      .then(response => response.data);
+  }
 }
 
 const cardsService = new CardsService();

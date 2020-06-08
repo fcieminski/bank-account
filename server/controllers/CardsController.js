@@ -25,24 +25,23 @@ class CardsController {
             },
         });
         try {
-                const savedCard = await Card.save();
+            const savedCard = await Card.save();
 
-                Account.findOne({ _id: accountId }).exec((error, account) => {
-                    if (error) res.send(error);
-                    else {
-                        account.cards.push(savedCard._id);
-                        account.save();
-                    }
-                });
+            Account.findOne({ _id: accountId }).exec((error, account) => {
+                if (error) res.send(error);
+                else {
+                    account.cards.push(savedCard._id);
+                    account.save();
+                }
+            });
 
-                Cards.findOne({ holder: userId }).exec((error, card) => {
-                    if (error) res.send(error);
-                    else res.send({ card });
-                });
-            } catch {
-                res.send("error!");
-            }
-
+            Cards.findOne({ _id: savedCard._id }).exec((error, card) => {
+                if (error) res.send(error);
+                else res.send({ card });
+            });
+        } catch {
+            res.send("error!");
+        }
     }
 
     findUserCards(req, res) {
@@ -51,6 +50,19 @@ class CardsController {
             if (error) res.send(error);
             else res.send({ cards });
         });
+    }
+
+    updateCard(req, res){
+        const { cardId } = req.params;
+        const { cardToUpdate } = req.body;
+
+        Cards.findOne({_id: cardId}).exec((error, card) => {
+            if(error) res.send({error});
+            else {
+                card.limits = cardToUpdate.limits;
+                card.save();
+            }
+        })
     }
 }
 

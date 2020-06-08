@@ -16,6 +16,7 @@ app.get("/user-accounts/:userId", AccountController.findAllUserAccounts);
 app.get("/account/:userId", AccountController.findAccount);
 
 app.post("/create-new-card", isAuthenticated, CardsController.create);
+app.patch("/update/:cardId", isAuthenticated, CardsController.updateCard);
 
 app.post("/history/:userId", isAuthenticated, HistoryController.index);
 app.post("/history/:userId/search", isAuthenticated, HistoryController.searchInHistory);

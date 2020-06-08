@@ -71,7 +71,6 @@ class HistoryController {
             },
         };
         try {
-            console.log(accountId)
             const historySaved = await new History(history).save();
             Account.findOne({ _id: accountId })
                 .populate("history")

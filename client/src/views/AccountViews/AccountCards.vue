@@ -6,18 +6,21 @@
 			<section v-if="cards.length !== 0">
 				<div class="d-flex">
 					<div class="column" v-for="card in cards" :key="card._id">
-						<p class="mb-2">{{ card.cardType }}</p>
+						<p class="mb-2">{{ card.cardType }} {{ card.cardCurrency }}</p>
 						<bank-card @editCardLimits="editCardLimits" :card="card" />
 					</div>
 				</div>
 				<div class="horizontal--divider"></div>
-				<div class="d-flex align-center mt-5">
-					<i class="material-icons mr-2">credit_card</i>
-					Potrzebujesz kolejnej karty?
+				<div v-if="cards.length !== 3">
+					<div class="d-flex align-center mt-5">
+						<i class="material-icons mr-2">credit_card</i>
+						Potrzebujesz kolejnej karty? Pamiętaj, możesz wnioskować jeszcze tylko o
+						{{ 3 - cards.length }} kar{{ languageFix }}
+					</div>
+					<button class="btn btn--auto mt-5" @click="createCardForm = !createCardForm">
+						{{ createCardForm ? "Zamknij wniosek" : "Złóż wniosek" }}
+					</button>
 				</div>
-				<button class="btn btn--auto mt-5" @click="createCardForm = !createCardForm">
-					{{ createCardForm ? "Zamknij wniosek" : "Złóż wniosek" }}
-				</button>
 			</section>
 			<section v-else>
 				<div class="d-flex align-center">
@@ -28,10 +31,20 @@
 			</section>
 			<transition name="fade">
 				<section class="mt-5" v-if="editCard">
-					<div>Limity karty</div>
+					<div>Limity karty {{ editCard.cardNumber }}</div>
 					<div v-for="(limits, key) in editCard.limits" :key="key">
-						{{ limits }}
+						<label for="daily">Limit dzienny transakcji</label>
+						<input class="input__main" v-model="limits.daily" type="number" name="daily" />
+						<label for="monthly">Limit miesięczny transakcji</label>
+						<input class="input__main" v-model="limits.monthly" type="number" name="monthly" />
+						<button @click="changeCardLimits" class="btn btn--auto mt-5">
+							Zmień
+						</button>
 					</div>
+					<div class="mt-5">Inne opcje</div>
+					<button class="btn btn--auto mt-5">
+						Zablokuj kartę
+					</button>
 				</section>
 			</transition>
 			<transition name="fade">
@@ -87,7 +100,10 @@
 				});
 		},
 		computed: {
-			...mapState(["user"])
+			...mapState(["user"]),
+			languageFix() {
+				return this.cards.length === 2 ? "tę" : "ty";
+			}
 		},
 		methods: {
 			createCard() {
@@ -105,11 +121,21 @@
 						console.warn(error);
 					})
 					.finally(() => {
-						this.editCard = false;
+						this.createCardForm = false;
 					});
 			},
 			editCardLimits(e) {
 				this.editCard = this.cards.find(card => card._id === e);
+			},
+			changeCardLimits() {
+				cardsService
+					.update(this.editCard._id, {
+						cardToUpdate: this.editCard
+					})
+					.then(({ card }) => {
+                        let current = this.cards.find(current => current._id === card._id);
+                        current.limits = card.limits
+					});
 			},
 			mapCard(card) {
 				return {
