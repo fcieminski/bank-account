@@ -34,12 +34,15 @@
 					<div>Limity karty {{ editCard.cardNumber }}</div>
 					<div v-for="(limits, key) in editCard.limits" :key="key">
 						<label for="daily">Limit dzienny transakcji</label>
-						<input class="input__main" v-model="limits.daily" type="number" name="daily" />
+						<input class="input__main" v-model.number="limits.daily" type="number" name="daily" />
 						<label for="monthly">Limit miesięczny transakcji</label>
-						<input class="input__main" v-model="limits.monthly" type="number" name="monthly" />
+						<input class="input__main" v-model.number="limits.monthly" type="number" name="monthly" />
 						<button @click="changeCardLimits" class="btn btn--auto mt-5">
 							Zmień
 						</button>
+						<transition name="fade">
+							<span class="ml-5" v-if="limitsChangedInfo">{{ limitsChangedInfo }}</span>
+						</transition>
 					</div>
 					<div class="mt-5">Inne opcje</div>
 					<button @click="blockCardWarning = true" class="btn btn--auto mt-5">
@@ -94,7 +97,8 @@
 				currency: "PLN",
 				cardType: "Visa",
 				editCard: null,
-				blockCardWarning: false
+				blockCardWarning: false,
+				limitsChangedInfo: ""
 			};
 		},
 		components: {
@@ -149,6 +153,12 @@
 					})
 					.catch(error => {
 						console.warn(error);
+					})
+					.finally(() => {
+						this.limitsChangedInfo = "Limity zmienione!";
+						setTimeout(() => {
+							this.limitsChangedInfo = "";
+						}, 2000);
 					});
 			},
 			blockCard(id) {
