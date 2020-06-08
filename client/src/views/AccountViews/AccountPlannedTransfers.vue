@@ -15,102 +15,74 @@
 		</section>
 		<transition name="fade">
 			<div v-if="makePlannedTransfer" class="mt-5">
-				<validation-observer v-slot="{ invalid }">
-					<form @submit.prevent>
-						<validation-provider
-							class="input__box"
-							:rules="{ required: true }"
-							name="Nazwa przelewu"
-							v-slot="{ errors }"
-						>
-							<label for="name">Nazwa przelewu</label>
-							<input v-model="plannedTransfer.name" class="input__main" name="name" type="text" />
-							<input-error left :error="errors[0]" />
-						</validation-provider>
-						<div class="d-flex">
-							<validation-provider
-								class="input__box column mr-2"
-								:rules="{ required: true, numeric: true, length: 26 }"
-								name="Numer konta"
-								v-slot="{ errors }"
-							>
-								<label for="accountNumber">Numer konta</label>
-								<input
-									v-model="plannedTransfer.to.accountNumber"
-									class="input__main"
-									name="accountNumber"
-									type="text"
-								/>
-								<input-error left :error="errors[0]" />
-							</validation-provider>
-							<validation-provider
-								class="input__box column ml-2"
-								rules="required"
-								name="Nazwa odbiorcy"
-								v-slot="{ errors }"
-							>
-								<label for="name">Nazwa odbiorcy</label>
-								<input v-model="plannedTransfer.to.name" class="input__main" name="name" type="text" />
-								<input-error left :error="errors[0]" />
-							</validation-provider>
+				<form @submit.prevent>
+					<div class="d-flex flex-column input__box">
+						<label for="date">Data pierwszego przelewu</label>
+						<date-picker
+							value-type="format"
+							type="date"
+							input-class="input__main"
+							v-model="plannedTransfer.date"
+							name="date"
+						/>
+					</div>
+					<div class="input__box">
+						<label for="period">Powtarzalność</label>
+						<select v-model="plannedTransfer.period" class="input__main" name="period" type="text">
+							<option value="d">codziennie</option>
+							<option value="m">raz w miesiącu</option>
+						</select>
+					</div>
+					<div class="input__box mr-2" name="Nazwa przelewu">
+						<label for="name">Nazwa przelewu</label>
+						<input v-model="plannedTransfer.name" class="input__main" name="name" type="text" />
+					</div>
+					<div class="d-flex">
+						<div class="input__box column mr-2" name="Numer konta">
+							<label for="accountNumber">Numer konta</label>
+							<input
+								v-model="plannedTransfer.to.accountNumber"
+								class="input__main"
+								name="accountNumber"
+								type="text"
+							/>
 						</div>
-						<div class="d-flex">
-							<validation-provider
-								class="input__box column mr-2"
-								rules="required"
-								name="Dane adresowe"
-								v-slot="{ errors }"
-							>
-								<label for="adress">Dane adresowe</label>
-								<textarea class="input__main" name="adress" type="text" />
-								<input-error left :error="errors[0]" />
-							</validation-provider>
-							<validation-provider
-								class="input__box column ml-2"
-								rules="required"
-								name="Tytuł"
-								v-slot="{ errors }"
-							>
-								<label for="title">Tytuł przelewu</label>
-								<textarea
-									v-model="plannedTransfer.title"
-									class="input__main"
-									name="title"
-									type="text"
-								/>
-								<input-error left :error="errors[0]" />
-							</validation-provider>
+						<div class="input__box column ml-2" name="Nazwa odbiorcy">
+							<label for="name">Nazwa odbiorcy</label>
+							<input v-model="plannedTransfer.to.name" class="input__main" name="name" type="text" />
 						</div>
-						<div class="input__container--right">
-							<validation-provider
-								class="input__box input__box--small"
-								rules="required|numeric"
-								name="Kwota"
-								v-slot="{ errors }"
-							>
-								<label for="amount">Kwota</label>
-								<input
-									v-model="plannedTransfer.amount"
-									class="input__main"
-									name="amount"
-									type="number"
-								/>
-								<input-error left :error="errors[0]" />
-							</validation-provider>
+					</div>
+					<div class="d-flex">
+						<div class="input__box column mr-2" name="Dane adresowe">
+							<label for="adress">Dane adresowe</label>
+							<textarea class="input__main" name="adress" type="text" />
 						</div>
-						<div class="actions--container">
-							<button :disabled="invalid" class="btn btn--auto mt-5">
-								Wykonaj
-							</button>
+						<div class="input__box column ml-2" name="Tytuł">
+							<label for="title">Tytuł przelewu</label>
+							<textarea v-model="plannedTransfer.title" class="input__main" name="title" type="text" />
 						</div>
-					</form>
-				</validation-observer>
+					</div>
+					<div class="input__container--right">
+						<div class="input__box input__box--small" name="Kwota">
+							<label for="amount">Kwota</label>
+							<input v-model="plannedTransfer.amount" class="input__main" name="amount" type="number" />
+						</div>
+					</div>
+					<div class="actions--container">
+						<button class="btn btn--auto mt-5">
+							Zapisz
+						</button>
+					</div>
+				</form>
 			</div>
 		</transition>
 	</section>
 </template>
 
 <script>
+	import DatePicker from "vue2-datepicker";
+	import "vue2-datepicker/index.css";
+	import "vue2-datepicker/locale/pl";
 	export default {
 		name: "AccountPlannedTransfers",
 		data() {
@@ -118,7 +90,7 @@
 				loading: false,
 				makePlannedTransfer: false,
 				plannedTransfer: {
-					date: Date.now(),
+					date: "2020-06-10",
 					amount: null,
 					currency: "",
 					title: "",
@@ -132,7 +104,7 @@
 				}
 			};
 		},
-		components: {},
+		components: { DatePicker },
 		created() {},
 		computed: {},
 		methods: {}
