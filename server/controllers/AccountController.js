@@ -17,13 +17,15 @@ class AccountController {
     findAccount(req, res) {
         const userId = req.params.userId;
 
-        Account.findOne({ owner: userId }, (error, account) => {
-            if (error) {
-                res.send({ error: "no record" });
-            } else {
-                res.send(account);
-            }
-        });
+        Account.findOne({ owner: userId })
+            .populate("cards")
+            .exec((error, account) => {
+                if (error) {
+                    res.send({ error: "no record" });
+                } else {
+                    res.send(account);
+                }
+            });
     }
 
     findAllUserAccounts(req, res) {
@@ -32,7 +34,7 @@ class AccountController {
         User.findOne({ _id: userId })
             .populate("accounts")
             .exec((error, user) => {
-                console.log(user)
+                console.log(user);
                 if (error) {
                     res.send({ error: "no record" });
                 } else {

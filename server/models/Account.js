@@ -28,12 +28,6 @@ const AccountSchema = new Schema({
             ref: "PlannedTransfers",
         },
     ],
-    blockedTransactions: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: "BlockedTransactions",
-        },
-    ],
     accountNumber: { type: String, default: accountNumber },
     currencyName: { type: String, default: "PLN" },
 });

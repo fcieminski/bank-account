@@ -3,14 +3,7 @@
 		<div>
 			<div>Twoje karty</div>
 			<div class="horizontal--divider"></div>
-			<section v-if="!cards">
-				<div class="d-flex align-center">
-					<i class="material-icons mr-2">credit_card</i>
-					Nie masz jeszcze żadnych kart, złóż wniosek o swoją pierwszą kartę!
-				</div>
-				<button class="btn btn--auto mt-5" @click="createCardForm = true">Złóż wniosek</button>
-			</section>
-			<section v-else>
+			<section v-if="cards.length !== 0">
 				<div class="d-flex">
 					<div class="column" v-for="card in cards" :key="card._id">
 						<p class="mb-2">{{ card.cardType }}</p>
@@ -25,6 +18,13 @@
 				<button class="btn btn--auto mt-5" @click="createCardForm = !createCardForm">
 					{{ createCardForm ? "Zamknij wniosek" : "Złóż wniosek" }}
 				</button>
+			</section>
+			<section v-else>
+				<div class="d-flex align-center">
+					<i class="material-icons mr-2">credit_card</i>
+					Nie masz jeszcze żadnych kart, złóż wniosek o swoją pierwszą kartę!
+				</div>
+				<button class="btn btn--auto mt-5" @click="createCardForm = true">Złóż wniosek</button>
 			</section>
 			<transition name="fade">
 				<section class="mt-5" v-if="editCard">
@@ -66,7 +66,7 @@
 		name: "AccountCards",
 		data() {
 			return {
-				cards: null,
+				cards: [],
 				createCardForm: false,
 				currency: "PLN",
 				cardType: "Visa",
@@ -80,15 +80,7 @@
 			cardsService
 				.find(this.user._id)
 				.then(({ cards }) => {
-					this.cards = cards.map(card => {
-						return {
-							...card,
-							expDate: `${new Date(card.expirationDate).getMonth()} ${new Date(
-								card.expirationDate
-							).getFullYear()}`,
-							user: `${this.user.name} ${this.user.surname}`
-						};
-					});
+					this.cards = cards.map(this.mapCard);
 				})
 				.catch(error => {
 					console.warn(error);
@@ -106,13 +98,25 @@
 						cardCurrency: this.currency,
 						cardType: this.cardType
 					})
-					.then(({ card }) => this.cards.push(card))
+					.then(({ card }) => {
+						this.cards.push(this.mapCard(card));
+					})
 					.catch(error => {
 						console.warn(error);
+					})
+					.finally(() => {
+						this.editCard = false;
 					});
 			},
 			editCardLimits(e) {
 				this.editCard = this.cards.find(card => card._id === e);
+			},
+			mapCard(card) {
+				return {
+					...card,
+					expDate: `${new Date(card.expirationDate).getMonth()} ${new Date(card.expirationDate).getFullYear()}`,
+					user: `${this.user.name} ${this.user.surname}`
+				};
 			}
 		}
 	};

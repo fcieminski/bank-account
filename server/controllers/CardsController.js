@@ -1,7 +1,8 @@
 const Cards = require("../models/Cards");
+const Account = require("../models/Account");
 
 class CardsController {
-    create(req, res) {
+    async create(req, res) {
         const { userId, accountId, cardCurrency, cardType } = req.body;
         const generatorElements = Array.from({ length: 16 }, (_, index) => index + 1).join("");
         let cardNumber = "";
@@ -23,15 +24,25 @@ class CardsController {
                 },
             },
         });
+        try {
+                const savedCard = await Card.save();
 
-        Card.save((error) => {
-            if (error) res.send(error);
-        });
+                Account.findOne({ _id: accountId }).exec((error, account) => {
+                    if (error) res.send(error);
+                    else {
+                        account.cards.push(savedCard._id);
+                        account.save();
+                    }
+                });
 
-        Cards.findOne({ holder: userId }).exec((error, card) => {
-            if (error) res.send(error);
-            else res.send({ card });
-        });
+                Cards.findOne({ holder: userId }).exec((error, card) => {
+                    if (error) res.send(error);
+                    else res.send({ card });
+                });
+            } catch {
+                res.send("error!");
+            }
+
     }
 
     findUserCards(req, res) {
