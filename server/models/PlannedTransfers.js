@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const PlannedTransfersSchema = new Schema({
@@ -18,5 +18,5 @@ const PlannedTransfersSchema = new Schema({
     },
 });
 
-const PlannedTransfers = mongoose.model('PlannedTransfers', PlannedTransfersSchema);
+const PlannedTransfers = mongoose.model("PlannedTransfers", PlannedTransfersSchema);
 module.exports = PlannedTransfers;

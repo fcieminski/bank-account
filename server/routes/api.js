@@ -28,3 +28,4 @@ app.post("/add-to-history/:userId/send-code", isAuthenticated, HistoryController
 app.get("/pdf", HistoryController.getTransferPDF);
 
 app.post("/make-planned/:userId", isAuthenticated, PlannedTransferController.create);
+app.post("/get-planned/:userId", isAuthenticated, PlannedTransferController.index);

@@ -2,6 +2,15 @@ const PlannedTransfers = require("../models/PlannedTransfers");
 const Account = require("../models/Account");
 
 class PlannedTransferController {
+    index(req, res) {
+        const { userId } = req.params;
+
+        PlannedTransfers.find({ from: userId }).exec((error, transfers) => {
+            if (error) res.send(error);
+            else res.send(transfers);
+        });
+    }
+
     async create(req, res) {
         const { userId } = req.params;
         const { transfer } = req.body;

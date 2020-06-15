@@ -5,7 +5,12 @@
 			<div class="horizontal--divider"></div>
 		</div>
 		<section>
-			<div class="d-flex align-center">
+			<div class="d-flex align-center" v-if="allPlannedTransfers.length !== 0">
+				<div class="planned__box" v-for="(transfer, key) in allPlannedTransfers" :key="key">
+                    {{transfer.amount}}
+                </div>
+			</div>
+			<div v-else class="d-flex align-center">
 				<i class="material-icons mr-2">schedule</i>
 				Nie masz zaplanowanych transferów.
 			</div>
@@ -107,12 +112,22 @@
 						accountNumber: ""
 					},
 					period: ""
-                },
-                allPlannedTransfers: [],
+				},
+				allPlannedTransfers: [],
+				plannedError: ""
 			};
 		},
 		components: { DatePicker },
-		created() {},
+		created() {
+			plannedTransferService
+				.getUserPlannedTransfers(this.user._id)
+				.then(response => {
+					this.allPlannedTransfers = response;
+				})
+				.catch(() => {
+					this.plannedError = "Błąd pobierania danych";
+				});
+		},
 		computed: {
 			...mapState(["user"])
 		},
@@ -122,11 +137,12 @@
 					.create(this.user._id, {
 						transfer: this.plannedTransfer
 					})
-					.then(({newTransfer}) => {
+					.then(({ newTransfer }) => {
 						this.allPlannedTransfers.push(newTransfer);
-					}).catch(() => {
-                        console.warn('error')
-                    });
+					})
+					.catch(() => {
+						console.warn("error");
+					});
 			}
 		}
 	};
@@ -135,5 +151,9 @@
 <style lang='scss' scoped>
 	.planned-transfers {
 		margin-top: 30px;
+	}
+	.planned__box {
+		border: 1px solid $mainColor;
+		border-radius: 4px;
 	}
 </style>
