@@ -48,8 +48,8 @@
 						</div>
 					</div>
 					<div class="box__column box__column--actions">
-						<i class="material-icons mr-2">edit</i>
-						<i class="material-icons mr-2">delete</i>
+						<i class="material-icons mr-2 cp" @click="editTransfer(transfer)">edit</i>
+						<i class="material-icons mr-2 cp">delete</i>
 					</div>
 				</div>
 			</div>
@@ -122,7 +122,7 @@
 						</div>
 					</div>
 					<div class="actions--container">
-						<button @click="savePlannedTransfer" class="btn btn--auto mt-5">
+						<button @click="saveTransfer" class="btn btn--auto mt-5">
 							Zapisz
 						</button>
 					</div>
@@ -157,7 +157,8 @@
 					period: ""
 				},
 				allPlannedTransfers: [],
-				plannedError: ""
+				plannedError: "",
+				editingTransfer: false
 			};
 		},
 		components: { DatePicker },
@@ -175,7 +176,14 @@
 			...mapState(["user"])
 		},
 		methods: {
-			savePlannedTransfer() {
+			saveTransfer() {
+				if (!this.editingTransfer) {
+					this.createPlannedTransfer();
+				} else {
+					this.updatePlannedTransfer();
+				}
+			},
+			createPlannedTransfer() {
 				plannedTransferService
 					.create(this.user._id, {
 						transfer: this.plannedTransfer
@@ -186,6 +194,23 @@
 					.catch(() => {
 						console.warn("error");
 					});
+			},
+			updatePlannedTransfer() {
+				plannedTransferService
+					.updatePlannedTransfer(this.plannedTransfer._id, {
+						update: this.plannedTransfer
+					})
+					.then(response => {
+						console.log(response);
+					})
+					.catch(() => {
+						console.warn("error");
+					});
+			},
+			editTransfer(transfer) {
+				this.plannedTransfer = {...transfer};
+				this.makePlannedTransfer = true;
+				this.editingTransfer = true;
 			}
 		}
 	};

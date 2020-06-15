@@ -34,6 +34,25 @@ class PlannedTransferController {
             res.send("error!");
         }
     }
+
+    updateTransfer(req, res) {
+        const { transferId } = req.params;
+        const { update } = req.body;
+
+        PlannedTransfers.findOne({ _id: transferId }).exec((error, transfer) => {
+            if (error) res.send(error);
+            else {
+                let { name, title, to, amount, period } = transfer;
+                name = update.name;
+                title = update.title;
+                to = update.to;
+                amount = update.amount;
+                period = update.period;
+                transfer.save();
+                res.send("saved");
+            }
+        });
+    }
 }
 
 module.exports = new PlannedTransferController();

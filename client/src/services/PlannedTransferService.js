@@ -11,6 +11,11 @@ class PlannedTransferService extends BaseService {
       .post(`/make-planned/${userId}`, params)
       .then(response => response.data);
   }
+  updatePlannedTransfer(transferId, params) {
+    return this.axios
+      .put(`/update-planned/${transferId}`, params)
+      .then(response => response.data);
+  }
 }
 
 const plannedTransferService = new PlannedTransferService();

@@ -29,3 +29,4 @@ app.get("/pdf", HistoryController.getTransferPDF);
 
 app.post("/make-planned/:userId", isAuthenticated, PlannedTransferController.create);
 app.post("/get-planned/:userId", isAuthenticated, PlannedTransferController.index);
+app.put("/update-planned/:transferId", isAuthenticated, PlannedTransferController.updateTransfer);
