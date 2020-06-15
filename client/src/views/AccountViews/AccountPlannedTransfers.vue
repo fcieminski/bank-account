@@ -5,10 +5,53 @@
 			<div class="horizontal--divider"></div>
 		</div>
 		<section>
-			<div class="d-flex align-center" v-if="allPlannedTransfers.length !== 0">
-				<div class="planned__box" v-for="(transfer, key) in allPlannedTransfers" :key="key">
-                    {{transfer.amount}}
-                </div>
+			<div v-if="allPlannedTransfers.length !== 0">
+				<div class="planned__box d-flex" v-for="(transfer, key) in allPlannedTransfers" :key="key">
+					<div class="column box__column wrap--text">
+						<span>
+							Nazwa
+						</span>
+						<div>
+							{{ transfer.name }}
+						</div>
+					</div>
+					<div class="column box__column wrap--text">
+						<span>
+							Kwota
+						</span>
+						<div>
+							{{ transfer.amount }}
+						</div>
+					</div>
+					<div class="column box__column wrap--text">
+						<span>
+							Powtarzalność
+						</span>
+						<div class="wrap--text">
+							{{ transfer.period === "d" ? "codziennie" : "raz w miesiącu" }}
+						</div>
+					</div>
+					<div class="column box__column wrap--text">
+						<span>
+							Tytuł przelewu
+						</span>
+						<div>
+							{{ transfer.title }}
+						</div>
+					</div>
+					<div class="column box__column wrap--text">
+						<span>
+							Odbiorca
+						</span>
+						<div>
+							{{ transfer.to.name }}
+						</div>
+					</div>
+					<div class="box__column box__column--actions">
+						<i class="material-icons mr-2">edit</i>
+						<i class="material-icons mr-2">delete</i>
+					</div>
+				</div>
 			</div>
 			<div v-else class="d-flex align-center">
 				<i class="material-icons mr-2">schedule</i>
@@ -153,7 +196,18 @@
 		margin-top: 30px;
 	}
 	.planned__box {
-		border: 1px solid $mainColor;
+		border: 2px solid $mainColor;
 		border-radius: 4px;
+		margin-bottom: 20px;
+		padding: 18px;
+		.box__column {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			&.box__column--actions {
+				flex-direction: row;
+				align-items: center;
+			}
+		}
 	}
 </style>
