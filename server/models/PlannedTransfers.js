@@ -12,7 +12,11 @@ const PlannedTransfersSchema = new Schema({
     currency: String,
     period: { type: String, default: "1m" },
     date: Date,
-})
+    from: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+    },
+});
 
 const PlannedTransfers = mongoose.model('PlannedTransfers', PlannedTransfersSchema);
 module.exports = PlannedTransfers;

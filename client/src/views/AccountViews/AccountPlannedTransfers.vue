@@ -15,7 +15,7 @@
 		</section>
 		<transition name="fade">
 			<div v-if="makePlannedTransfer" class="mt-5">
-				<form @submit.prevent>
+				<form ref="form" @submit.prevent>
 					<div class="d-flex flex-column input__box">
 						<label for="date">Data pierwszego przelewu</label>
 						<date-picker
@@ -65,11 +65,16 @@
 					<div class="input__container--right">
 						<div class="input__box input__box--small" name="Kwota">
 							<label for="amount">Kwota</label>
-							<input v-model="plannedTransfer.amount" class="input__main" name="amount" type="number" />
+							<input
+								v-model.number="plannedTransfer.amount"
+								class="input__main"
+								name="amount"
+								type="number"
+							/>
 						</div>
 					</div>
 					<div class="actions--container">
-						<button class="btn btn--auto mt-5">
+						<button @click="savePlannedTransfer" class="btn btn--auto mt-5">
 							Zapisz
 						</button>
 					</div>
@@ -83,6 +88,8 @@
 	import DatePicker from "vue2-datepicker";
 	import "vue2-datepicker/index.css";
 	import "vue2-datepicker/locale/pl";
+	import plannedTransferService from "@services/PlannedTransferService";
+	import { mapState } from "vuex";
 	export default {
 		name: "AccountPlannedTransfers",
 		data() {
@@ -95,19 +102,33 @@
 					currency: "",
 					title: "",
 					name: "",
-					from: null,
 					to: {
 						name: "",
 						accountNumber: ""
 					},
 					period: ""
-				}
+                },
+                allPlannedTransfers: [],
 			};
 		},
 		components: { DatePicker },
 		created() {},
-		computed: {},
-		methods: {}
+		computed: {
+			...mapState(["user"])
+		},
+		methods: {
+			savePlannedTransfer() {
+				plannedTransferService
+					.create(this.user._id, {
+						transfer: this.plannedTransfer
+					})
+					.then(({newTransfer}) => {
+						this.allPlannedTransfers.push(newTransfer);
+					}).catch(() => {
+                        console.warn('error')
+                    });
+			}
+		}
 	};
 </script>
 
