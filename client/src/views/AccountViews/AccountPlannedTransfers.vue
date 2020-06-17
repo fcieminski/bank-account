@@ -20,6 +20,16 @@
 					</div>
 					<div class="column box__column wrap--text">
 						<span>
+							Okres
+						</span>
+						<div>
+							{{ new Date(transfer.startDate).toLocaleDateString() }}
+							-
+							{{ new Date(transfer.endDate).toLocaleDateString() }}
+						</div>
+					</div>
+					<div class="column box__column wrap--text">
+						<span>
 							Kwota
 						</span>
 						<div>
@@ -52,7 +62,7 @@
 					</div>
 					<div class="box__column box__column--actions">
 						<i class="material-icons mr-2 cp" @click="editTransfer(transfer)">edit</i>
-						<i class="material-icons mr-2 cp">delete</i>
+						<i class="material-icons mr-2 cp" @click="deleteTransfer(transfer._id, key)">delete</i>
 					</div>
 				</div>
 			</div>
@@ -183,9 +193,9 @@
 			...mapState(["user"])
 		},
 		methods: {
-            disabledDates(date){
-                return date < new Date(Date.now())
-            },
+			disabledDates(date) {
+				return date < new Date(Date.now());
+			},
 			saveTransfer() {
 				if (!this.editingTransfer) {
 					this.createPlannedTransfer();
@@ -196,7 +206,12 @@
 			createPlannedTransfer() {
 				plannedTransferService
 					.create(this.user._id, {
-						transfer: { ...this.plannedTransfer, currency: "PLN" }
+						transfer: {
+							...this.plannedTransfer,
+							currency: "PLN",
+							startDate: this.plannedTransfer.date[0],
+							endDate: this.plannedTransfer.date[1]
+						}
 					})
 					.then(({ newTransfer }) => {
 						this.allPlannedTransfers.push(newTransfer);
@@ -223,7 +238,12 @@
 			updatePlannedTransfer() {
 				plannedTransferService
 					.updatePlannedTransfer(this.plannedTransfer._id, {
-						update: this.plannedTransfer
+						update: {
+							...this.plannedTransfer,
+							currency: "PLN",
+							startDate: this.plannedTransfer.date[0],
+							endDate: this.plannedTransfer.date[1]
+						}
 					})
 					.then(response => {
 						console.log(response);
@@ -247,8 +267,15 @@
 						};
 					});
 			},
+			deleteTransfer(id, index) {
+				plannedTransferService.deletePlannedTransfer(id).then(() => {
+                    this.allPlannedTransfers.splice(index,1)
+                }).catch(() => {
+						console.warn("error");
+					})
+			},
 			editTransfer(transfer) {
-				this.plannedTransfer = { ...transfer };
+				this.plannedTransfer = { ...transfer, to: { ...transfer.to } };
 				this.modal = true;
 				this.editingTransfer = true;
 			},

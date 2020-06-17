@@ -1,5 +1,6 @@
 const PlannedTransfers = require("../models/PlannedTransfers");
 const Account = require("../models/Account");
+const { serializeUser } = require("passport");
 
 class PlannedTransferController {
     index(req, res) {
@@ -14,7 +15,6 @@ class PlannedTransferController {
     async create(req, res) {
         const { userId } = req.params;
         const { transfer } = req.body;
-        const { name, title, to, amount, currency, period, date } = transfer;
 
         try {
             const newTransfer = await new PlannedTransfers({
@@ -48,9 +48,20 @@ class PlannedTransferController {
                 transfer.to = update.to;
                 transfer.amount = update.amount;
                 transfer.period = update.period;
+                transfer.startDate = update.startDate;
+                transfer.endDate = update.endDate;
                 transfer.save();
                 res.send("saved");
             }
+        });
+    }
+
+    deleteTransfer(req, res) {
+        const { transferId } = req.params;
+
+        PlannedTransfers.deleteOne({ _id: transferId }).exec((err) => {
+            if (err) res.send("error");
+            else res.status(200).send("deleted");
         });
     }
 }
