@@ -42,12 +42,12 @@ class PlannedTransferController {
         PlannedTransfers.findOne({ _id: transferId }).exec((error, transfer) => {
             if (error) res.send(error);
             else {
-                let { name, title, to, amount, period } = transfer;
-                name = update.name;
-                title = update.title;
-                to = update.to;
-                amount = update.amount;
-                period = update.period;
+                transfer.name = update.name;
+                transfer.currency = "PLN";
+                transfer.title = update.title;
+                transfer.to = update.to;
+                transfer.amount = update.amount;
+                transfer.period = update.period;
                 transfer.save();
                 res.send("saved");
             }

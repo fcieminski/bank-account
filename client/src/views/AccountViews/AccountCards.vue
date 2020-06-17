@@ -48,7 +48,7 @@
 					<button @click="blockCardWarning = true" class="btn btn--auto mt-5">
 						Zablokuj kartę
 					</button>
-					<warning-modal
+					<dialog-modal
 						@yes="blockCard(editCard._id)"
 						@no="blockCardWarning = false"
 						v-if="blockCardWarning"
@@ -57,7 +57,7 @@
 						<div>
 							Czy na pewno chcesz zablokować kartę? Tej operacji nie da się odwrócić!
 						</div>
-					</warning-modal>
+					</dialog-modal>
 				</section>
 			</transition>
 			<transition name="fade">

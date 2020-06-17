@@ -129,7 +129,7 @@
 			</div>
 		</div>
 		<loading-indicator v-else />
-		<warning-modal
+		<dialog-modal
             @yes="makeTransfer"
 			v-if="modal"
 			:modal="{ text: 'Przepisz kod, aby potwierdzić przelew', yes: 'Wykonaj' }"
@@ -144,7 +144,7 @@
 					<input-error left :error="codeError" />
 				</div>
 			</div>
-		</warning-modal>
+		</dialog-modal>
 	</section>
 </template>
 

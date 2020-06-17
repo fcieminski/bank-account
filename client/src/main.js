@@ -11,7 +11,7 @@ import {
 } from "vee-validate/dist/vee-validate.full";
 import LoadingIndicator from "@utils/LoadingIndicator";
 import InputError from "@utils/InputError.vue";
-import WarningModal from "@utils/WarningModal.vue";
+import DialogModal from "@utils/DialogModal.vue";
 
 window.axios = axios;
 axios.defaults.withCredentials = true;
@@ -21,7 +21,7 @@ Vue.component("ValidationProvider", ValidationProvider);
 Vue.component("ValidationObserver", ValidationObserver);
 Vue.component("loading-indicator", LoadingIndicator);
 Vue.component("input-error", InputError);
-Vue.component("warning-modal", WarningModal);
+Vue.component("dialog-modal", DialogModal);
 
 new Vue({
   router,

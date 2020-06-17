@@ -5,6 +5,9 @@
 			<div class="horizontal--divider"></div>
 		</div>
 		<section>
+			<button class="btn btn--auto mb-5" @click="modal = !modal">
+				Zaplanuj nowy transfer
+			</button>
 			<div v-if="allPlannedTransfers.length !== 0">
 				<div class="planned__box d-flex" v-for="(transfer, key) in allPlannedTransfers" :key="key">
 					<div class="column box__column wrap--text">
@@ -57,21 +60,30 @@
 				<i class="material-icons mr-2">schedule</i>
 				Nie masz zaplanowanych transferów.
 			</div>
-			<button class="btn btn--auto mt-5" @click="makePlannedTransfer = !makePlannedTransfer">
-				{{ makePlannedTransfer ? "Anuluj planowanie transferu" : "Zaplanuj nowy transfer" }}
-			</button>
 		</section>
-		<transition name="fade">
-			<div v-if="makePlannedTransfer" class="mt-5">
+		<dialog-modal
+			:show="modal"
+			@no="cleanForm"
+			@yes="saveTransfer"
+			:modal="{
+				text: this.editingTransfer ? 'Edytuj zaplanowany transfer' : 'Utwórz nowy zaplanowany transfer',
+				yes: 'Zapisz',
+				no: 'Anuluj'
+			}"
+		>
+			<div class="mt-5">
 				<form ref="form" @submit.prevent>
 					<div class="d-flex flex-column input__box">
-						<label for="date">Data pierwszego przelewu</label>
+						<label for="date">Okres działania zlecenia stałego</label>
 						<date-picker
 							value-type="format"
 							type="date"
 							input-class="input__main"
 							v-model="plannedTransfer.date"
 							name="date"
+							:default-value="new Date()"
+							:disabled-date="disabledDates"
+							range
 						/>
 					</div>
 					<div class="input__box">
@@ -121,14 +133,9 @@
 							/>
 						</div>
 					</div>
-					<div class="actions--container">
-						<button @click="saveTransfer" class="btn btn--auto mt-5">
-							Zapisz
-						</button>
-					</div>
 				</form>
 			</div>
-		</transition>
+		</dialog-modal>
 	</section>
 </template>
 
@@ -143,7 +150,7 @@
 		data() {
 			return {
 				loading: false,
-				makePlannedTransfer: false,
+				modal: false,
 				plannedTransfer: {
 					date: "2020-06-10",
 					amount: null,
@@ -176,6 +183,9 @@
 			...mapState(["user"])
 		},
 		methods: {
+            disabledDates(date){
+                return date < new Date(Date.now())
+            },
 			saveTransfer() {
 				if (!this.editingTransfer) {
 					this.createPlannedTransfer();
@@ -186,13 +196,28 @@
 			createPlannedTransfer() {
 				plannedTransferService
 					.create(this.user._id, {
-						transfer: this.plannedTransfer
+						transfer: { ...this.plannedTransfer, currency: "PLN" }
 					})
 					.then(({ newTransfer }) => {
 						this.allPlannedTransfers.push(newTransfer);
 					})
 					.catch(() => {
 						console.warn("error");
+					})
+					.finally(() => {
+						this.modal = false;
+						this.plannedTransfer = {
+							date: "2020-06-10",
+							amount: null,
+							currency: "",
+							title: "",
+							name: "",
+							to: {
+								name: "",
+								accountNumber: ""
+							},
+							period: ""
+						};
 					});
 			},
 			updatePlannedTransfer() {
@@ -205,12 +230,42 @@
 					})
 					.catch(() => {
 						console.warn("error");
+					})
+					.finally(() => {
+						this.modal = false;
+						this.plannedTransfer = {
+							date: "2020-06-10",
+							amount: null,
+							currency: "",
+							title: "",
+							name: "",
+							to: {
+								name: "",
+								accountNumber: ""
+							},
+							period: ""
+						};
 					});
 			},
 			editTransfer(transfer) {
-				this.plannedTransfer = {...transfer};
-				this.makePlannedTransfer = true;
+				this.plannedTransfer = { ...transfer };
+				this.modal = true;
 				this.editingTransfer = true;
+			},
+			cleanForm() {
+				this.modal = false;
+				this.plannedTransfer = {
+					date: "2020-06-10",
+					amount: null,
+					currency: "",
+					title: "",
+					name: "",
+					to: {
+						name: "",
+						accountNumber: ""
+					},
+					period: ""
+				};
 			}
 		}
 	};
