@@ -26,9 +26,14 @@
 				<div class="divider"></div>
 				<div class="account-content__content">
 					<div class="content-box">
-						<router-link tag="div" :to="{ name: 'account.cards' }" class="cp small--box text--white">
+						<router-link :to="{ name: 'account.cards' }" class="cp small--box text--white">
 							<i class="material-icons icon--white">credit_card</i>
-							Karty {{this.account.cards.len}}
+							<span>
+								Karty
+							</span>
+							<span v-if="this.account.cards.length !== 0">
+								{{ this.account.cards.length }}
+							</span>
 						</router-link>
 						<div class="content__info">
 							Twoje karty
@@ -44,7 +49,7 @@
 						</div>
 					</div>
 					<div class="content-box">
-						<div class="small--box text--white">
+						<div @click="generateBlik" class="small--box text--white">
 							<i class="material-icons icon--white">smartphone</i>
 							Blik
 						</div>
@@ -100,6 +105,32 @@
 			</div>
 		</div>
 		<loading-indicator v-else />
+		<dialog-modal
+			:show="modal"
+			:modal="{
+				text: 'Twój kod BLIK',
+				yes: 'Zamknij',
+				no: 'Generuj nowy'
+			}"
+		>
+			<div>
+				<div class="blik">
+					<span class="blik__title">Kod</span>
+					<img class="blik__logo" :src="`${publicPath}img/logo-blik.png`" alt="logo-blik" />
+				</div>
+				<div class="code">
+					<div v-if="blikCode" class="code__number">
+						{{ blikCode | addSeparator }}
+					</div>
+					<div class="code__progress">
+						<div class="progress" :style="`width: ${blikProgress}%`"></div>
+					</div>
+					<small class="code__info">
+						....
+					</small>
+				</div>
+			</div>
+		</dialog-modal>
 	</section>
 </template>
 
@@ -115,7 +146,12 @@
 				history: null,
 				account: null,
 				loading: false,
-				copiedInfo: ""
+				copiedInfo: "",
+				modal: false,
+				publicPath: process.env.BASE_URL,
+				blikCode: null,
+				interval: null,
+				blikProgress: null
 			};
 		},
 		components: {
@@ -151,9 +187,24 @@
 				setTimeout(() => {
 					this.copiedInfo = null;
 				}, 2000);
+			},
+			generateBlik() {
+				this.blikCode = Math.floor(Math.random() * 900000 + 100000);
+				this.modal = true;
+				this.blikProgress = 100;
+				this.interval = setInterval(() => {
+					if (this.blikProgress === 0) {
+						clearInterval(this.interval);
+					}
+					this.blikProgress--;
+					console.log(this.blikProgress);
+				}, 200);
 			}
 		},
 		filters: {
+			addSeparator(val) {
+				return val.toString().replace(/(.{3})/, "$1 ");
+			},
 			formatAccountNumber(val) {
 				return val
 					.toString()
@@ -263,6 +314,41 @@
 				line-height: 18px;
 				margin-bottom: 5px;
 			}
+		}
+	}
+	.blik {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		.blik__title {
+			margin-right: 10px;
+			font-size: 30px;
+		}
+		.blik__logo {
+			width: 100px;
+		}
+	}
+	.code {
+		margin-top: 20px;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		.code__number {
+			font-size: 60px;
+		}
+		.code__progress {
+			width: 210px;
+			border-radius: 4px;
+			background-color: #80808030;
+			.progress {
+				transition: width 0.2s linear;
+				width: 0;
+				height: 10px;
+				background-color: $mainColor;
+			}
+		}
+		.code__info {
 		}
 	}
 </style>

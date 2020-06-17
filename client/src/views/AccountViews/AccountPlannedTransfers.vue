@@ -268,11 +268,14 @@
 					});
 			},
 			deleteTransfer(id, index) {
-				plannedTransferService.deletePlannedTransfer(id).then(() => {
-                    this.allPlannedTransfers.splice(index,1)
-                }).catch(() => {
-						console.warn("error");
+				plannedTransferService
+					.deletePlannedTransfer(id)
+					.then(() => {
+						this.allPlannedTransfers.splice(index, 1);
 					})
+					.catch(() => {
+						console.warn("error");
+					});
 			},
 			editTransfer(transfer) {
 				this.plannedTransfer = { ...transfer, to: { ...transfer.to } };
