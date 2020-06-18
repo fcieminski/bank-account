@@ -4,10 +4,10 @@
 			Przelewy zaplanowane
 		</div>
 		<div v-if="plannedInfo && plannedInfo.amount > 0">
-			<span class="pt-2">{{plannedInfo.date}}</span>
+			<span class="pt-2">{{ plannedInfo.date }}</span>
 			<div class="d-flex justify-between pt-2">
-				<span>Ilość: {{plannedInfo.items}}</span>
-				<span>Łączna kwota: {{plannedInfo.amount}} zł</span>
+				<span>Ilość: {{ plannedInfo.items }}</span>
+				<span>Łączna kwota: {{ plannedInfo.amount }} zł</span>
 			</div>
 		</div>
 	</div>

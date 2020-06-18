@@ -2,21 +2,7 @@
 	<div class="account__more-box">
 		<div class="more-box__widgets">
 			<planned-transfers-widget />
-			<div class="widget--margin">
-				<div class="widget--title">
-					Stan konta w tym miesiącu
-				</div>
-				<div>
-					<div class="d-flex justify-between pt-2">
-						<span>Przychód:</span>
-						<span>6542 zł</span>
-					</div>
-					<div class="d-flex justify-between pt-2">
-						<span>Wydatki:</span>
-						<span class="amount--less">- 3210 zł</span>
-					</div>
-				</div>
-			</div>
+			<account-status-widget />
 		</div>
 		<div class="actions--container">
 			<div class="btn pa-2">
@@ -27,15 +13,17 @@
 </template>
 
 <script>
-import PlannedTransfersWidget from './Widgets/PlannedTransfersWidget'
+	import PlannedTransfersWidget from "./Widgets/PlannedTransfersWidget";
+	import AccountStatusWidget from "./Widgets/AccountStatusWidget";
 	export default {
 		name: "WidgetsSection",
 		data() {
 			return {};
 		},
 		components: {
-            PlannedTransfersWidget
-        },
+			PlannedTransfersWidget,
+			AccountStatusWidget
+		},
 		created() {},
 		computed: {},
 		methods: {}

@@ -51,7 +51,7 @@ class HistoryController {
             ...(searchQuery.amountFrom && { amount: { $gte: searchQuery.amountFrom, $lt: searchQuery.amountTo } }),
             ...(searchQuery.type !== 0 && { name: searchQuery.type === 1 ? "income" : "transfer" }),
         }).exec((error, history) => {
-            res.send({history});
+            res.send({ history });
         });
     }
 
@@ -143,6 +143,30 @@ class HistoryController {
             id,
             code: result,
         };
+    }
+
+    getAccountStats(req, res) {
+        const { userId } = req.params;
+
+        History.find({ from: userId })
+            .select("name amount")
+            .exec((err, histories) => {
+                if (err) res.send(err);
+                else {
+                    const sumUp = histories.reduce(
+                        (prev, curr) => {
+                            if (curr.name === "income") {
+                                prev.income += curr.amount;
+                            } else {
+                                prev.transfer += curr.amount;
+                            }
+                            return prev;
+                        },
+                        { income: 0, transfer: 0 }
+                    );
+                    res.send(sumUp);
+                }
+            });
     }
 
     getTransferPDF = async (req, res) => {
