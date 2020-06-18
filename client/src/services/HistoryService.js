@@ -13,12 +13,6 @@ class HistoryService extends BaseService {
       .then(response => response.data);
   }
 
-  getAccountStats(userId) {
-    return this.axios
-      .get(`/history/${userId}/stats`)
-      .then(response => response.data);
-  }
-
   create(userId, params) {
     return this.axios
       .post(`/add-to-history/${userId}`, params)

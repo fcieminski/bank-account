@@ -42,6 +42,38 @@ class AccountController {
                 }
             });
     }
+    
+    async getAccountStats(req, res) {
+        const { accountId } = req.params;
+        const today = new Date();
+
+        try {
+            const accountHistoryStats = await Account.findOne({ _id: accountId })
+                .select("history")
+                .populate("history", "name amount date");
+
+            const sumUp = accountHistoryStats.history
+                .filter((history) => {
+                    console.log(history);
+                    return new Date(history.date).getMonth() === today.getMonth() && new Date(history.date).getFullYear() === today.getFullYear();
+                })
+                .reduce(
+                    (prev, curr) => {
+                        if (curr.name === "income") {
+                            prev.income += curr.amount;
+                        } else {
+                            prev.transfer += curr.amount;
+                        }
+                        return prev;
+                    },
+                    { income: 0, transfer: 0 }
+                );
+
+            res.send(sumUp);
+        } catch {
+            res.status(500).send("error");
+        }
+    }
 }
 
 module.exports = new AccountController();

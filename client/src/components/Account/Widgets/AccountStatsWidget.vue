@@ -18,9 +18,9 @@
 
 <script>
 	import { mapState } from "vuex";
-	import historyService from "@/services/HistoryService";
+	import accountService from "@/services/AccountService";
 	export default {
-		name: "AccountStatusWidget",
+		name: "AccountStatsWidget",
 		data() {
 			return {
 				stats: null
@@ -28,10 +28,10 @@
 		},
 		components: {},
 		created() {
-			historyService
-				.getAccountStats(this.user._id)
-				.then(data => {
-					this.stats = data;
+			const accountsPromises = this.user.accounts.map(account => accountService.getAccountStats(account));
+			Promise.all(accountsPromises)
+				.then(stats => {
+					[this.stats] = stats
 				})
 				.catch(error => {
 					console.warn(error);

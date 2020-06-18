@@ -2,7 +2,7 @@
 	<div class="account__more-box">
 		<div class="more-box__widgets">
 			<planned-transfers-widget />
-			<account-status-widget />
+			<account-stats-widget />
 		</div>
 		<div class="actions--container">
 			<div class="btn pa-2">
@@ -14,7 +14,7 @@
 
 <script>
 	import PlannedTransfersWidget from "./Widgets/PlannedTransfersWidget";
-	import AccountStatusWidget from "./Widgets/AccountStatusWidget";
+	import AccountStatsWidget from "./Widgets/AccountStatsWidget";
 	export default {
 		name: "WidgetsSection",
 		data() {
@@ -22,7 +22,7 @@
 		},
 		components: {
 			PlannedTransfersWidget,
-			AccountStatusWidget
+			AccountStatsWidget
 		},
 		created() {},
 		computed: {},

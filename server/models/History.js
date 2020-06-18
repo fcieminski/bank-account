@@ -7,6 +7,7 @@ const HistorySchema = new Schema({
     amount: Number,
     currency: String,
     title: String,
+    accountId: { type: Schema.Types.ObjectId, ref: "Account" },
     from: {
         type: Schema.Types.ObjectId,
         ref: "User",

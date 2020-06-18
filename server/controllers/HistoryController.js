@@ -64,7 +64,8 @@ class HistoryController {
             amount,
             currency,
             title,
-            from: `${from.name} ${from.surname}`,
+            accountId,
+            from,
             to: {
                 name: to.name,
                 accountNumber: to.accountNumber.toString(),
@@ -143,30 +144,6 @@ class HistoryController {
             id,
             code: result,
         };
-    }
-
-    getAccountStats(req, res) {
-        const { userId } = req.params;
-
-        History.find({ from: userId })
-            .select("name amount")
-            .exec((err, histories) => {
-                if (err) res.send(err);
-                else {
-                    const sumUp = histories.reduce(
-                        (prev, curr) => {
-                            if (curr.name === "income") {
-                                prev.income += curr.amount;
-                            } else {
-                                prev.transfer += curr.amount;
-                            }
-                            return prev;
-                        },
-                        { income: 0, transfer: 0 }
-                    );
-                    res.send(sumUp);
-                }
-            });
     }
 
     getTransferPDF = async (req, res) => {

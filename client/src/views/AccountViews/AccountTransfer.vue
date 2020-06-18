@@ -131,7 +131,7 @@
 		<loading-indicator v-else />
 		<dialog-modal
             @yes="makeTransfer"
-			v-if="modal"
+			:show="modal"
 			:modal="{ text: 'Przepisz kod, aby potwierdzić przelew', yes: 'Wykonaj' }"
 		>
 			<div>
@@ -230,11 +230,11 @@
 							this.modal = false;
 							const transfer = {
 								...this.transferData,
-								from: this.user,
+								from: this.user._id,
 								currency: "PLN",
 								name: "transfer",
 								accountId: this.activeAccount._id
-							};
+                            };
 							setTimeout(
 								() => {
 									historyService.create(this.user._id, transfer).catch(() => {
