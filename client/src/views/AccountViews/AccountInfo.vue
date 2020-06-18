@@ -49,7 +49,7 @@
 						</div>
 					</div>
 					<div class="content-box">
-						<div @click="generateBlik" class="small--box text--white">
+						<div @click="generateBlik" class="small--box text--white cp">
 							<i class="material-icons icon--white">smartphone</i>
 							Blik
 						</div>
@@ -68,7 +68,8 @@
 			<router-link class="link__inline ml-2" to="/">przelew!</router-link>
 		</div>
 		<loading-indicator v-else />
-		<div v-if="!loading" class="account__more-box">
+		<widgets-section v-if="!loading" />
+		<!-- <div v-if="!loading" class="account__more-box">
 			<div class="more-box__widgets">
 				<div class="widget--margin">
 					<div class="widget--title">
@@ -103,7 +104,7 @@
 					dodaj widget
 				</div>
 			</div>
-		</div>
+		</div> -->
 		<loading-indicator v-else />
 		<dialog-modal
 			:show="modal"
@@ -140,6 +141,7 @@
 	import accountService from "@services/AccountService";
 	import historyService from "@services/HistoryService";
 	import History from "@/components/Account/History";
+	import WidgetsSection from "@/components/Account/WidgetsSection";
 	import { mapState } from "vuex";
 	export default {
 		name: "AccountInfo",
@@ -157,7 +159,8 @@
 			};
 		},
 		components: {
-			History
+			History,
+			WidgetsSection
 		},
 		async created() {
 			this.loading = true;
@@ -206,8 +209,8 @@
 			},
 			closeModal() {
 				this.modal = false;
-                clearInterval(this.interval);
-                this.interval = null;
+				clearInterval(this.interval);
+				this.interval = null;
 			}
 		},
 		filters: {
@@ -245,14 +248,6 @@
 			grid-area: info;
 		}
 
-		.account__more-box {
-			margin-top: 30px;
-			padding-left: 16px;
-			display: flex;
-			flex-direction: column;
-			justify-content: space-between;
-			grid-area: more;
-		}
 		.info-box__account-data {
 			div {
 				font-size: 1rem;
@@ -314,16 +309,6 @@
 				}
 			}
 		}
-
-		.more-box__widgets {
-			.widget--margin {
-				margin-bottom: 16px;
-			}
-			.widget--title {
-				line-height: 18px;
-				margin-bottom: 5px;
-			}
-		}
 	}
 	.blik {
 		display: flex;
@@ -358,8 +343,8 @@
 			}
 		}
 		.code__info {
-            margin-top: 5px;
-            font-size: 13px;
+			margin-top: 5px;
+			font-size: 13px;
 		}
 	}
 </style>
