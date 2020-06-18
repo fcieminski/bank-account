@@ -107,6 +107,8 @@
 		<loading-indicator v-else />
 		<dialog-modal
 			:show="modal"
+			@no="generateBlik"
+			@yes="closeModal"
 			:modal="{
 				text: 'Twój kod BLIK',
 				yes: 'Zamknij',
@@ -126,7 +128,7 @@
 						<div class="progress" :style="`width: ${blikProgress}%`"></div>
 					</div>
 					<small class="code__info">
-						....
+						Wpisz swój kod blik, aby wykonać szybki przelew
 					</small>
 				</div>
 			</div>
@@ -192,13 +194,20 @@
 				this.blikCode = Math.floor(Math.random() * 900000 + 100000);
 				this.modal = true;
 				this.blikProgress = 100;
-				this.interval = setInterval(() => {
-					if (this.blikProgress === 0) {
-						clearInterval(this.interval);
-					}
-					this.blikProgress--;
-					console.log(this.blikProgress);
-				}, 200);
+				if (!this.interval) {
+					this.interval = setInterval(() => {
+						if (this.blikProgress === 0) {
+							clearInterval(this.interval);
+							return;
+						}
+						this.blikProgress--;
+					}, 200);
+				}
+			},
+			closeModal() {
+				this.modal = false;
+                clearInterval(this.interval);
+                this.interval = null;
 			}
 		},
 		filters: {
@@ -349,6 +358,8 @@
 			}
 		}
 		.code__info {
+            margin-top: 5px;
+            font-size: 13px;
 		}
 	}
 </style>
