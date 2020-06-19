@@ -38,7 +38,64 @@
 						Przygotowywanie Twojego wniosku, nie wyłączaj tej strony{{ dots }}
 					</div>
 				</section>
-				<section v-if="newSavingGoal">
+				<section>
+					<div class="horizontal--divider"></div>
+					<div v-if="!currentGoals" class="d-flex align-center">
+						<i class="material-icons mr-2">account_balance_wallet</i>
+						Nie masz jeszcze żadnych celów oszczędnościowych!
+					</div>
+					<div v-else>
+						<div class="goal__box" v-for="(goal, index) in currentGoals" :key="index">
+							<img class="goal__image goal__column" :src="goal.image" alt="" />
+							<div class="goal__column pa-5">
+								<span>
+									Nazwa celu
+								</span>
+								<div>
+									{{ goal.name }}
+								</div>
+							</div>
+							<div class="goal__column pa-5">
+								<span>
+									Opis celu
+								</span>
+								<div>
+									{{ goal.description }}
+								</div>
+							</div>
+							<div class="goal__column pa-5">
+								<span>
+									Kwota
+								</span>
+								<div>
+									{{ goal.amount }}
+								</div>
+							</div>
+							<div class="goal__column pa-5">
+								<span>
+									Mam już
+								</span>
+								<div>
+									{{ goal.currentAmount }}
+								</div>
+							</div>
+							<div class="goal__column pa-5">
+								<span>
+									Kategoria
+								</span>
+								<div>
+									{{ goal.category }}
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+				<dialog-modal
+					@yes="createNewGoal"
+					@no="newSavingGoal = false"
+					:show="newSavingGoal"
+					:modal="{ text: 'Nowy cel', yes: 'Stwórz', no: 'Anuluj' }"
+				>
 					<div class="d-flex">
 						<div class="input__box column mr-2">
 							<label for="name">Nazwa celu</label>
@@ -67,10 +124,7 @@
 						<label for="description">Opis celu</label>
 						<textarea v-model="goal.description" class="input__main" name="description" />
 					</div>
-					<div class="actions--container">
-						<button class="btn btn--auto mt-5" @click="createNewGoal">Stwórz</button>
-					</div>
-				</section>
+				</dialog-modal>
 			</section>
 		</div>
 	</section>
@@ -107,7 +161,7 @@
 			try {
 				const accounts = await accountService.getUserAccounts(this.user._id);
 				this.savingAccount = accounts.find(account => account.type === "savings");
-                const goals = await accountService.getGoals(this.savingAccount._id);
+				const goals = await accountService.getGoals(this.savingAccount._id);
 				this.currentGoals = goals;
 			} catch (error) {
 				console.warn(error);
@@ -155,7 +209,10 @@
 						...this.goal
 					})
 					.then(data => {
-						console.log(data);
+						this.currentGoals.push(data);
+					})
+					.catch(error => {
+						console.warn(error);
 					});
 			}
 		}
@@ -170,5 +227,25 @@
 		resize: vertical;
 		max-height: 300px;
 		min-height: 100px;
+	}
+	.goal__box {
+		border: 2px solid $mainColor;
+		margin-bottom: 20px;
+		padding: 18px;
+		border-radius: 4px;
+		display: flex;
+		width: 100%;
+		justify-content: space-between;
+		.goal__image {
+			object-fit: cover;
+			width: 100px;
+			height: 100px;
+		}
+		.goal__column {
+			display: flex;
+			flex-direction: column;
+			flex: 0 0 16%;
+			max-width: 16%;
+		}
 	}
 </style>
