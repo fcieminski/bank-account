@@ -94,7 +94,6 @@ class HistoryController {
                     }
                 });
         } catch (error) {
-            console.log(error);
             res.status(404).send();
         }
     };
@@ -106,7 +105,6 @@ class HistoryController {
             acc.balance += newHistory.amount;
             acc.save();
         } catch (err) {
-            console.log(err);
             return;
         }
     }
@@ -202,7 +200,6 @@ class HistoryController {
             );
         let position = 315;
         content.forEach((ele, index) => {
-            console.log(ele);
             doc.fontSize(10)
                 .font(font)
                 .text(ele.to.name, 50, position + (index + 1) * 30)

@@ -40,10 +40,10 @@
 						</div>
 					</div>
 					<div class="content-box">
-						<div class="small--box text--white">
+						<router-link :to="{ name: 'account.savings' }" class="small--box text--white cp">
 							<i class="material-icons icon--white">account_balance</i>
 							Oszczędności
-						</div>
+						</router-link>
 						<div class="content__info">
 							Twoje oszczędności
 						</div>
@@ -69,42 +69,6 @@
 		</div>
 		<loading-indicator v-else />
 		<widgets-section v-if="!loading" />
-		<!-- <div v-if="!loading" class="account__more-box">
-			<div class="more-box__widgets">
-				<div class="widget--margin">
-					<div class="widget--title">
-						Przelewy zaplanowane
-					</div>
-					<div>
-						<span class="pt-2">MAJ 2020</span>
-						<div class="d-flex justify-between pt-2">
-							<span>Ilość: 3</span>
-							<span>Łączna kwota: 549 zł</span>
-						</div>
-					</div>
-				</div>
-				<div class="widget--margin">
-					<div class="widget--title">
-						Stan konta w tym miesiącu
-					</div>
-					<div>
-						<div class="d-flex justify-between pt-2">
-							<span>Przychód:</span>
-							<span>6542 zł</span>
-						</div>
-						<div class="d-flex justify-between pt-2">
-							<span>Wydatki:</span>
-							<span class="amount--less">- 3210 zł</span>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="actions--container">
-				<div class="btn pa-2">
-					dodaj widget
-				</div>
-			</div>
-		</div> -->
 		<loading-indicator v-else />
 		<dialog-modal
 			:show="modal"
@@ -234,7 +198,7 @@
 	};
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 	.account {
 		margin-top: 30px;
 		display: grid;

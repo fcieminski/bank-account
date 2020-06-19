@@ -2,17 +2,36 @@ const Account = require("../models/Account");
 const User = require("../models/User");
 
 class AccountController {
-    async create(req) {
+    async create(req, type, description) {
         const user = req.user;
 
         if (user) {
             const Accounts = new Account({
                 owner: user.id,
+                ...(type && { type }),
+                ...(description && { description }),
             });
             const newAccount = await Accounts.save();
             return newAccount;
         }
     }
+
+    createNewAccount = async (req, res) => {
+        const { description, type } = req.body;
+        const { id } = req.user;
+
+        const newAccount = await this.create(req, type, description);
+        if (newAccount) {
+            User.findOne({ _id: id }).exec((error, user) => {
+                if (error) res.status(500).send("erorr");
+                else {
+                    user.accounts.push(newAccount._id);
+                    user.save();
+                    res.status(201).send(newAccount);
+                }
+            });
+        }
+    };
 
     findAccount(req, res) {
         const userId = req.params.userId;
@@ -34,7 +53,6 @@ class AccountController {
         User.findOne({ _id: userId })
             .populate("accounts")
             .exec((error, user) => {
-                console.log(user);
                 if (error) {
                     res.send({ error: "no record" });
                 } else {
@@ -42,7 +60,7 @@ class AccountController {
                 }
             });
     }
-    
+
     async getAccountStats(req, res) {
         const { accountId } = req.params;
         const today = new Date();
@@ -54,7 +72,6 @@ class AccountController {
 
             const sumUp = accountHistoryStats.history
                 .filter((history) => {
-                    console.log(history);
                     return new Date(history.date).getMonth() === today.getMonth() && new Date(history.date).getFullYear() === today.getFullYear();
                 })
                 .reduce(

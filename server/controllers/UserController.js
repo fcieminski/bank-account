@@ -26,7 +26,6 @@ class UserController {
                                     if (!err) {
                                         AccountController.create(req)
                                             .then((response) => {
-                                                console.log(response)
                                                 user.accounts.push(response._id);
                                                 user.save();
                                                 res.send({ success: true, redirect: true, user });

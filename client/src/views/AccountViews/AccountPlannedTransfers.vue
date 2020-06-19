@@ -245,9 +245,6 @@
 							endDate: this.plannedTransfer.date[1]
 						}
 					})
-					.then(response => {
-						console.log(response);
-					})
 					.catch(() => {
 						console.warn("error");
 					})

@@ -3,7 +3,7 @@ import BaseService from "./BaseService";
 class AccountService extends BaseService {
   create(params) {
     return this.axios
-      .post("/account-create", params)
+      .post("/account/create", params)
       .then(response => response.data);
   }
 

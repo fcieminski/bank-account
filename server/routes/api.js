@@ -16,6 +16,7 @@ app.post("/logout", AuthController.logOut);
 app.get("/user-accounts/:userId", AccountController.findAllUserAccounts);
 app.get("/account/:userId", AccountController.findAccount);
 app.get("/account/:accountId/stats", isAuthenticated, AccountController.getAccountStats);
+app.post("/account/create", isAuthenticated, AccountController.createNewAccount);
 
 app.post("/create-new-card", isAuthenticated, CardsController.create);
 app.patch("/update/:cardId", isAuthenticated, CardsController.updateCard);

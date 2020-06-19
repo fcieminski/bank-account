@@ -11,6 +11,7 @@ const AccountHistory = () => import("@account/AccountHistory.vue");
 const AccountCards = () => import("@account/AccountCards.vue");
 const AccountPlannedTransfers = () =>
   import("@account/AccountPlannedTransfers.vue");
+const AccountSavings = () => import("@account/AccountSavings.vue");
 
 Vue.use(VueRouter);
 
@@ -81,6 +82,14 @@ const routes = [
         path: "planned-transfers",
         name: "account.plannedTransfers",
         component: AccountPlannedTransfers,
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: "savings",
+        name: "account.savings",
+        component: AccountSavings,
         meta: {
           requiresAuth: true
         }
