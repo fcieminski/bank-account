@@ -1,16 +1,31 @@
 <template>
 	<section class="savings">
 		<div v-if="!loading">
-			<div>Oszczędności</div>
+			<div>Oszczędności {{ savingAccount && savingAccount.description }}</div>
 			<div class="horizontal--divider"></div>
 			<section>
 				<section class="d-flex" v-if="savingAccount">
 					<div class="column">
 						<copy-info :account="savingAccount" />
-						<account-main-info :account="savingAccount" />
+						<account-main-info icon="account_balance" :account="savingAccount" />
 					</div>
 					<div class="column">
-						hello
+						<div>
+							<div>
+								<span>
+									Wykonaj przelew ze swojego konta głównego, na konto oszczędnościowe
+								</span>
+							</div>
+							<button class="btn btn--auto mt-5" @click="makeLocalTransfer">Wykonaj przelew</button>
+						</div>
+						<div class="mt-5">
+							<div>
+								<span>
+									Ustal nowy cel oszczędnościowy
+								</span>
+							</div>
+							<button class="btn btn--auto mt-5" @click="newSavingGoal = true">Ustal cel</button>
+						</div>
 					</div>
 				</section>
 				<section v-else>
@@ -21,6 +36,39 @@
 					<button class="btn btn--auto mt-5" @click="createNewAccount">Złóż wniosek</button>
 					<div class="mt-5" v-if="creatingAccount">
 						Przygotowywanie Twojego wniosku, nie wyłączaj tej strony{{ dots }}
+					</div>
+				</section>
+				<section v-if="newSavingGoal">
+					<div class="d-flex">
+						<div class="input__box column mr-2">
+							<label for="name">Nazwa celu</label>
+							<input v-model="goal.name" class="input__main" name="name" />
+						</div>
+						<div class="input__box column ml-2">
+							<label for="amount">Kwota celu</label>
+							<input v-model.number="goal.amount" class="input__main" name="amount" />
+						</div>
+						<div class="input__box column ml-2">
+							<label for="category">Kategoria celu</label>
+							<select v-model="goal.category" class="input__main" name="category">
+								<option value="samochód">Samochód</option>
+								<option value="wakacje">Wakacje</option>
+								<option value="dom">Dom</option>
+								<option value="marzenia">Marzenia</option>
+								<option value="emerytura">Emerytura</option>
+								<option value="zaręczyny">Zaręczyny</option>
+								<option value="komputer">Komputer</option>
+								<option value="telefon">Telefon</option>
+								<option value="inne">Inne</option>
+							</select>
+						</div>
+					</div>
+					<div>
+						<label for="description">Opis celu</label>
+						<textarea v-model="goal.description" class="input__main" name="description" />
+					</div>
+					<div class="actions--container">
+						<button class="btn btn--auto mt-5" @click="createNewGoal">Stwórz</button>
 					</div>
 				</section>
 			</section>
@@ -42,23 +90,30 @@
 				dots: "",
 				iteration: 0,
 				interval: null,
-				savingAccount: null
+				savingAccount: null,
+				newSavingGoal: false,
+				goal: {
+					name: "",
+					amount: 0,
+					description: "",
+					category: ""
+				},
+				currentGoals: null
 			};
 		},
 		components: { AccountMainInfo, CopyInfo },
-		created() {
+		async created() {
 			this.loading = true;
-			accountService
-				.getUserAccounts(this.user._id)
-				.then(data => {
-					this.savingAccount = data.find(account => account.type === "savings");
-				})
-				.catch(() => {
-					console.warn("error");
-				})
-				.finally(() => {
-					this.loading = false;
-				});
+			try {
+				const accounts = await accountService.getUserAccounts(this.user._id);
+				this.savingAccount = accounts.find(account => account.type === "savings");
+                const goals = await accountService.getGoals(this.savingAccount._id);
+				this.currentGoals = goals;
+			} catch (error) {
+				console.warn(error);
+			} finally {
+				this.loading = false;
+			}
 		},
 		computed: {
 			...mapState(["user"])
@@ -92,6 +147,16 @@
 						this.savingAccount = data;
 						this.creatingAccount = false;
 					});
+			},
+			makeLocalTransfer() {},
+			createNewGoal() {
+				accountService
+					.createSavingGoal(this.savingAccount._id, {
+						...this.goal
+					})
+					.then(data => {
+						console.log(data);
+					});
 			}
 		}
 	};
@@ -100,5 +165,10 @@
 <style lang="scss" scoped>
 	.savings {
 		margin-top: 30px;
+	}
+	textarea {
+		resize: vertical;
+		max-height: 300px;
+		min-height: 100px;
 	}
 </style>

@@ -22,6 +22,18 @@ class AccountService extends BaseService {
       .get(`/account/${accountId}/stats`)
       .then(response => response.data);
   }
+
+  createSavingGoal(accountId, params) {
+    return this.axios
+      .post(`/account/${accountId}/make-goal`, params)
+      .then(response => response.data);
+  }
+
+  getGoals(accountId) {
+    return this.axios
+      .get(`/account/${accountId}/get-goals`)
+      .then(response => response.data);
+  }
 }
 
 const accountService = new AccountService();

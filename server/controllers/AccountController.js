@@ -1,5 +1,6 @@
 const Account = require("../models/Account");
 const User = require("../models/User");
+const SavingGoals = require("../models/SavingGoals");
 
 class AccountController {
     async create(req, type, description) {
@@ -90,6 +91,37 @@ class AccountController {
         } catch {
             res.status(500).send("error");
         }
+    }
+
+    async createSavingGoal(req, res) {
+        const { id } = req.user;
+        const { accountId } = req.params;
+        const { name, description, image, category, amount } = req.body;
+
+        const goal = {
+            owner: id,
+            name,
+            description,
+            image,
+            category,
+            amount,
+            accountId,
+        };
+        try {
+            const createdGoal = await new SavingGoals(goal).save();
+            res.status(201).send(createdGoal);
+        } catch (error) {
+            res.status(500).send(error);
+        }
+    }
+
+    getCurrentGoals(req, res) {
+        const { accountId } = req.params;
+
+        SavingGoals.find({ accountId }).exec((error, goals) => {
+            if (error) res.status(500).send(error);
+            else res.send(goals);
+        });
     }
 }
 
