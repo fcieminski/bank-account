@@ -4,18 +4,13 @@
 			<div>Oszczędności</div>
 			<div class="horizontal--divider"></div>
 			<section>
-				<section v-if="savingAccount">
-					<div class="info-box__account-data">
-						<span>{{ user.name }} {{ user.surname }}</span>
-						<div class="d-flex align-center">
-							<div id="account-number" class="mr-2">
-								{{ savingAccount.accountNumber | formatAccountNumber }}
-							</div>
-							<i @click="copyAccountNumber" class="material-icons icon--xsmall cp">file_copy</i>
-							<transition name="fade">
-								<small v-if="copiedInfo" class="ml-2">{{ copiedInfo }}</small>
-							</transition>
-						</div>
+				<section class="d-flex" v-if="savingAccount">
+					<div class="column">
+						<copy-info :account="savingAccount" />
+						<account-main-info :account="savingAccount" />
+					</div>
+					<div class="column">
+						hello
 					</div>
 				</section>
 				<section v-else>
@@ -35,6 +30,8 @@
 
 <script>
 	import accountService from "@/services/AccountService";
+	import AccountMainInfo from "@/components/Account/AccountMainInfo";
+	import CopyInfo from "@/components/utils/CopyInfo";
 	import { mapState } from "vuex";
 	export default {
 		name: "AccountSavings",
@@ -44,15 +41,25 @@
 				creatingAccount: false,
 				dots: "",
 				iteration: 0,
-				copiedInfo: "",
 				interval: null,
 				savingAccount: null
 			};
 		},
-		components: {},
+		components: { AccountMainInfo, CopyInfo },
 		created() {
-
-        },
+			this.loading = true;
+			accountService
+				.getUserAccounts(this.user._id)
+				.then(data => {
+					this.savingAccount = data.find(account => account.type === "savings");
+				})
+				.catch(() => {
+					console.warn("error");
+				})
+				.finally(() => {
+					this.loading = false;
+				});
+		},
 		computed: {
 			...mapState(["user"])
 		},
@@ -82,37 +89,10 @@
 						type: "savings"
 					})
 					.then(data => {
-                        this.savingAccount = data;
-                        this.creatingAccount = false;
+						this.savingAccount = data;
+						this.creatingAccount = false;
 					});
-			},
-			copyAccountNumber() {
-				const ele = document.querySelector("#account-number");
-				const field = document.createElement("textarea");
-				field.setAttribute("readonly", "");
-				field.value = `Mój numer konta w Purple Banku to: ${ele.textContent.trim()}`;
-				document.body.appendChild(field);
-				field.select();
-				document.execCommand("copy");
-				document.body.removeChild(field);
-				this.copiedInfo = "Zawartość skopiowana!";
-				setTimeout(() => {
-					this.copiedInfo = null;
-				}, 2000);
 			}
-		},
-		formatAccountNumber(val) {
-			return val
-				.toString()
-				.split("")
-				.reverse()
-				.join("")
-				.replace(/[^\dA-Z]/g, "")
-				.replace(/(.{4})/g, "$1 ")
-				.split("")
-				.reverse()
-				.join("")
-				.trim();
 		}
 	};
 </script>

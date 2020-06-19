@@ -1,28 +1,9 @@
 <template>
 	<section class="account">
 		<div v-if="!loading" class="account__info-box">
-			<div class="info-box__account-data">
-				<span>{{ user.name }} {{ user.surname }}</span>
-				<div class="d-flex align-center">
-					<div id="account-number" class="mr-2">
-						{{ account.accountNumber | formatAccountNumber }}
-					</div>
-					<i @click="copyAccountNumber" class="material-icons icon--xsmall cp">file_copy</i>
-					<transition name="fade">
-						<small v-if="copiedInfo" class="ml-2">{{ copiedInfo }}</small>
-					</transition>
-				</div>
-			</div>
+			<copy-info :account="account" />
 			<div class="info-box__account-content">
-				<div class="account-content_account-balance">
-					<router-link tag="div" :to="{ name: 'account.transfer' }" class="cp big--box">
-						<i class="material-icons icon--white icon--big">account_balance_wallet</i>
-						<div class="text--white">
-							Stan konta
-						</div>
-						<div class="text--white">{{ account.balance }} PLN</div>
-					</router-link>
-				</div>
+				<account-main-info :account="account" />
 				<div class="divider"></div>
 				<div class="account-content__content">
 					<div class="content-box">
@@ -105,6 +86,8 @@
 	import accountService from "@services/AccountService";
 	import historyService from "@services/HistoryService";
 	import History from "@/components/Account/History";
+	import AccountMainInfo from "@/components/Account/AccountMainInfo";
+	import CopyInfo from "@/components/utils/CopyInfo";
 	import WidgetsSection from "@/components/Account/WidgetsSection";
 	import { mapState } from "vuex";
 	export default {
@@ -114,7 +97,6 @@
 				history: null,
 				account: null,
 				loading: false,
-				copiedInfo: "",
 				modal: false,
 				publicPath: process.env.BASE_URL,
 				blikCode: null,
@@ -124,7 +106,9 @@
 		},
 		components: {
 			History,
-			WidgetsSection
+			WidgetsSection,
+			AccountMainInfo,
+			CopyInfo
 		},
 		async created() {
 			this.loading = true;
@@ -143,20 +127,6 @@
 			...mapState(["user"])
 		},
 		methods: {
-			copyAccountNumber() {
-				const ele = document.querySelector("#account-number");
-				const field = document.createElement("textarea");
-				field.setAttribute("readonly", "");
-				field.value = `Mój numer konta w Purple Banku to: ${ele.textContent.trim()}`;
-				document.body.appendChild(field);
-				field.select();
-				document.execCommand("copy");
-				document.body.removeChild(field);
-				this.copiedInfo = "Zawartość skopiowana!";
-				setTimeout(() => {
-					this.copiedInfo = null;
-				}, 2000);
-			},
 			generateBlik() {
 				this.blikCode = Math.floor(Math.random() * 900000 + 100000);
 				this.modal = true;
@@ -180,19 +150,6 @@
 		filters: {
 			addSeparator(val) {
 				return val.toString().replace(/(.{3})/, "$1 ");
-			},
-			formatAccountNumber(val) {
-				return val
-					.toString()
-					.split("")
-					.reverse()
-					.join("")
-					.replace(/[^\dA-Z]/g, "")
-					.replace(/(.{4})/g, "$1 ")
-					.split("")
-					.reverse()
-					.join("")
-					.trim();
 			}
 		}
 	};
@@ -212,35 +169,12 @@
 			grid-area: info;
 		}
 
-		.info-box__account-data {
-			div {
-				font-size: 1rem;
-			}
-		}
 		.info-box__account-content {
 			display: flex;
 			justify-content: center;
 			align-items: center;
 		}
-		.account-content_account-balance {
-			display: flex;
-			justify-content: center;
-			flex: 1;
-			.big--box {
-				box-shadow: $mainShadow;
-				height: 250px;
-				width: 250px;
-				border-radius: 10px;
-				background: linear-gradient(90deg, rgba(169, 84, 238, 1) 0%, rgba(92, 85, 240, 1) 100%);
-				font-size: 30px;
-				padding: 20px;
-				display: flex;
-				justify-content: space-evenly;
-				align-items: center;
-				flex-direction: column;
-				margin: 20px;
-			}
-		}
+
 		.account-content__content {
 			display: flex;
 			justify-content: center;
