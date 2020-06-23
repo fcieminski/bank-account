@@ -120,9 +120,27 @@
 							</select>
 						</div>
 					</div>
-					<div>
+					<div class="input__box">
 						<label for="description">Opis celu</label>
 						<textarea v-model="goal.description" class="input__main" name="description" />
+					</div>
+					<div class="input__box">
+						<label for="file">Opcjonalnie, dodaj zdjęcie celu</label>
+						<input
+							@click="$refs.fileInput.click()"
+							v-model="fileName"
+							readonly
+							name="file"
+							class="input__main cp"
+						/>
+						<input
+							@change="addFile"
+							accept="image/x-png,image/jpeg"
+							ref="fileInput"
+							style="display: none;"
+							type="file"
+							name="description"
+						/>
 					</div>
 				</dialog-modal>
 			</section>
@@ -150,9 +168,11 @@
 					name: "",
 					amount: 0,
 					description: "",
-					category: ""
+					category: "",
+					image: null
 				},
-				currentGoals: null
+				currentGoals: null,
+				fileName: ""
 			};
 		},
 		components: { AccountMainInfo, CopyInfo },
@@ -204,16 +224,24 @@
 			},
 			makeLocalTransfer() {},
 			createNewGoal() {
+				const form = new FormData();
+				form.append("file", this.goal.image);
+				form.append("fileName", this.fileName);
 				accountService
-					.createSavingGoal(this.savingAccount._id, {
-						...this.goal
-					})
+					.createSavingGoal(this.savingAccount._id, 
+						form
+					)
 					.then(data => {
 						this.currentGoals.push(data);
 					})
 					.catch(error => {
 						console.warn(error);
 					});
+			},
+			addFile(e) {
+				const [file] = e.target.files;
+				this.fileName = file.name;
+				this.goal.image = file;
 			}
 		}
 	};
@@ -246,6 +274,7 @@
 			flex-direction: column;
 			flex: 0 0 16%;
 			max-width: 16%;
+			justify-content: center;
 		}
 	}
 </style>

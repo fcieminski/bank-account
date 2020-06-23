@@ -184,7 +184,7 @@ i {
 
 .input__container--right {
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
 }
 
 .input__box {
@@ -268,7 +268,7 @@ input[type="number"] {
 
 .actions--container {
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
     div {
         width: 150px;
         display: flex;
@@ -365,7 +365,7 @@ select {
 }
 .card__actions {
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
     padding: 0 30px 30px 30px;
     button {
         max-width: 200px;

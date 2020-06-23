@@ -6,6 +6,21 @@ const HistoryController = require("../controllers/HistoryController");
 const PlannedTransferController = require("../controllers/PlannedTransferController");
 const isAuthenticated = require("../middleware/AuthMiddleware");
 const app = require("../config/app");
+const multer = require("multer");
+
+const storage = multer.diskStorage({
+    destination(req, file, cb) {
+        cb(null, "uploads/");
+    },
+    filename(req, file, cb) {
+        const uniqueSuffix = Date.now();
+        const name = file.originalname.split(".").shift();
+        const extension = file.originalname.split(".").pop();
+        cb(null, `${name}-${uniqueSuffix}.${extension}`);
+    },
+});
+
+const upload = multer({ storage });
 
 app.post("/register", UserController.create);
 
@@ -16,8 +31,8 @@ app.post("/logout", AuthController.logOut);
 app.get("/user-accounts/:userId", AccountController.findAllUserAccounts);
 app.get("/account/:userId", AccountController.findAccount);
 app.get("/account/:accountId/stats", isAuthenticated, AccountController.getAccountStats);
-app.post("/account/create", isAuthenticated, AccountController.createNewAccount)
-app.post("/account/:accountId/make-goal", isAuthenticated, AccountController.createSavingGoal);
+app.post("/account/create", isAuthenticated, AccountController.createNewAccount);
+app.post("/account/:accountId/make-goal", isAuthenticated, upload.single("file"), AccountController.createSavingGoal);
 app.get("/account/:accountId/get-goals", isAuthenticated, AccountController.getCurrentGoals);
 
 app.post("/create-new-card", isAuthenticated, CardsController.create);

@@ -1,6 +1,8 @@
 const Account = require("../models/Account");
 const User = require("../models/User");
 const SavingGoals = require("../models/SavingGoals");
+const fs = require('fs');
+const fileUpload = require("express-fileupload");
 
 class AccountController {
     async create(req, type, description) {
@@ -96,23 +98,29 @@ class AccountController {
     async createSavingGoal(req, res) {
         const { id } = req.user;
         const { accountId } = req.params;
-        const { name, description, image, category, amount } = req.body;
+        // const { name, description, image, category, amount } = req.body;
 
-        const goal = {
-            owner: id,
-            name,
-            description,
-            image,
-            category,
-            amount,
-            accountId,
-        };
-        try {
-            const createdGoal = await new SavingGoals(goal).save();
-            res.status(201).send(createdGoal);
-        } catch (error) {
-            res.status(500).send(error);
-        }
+        // const goal = {
+        //     owner: id,
+        //     name,
+        //     description,
+        //     category,
+        //     amount,
+        //     accountId,
+        // };
+
+        console.log(req.file);
+
+        // if(image){
+        //     fs.writeFileSync(__dirname, image)
+        // }
+
+        // try {
+        //     const createdGoal = await new SavingGoals(goal).save();
+        //     res.status(201).send(createdGoal);
+        // } catch (error) {
+        //     res.status(500).send(error);
+        // }
     }
 
     getCurrentGoals(req, res) {
