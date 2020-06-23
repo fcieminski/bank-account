@@ -225,12 +225,16 @@
 			makeLocalTransfer() {},
 			createNewGoal() {
 				const form = new FormData();
+
 				form.append("file", this.goal.image);
 				form.append("fileName", this.fileName);
+				form.append("name", this.goal.name);
+				form.append("amount", this.goal.amount);
+				form.append("description", this.goal.description);
+				form.append("category", this.goal.category);
+
 				accountService
-					.createSavingGoal(this.savingAccount._id, 
-						form
-					)
+					.createSavingGoal(this.savingAccount._id, form)
 					.then(data => {
 						this.currentGoals.push(data);
 					})

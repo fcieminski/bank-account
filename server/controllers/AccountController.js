@@ -1,7 +1,8 @@
 const Account = require("../models/Account");
 const User = require("../models/User");
 const SavingGoals = require("../models/SavingGoals");
-const fs = require('fs');
+const fs = require("fs");
+const path = require("path");
 
 class AccountController {
     async create(req, type, description) {
@@ -97,29 +98,27 @@ class AccountController {
     async createSavingGoal(req, res) {
         const { id } = req.user;
         const { accountId } = req.params;
-        // const { name, description, image, category, amount } = req.body;
+        const { name, description, category, amount, fileName } = req.body;
+        const image = req.file ? `${process.env.API_URL}/uploads/${req.file.filename}` : "https://picsum.photos/200/200";
+        const imageName = fileName || "randomPhoto";
 
-        // const goal = {
-        //     owner: id,
-        //     name,
-        //     description,
-        //     category,
-        //     amount,
-        //     accountId,
-        // };
+        const goal = {
+            owner: id,
+            name,
+            description,
+            category,
+            amount,
+            fileName: imageName,
+            accountId,
+            image,
+        };
 
-        console.log(req.file);
-
-        // if(image){
-        //     fs.writeFileSync(__dirname, image)
-        // }
-
-        // try {
-        //     const createdGoal = await new SavingGoals(goal).save();
-        //     res.status(201).send(createdGoal);
-        // } catch (error) {
-        //     res.status(500).send(error);
-        // }
+        try {
+            const createdGoal = await new SavingGoals(goal).save();
+            res.status(201).send(createdGoal);
+        } catch (error) {
+            res.status(500).send(error);
+        }
     }
 
     getCurrentGoals(req, res) {

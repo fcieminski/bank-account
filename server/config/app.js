@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
@@ -28,6 +29,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors({ credentials: true, origin: "http://localhost:8080" }));
 app.use(history());
+app.use("/uploads", express.static("uploads"));
 
 app.use(passport.initialize());
 app.use(passport.session());

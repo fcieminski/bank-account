@@ -12,6 +12,7 @@ const SavingGoalsSchema = new Schema(
         isDone: { type: Boolean, default: false },
         category: { type: String, required: true },
         image: { type: String, default: "https://picsum.photos/200/200" },
+        fileName: String,
     },
     {
         timestamps: true,
