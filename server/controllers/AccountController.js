@@ -2,7 +2,6 @@ const Account = require("../models/Account");
 const User = require("../models/User");
 const SavingGoals = require("../models/SavingGoals");
 const fs = require('fs');
-const fileUpload = require("express-fileupload");
 
 class AccountController {
     async create(req, type, description) {
