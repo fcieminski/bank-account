@@ -25,6 +25,11 @@
 								</span>
 							</div>
 							<button class="btn btn--auto mt-5" @click="newSavingGoal = true">Ustal cel</button>
+							<div class="goal__diagram">
+								<div>
+									<canvas ref="pie"></canvas>
+								</div>
+							</div>
 						</div>
 					</div>
 				</section>
@@ -243,8 +248,8 @@
 				accountService
 					.createSavingGoal(this.savingAccount._id, form)
 					.then(data => {
-                        this.currentGoals.push(data);
-                        this.newSavingGoal = false;
+						this.currentGoals.push(data);
+						this.newSavingGoal = false;
 					})
 					.catch(error => {
 						this.fileError = error.response.data.error;
