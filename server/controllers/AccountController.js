@@ -96,24 +96,24 @@ class AccountController {
     }
 
     async createSavingGoal(req, res) {
-        const { id } = req.user;
-        const { accountId } = req.params;
-        const { name, description, category, amount, fileName } = req.body;
-        const image = req.file ? `${process.env.API_URL}/uploads/${req.file.filename}` : "https://picsum.photos/200/200";
-        const imageName = fileName || "randomPhoto";
-
-        const goal = {
-            owner: id,
-            name,
-            description,
-            category,
-            amount,
-            fileName: imageName,
-            accountId,
-            image,
-        };
-
         try {
+            const { id } = req.user;
+            const { accountId } = req.params;
+            const { name, description, category, amount, fileName } = req.body;
+            const image = req.file ? `${process.env.API_URL}/uploads/${req.file.filename}` : "https://picsum.photos/200/200";
+            const imageName = fileName || "randomPhoto";
+
+            const goal = {
+                owner: id,
+                name,
+                description,
+                category,
+                amount,
+                fileName: imageName,
+                accountId,
+                image,
+            };
+
             const createdGoal = await new SavingGoals(goal).save();
             res.status(201).send(createdGoal);
         } catch (error) {

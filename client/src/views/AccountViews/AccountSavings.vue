@@ -141,6 +141,7 @@
 							type="file"
 							name="description"
 						/>
+                        <input-error left :error="fileError" />
 					</div>
 				</dialog-modal>
 			</section>
@@ -172,7 +173,8 @@
 					image: null
 				},
 				currentGoals: null,
-				fileName: ""
+                fileName: "",
+                fileError: null,
 			};
 		},
 		components: { AccountMainInfo, CopyInfo },
@@ -239,10 +241,11 @@
 						this.currentGoals.push(data);
 					})
 					.catch(error => {
-						console.warn(error);
+                        this.fileError = error.response.data.error
 					});
 			},
 			addFile(e) {
+                this.fileError = null;
 				const [file] = e.target.files;
 				this.fileName = file.name;
 				this.goal.image = file;

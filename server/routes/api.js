@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
     },
 });
 
-const upload = multer({ storage });
+const upload = multer({ storage, limits: { fileSize: 2097152 } });
 
 app.post("/register", UserController.create);
 
@@ -32,7 +32,21 @@ app.get("/user-accounts/:userId", AccountController.findAllUserAccounts);
 app.get("/account/:userId", AccountController.findAccount);
 app.get("/account/:accountId/stats", isAuthenticated, AccountController.getAccountStats);
 app.post("/account/create", isAuthenticated, AccountController.createNewAccount);
-app.post("/account/:accountId/make-goal", isAuthenticated, upload.single("file"), AccountController.createSavingGoal);
+app.post(
+    "/account/:accountId/make-goal",
+    (req, res, next) => {
+        isAuthenticated(req, res, next);
+    },
+    (req, res, next) => {
+        upload.single("file")(req, res, (error) => {
+            if (error) return res.status(500).send({ error: "Plik jest za duży, maksymalny rozmiar to 2MB" });
+            else next();
+        });
+    },
+    (req, res) => {
+        AccountController.createSavingGoal(req, res);
+    }
+);
 app.get("/account/:accountId/get-goals", isAuthenticated, AccountController.getCurrentGoals);
 
 app.post("/create-new-card", isAuthenticated, CardsController.create);
