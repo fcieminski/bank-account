@@ -243,7 +243,8 @@
 				accountService
 					.createSavingGoal(this.savingAccount._id, form)
 					.then(data => {
-						this.currentGoals.push(data);
+                        this.currentGoals.push(data);
+                        this.newSavingGoal = false;
 					})
 					.catch(error => {
 						this.fileError = error.response.data.error;
@@ -253,7 +254,6 @@
 				accountService
 					.deleteGoal(id)
 					.then(() => {
-						console.log('then');
 						this.currentGoals.splice(index, 1);
 					})
 					.catch(error => {
