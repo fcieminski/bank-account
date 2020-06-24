@@ -36,7 +36,18 @@
 				type: Boolean,
 				default: false
 			}
-		}
+        },
+        watch: {
+            show(value){
+                const body = document.querySelector('body')
+                if(value){
+                    body.style.overflow = 'hidden'
+                    body.style.height = '100vh';
+                } else {
+                    body.removeAttribute("style")
+                }
+            }
+        }
 	};
 </script>
 
