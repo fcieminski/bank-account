@@ -47,6 +47,7 @@ app.post(
         AccountController.createSavingGoal(req, res);
     }
 );
+app.delete("/account/:goalId/delete", isAuthenticated, AccountController.deleteGoal);
 app.get("/account/:accountId/get-goals", isAuthenticated, AccountController.getCurrentGoals);
 
 app.post("/create-new-card", isAuthenticated, CardsController.create);

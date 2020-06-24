@@ -3,6 +3,7 @@ const User = require("../models/User");
 const SavingGoals = require("../models/SavingGoals");
 const fs = require("fs");
 const path = require("path");
+const { URL } = require("url");
 
 class AccountController {
     async create(req, type, description) {
@@ -127,6 +128,19 @@ class AccountController {
         SavingGoals.find({ accountId }).exec((error, goals) => {
             if (error) res.status(500).send(error);
             else res.send(goals);
+        });
+    }
+
+    deleteGoal(req, res) {
+        const { goalId } = req.params;
+
+        SavingGoals.findOneAndDelete({ _id: goalId }).exec((error, goal) => {
+            if (error) res.status(500).send(error);
+            else {
+            const link = new URL(goal.image);
+            fs.unlinkSync(path.join(__dirname, "..", link.pathname));
+            res.status(202).send();
+            };
         });
     }
 }

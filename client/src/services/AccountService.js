@@ -34,6 +34,12 @@ class AccountService extends BaseService {
       .get(`/account/${accountId}/get-goals`)
       .then(response => response.data);
   }
+
+  deleteGoal(goalId) {
+    return this.axios
+      .delete(`/account/${goalId}/delete`)
+      .then(response => response.data);
+  }
 }
 
 const accountService = new AccountService();

@@ -87,6 +87,11 @@
 									{{ goal.category }}
 								</div>
 							</div>
+							<div class="d-flex align-center pa-5">
+								<div>
+									<i @click="deleteGoal(goal._id, index)" class="material-icons cp">delete</i>
+								</div>
+							</div>
 						</div>
 					</div>
 				</section>
@@ -141,7 +146,7 @@
 							type="file"
 							name="description"
 						/>
-                        <input-error left :error="fileError" />
+						<input-error left :error="fileError" />
 					</div>
 				</dialog-modal>
 			</section>
@@ -173,8 +178,8 @@
 					image: null
 				},
 				currentGoals: null,
-                fileName: "",
-                fileError: null,
+				fileName: "",
+				fileError: null
 			};
 		},
 		components: { AccountMainInfo, CopyInfo },
@@ -241,11 +246,22 @@
 						this.currentGoals.push(data);
 					})
 					.catch(error => {
-                        this.fileError = error.response.data.error
+						this.fileError = error.response.data.error;
+					});
+			},
+			deleteGoal(id, index) {
+				accountService
+					.deleteGoal(id)
+					.then(() => {
+						console.log('then');
+						this.currentGoals.splice(index, 1);
+					})
+					.catch(error => {
+						console.warn(error);
 					});
 			},
 			addFile(e) {
-                this.fileError = null;
+				this.fileError = null;
 				const [file] = e.target.files;
 				this.fileName = file.name;
 				this.goal.image = file;
