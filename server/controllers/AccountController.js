@@ -133,13 +133,52 @@ class AccountController {
 
     deleteGoal(req, res) {
         const { goalId } = req.params;
+        const { accountId } = req.body;
 
         SavingGoals.findOneAndDelete({ _id: goalId }).exec((error, goal) => {
             if (error) res.status(500).send(error);
             else {
+                let currentAccount;
+                if (goal.currentAmount > 0) {
+                    Account.findOne({ _id: accountId }).exec((error, account) => {
+                        if (error) res.status(500).send(error);
+                        else {
+                            account.balance += goal.currentAmount;
+                            account.save();
+                            currentAccount = account;
+                        }
+                    });
+                }
                 const link = new URL(goal.image);
+                console.log(path.join(__dirname, "..", link.pathname), link.pathname);
                 fs.unlinkSync(path.join(__dirname, "..", link.pathname));
-                res.status(202).send();
+                res.status(202).send(currentAccount ? { balance: currentAccount.balance } : "");
+            }
+        });
+    }
+
+    transferMoneyToGoal(req, res) {
+        const { goalId } = req.params;
+        const { accountId, amount } = req.body;
+
+        Account.findOne({ _id: accountId }).exec((error, account) => {
+            if (error) res.status(500).send(error);
+            else {
+                SavingGoals.findOne({ _id: goalId }).exec((error, goal) => {
+                    if (error) res.status(500).send(error);
+                    else {
+                        if (typeof amount === "number" && account.balance >= amount) {
+                            goal.currentAmount += amount;
+                            account.balance -= amount;
+                            goal.isDone = goal.currentAmount >= goal.amount && true;
+                            goal.save();
+                            account.save();
+                            res.status(202).send({ goal, accountBalance: account.balance });
+                        } else {
+                            res.status(406).send({ error: "Za mało środków!" });
+                        }
+                    }
+                });
             }
         });
     }

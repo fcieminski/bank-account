@@ -25,11 +25,14 @@
 								</span>
 							</div>
 							<button class="btn btn--auto mt-5" @click="newSavingGoal = true">Ustal cel</button>
-							<div class="goal__diagram">
-								<div>
-									<canvas ref="pie"></canvas>
-								</div>
+						</div>
+						<div v-if="this.currentGoals.length !== 0" class="mt-5">
+							<div>
+								<span>
+									Wpłać pieniądze na cel oszczędnościowy
+								</span>
 							</div>
+							<button class="btn btn--auto mt-5" @click="newSavingGoalTransfer = true">Wpłać</button>
 						</div>
 					</div>
 				</section>
@@ -154,6 +157,26 @@
 						<input-error left :error="fileError" />
 					</div>
 				</dialog-modal>
+				<dialog-modal
+					@yes="transferToGoal"
+					@no="newSavingGoalTransfer = false"
+					:show="newSavingGoalTransfer"
+					:modal="{ text: 'Wpłać na cel', yes: 'Wpłać', no: 'Anuluj' }"
+				>
+					<div>
+						<label for="file">Wybierz cel oszczędnościowy</label>
+						<select v-model="selectedGoal" readonly class="input__main cp">
+							<option v-for="(goal, key) in currentGoals" :key="key" :value="goal"
+								>{{ goal.name }}, kategoria: {{ goal.category }}</option
+							>
+						</select>
+						<transition name="fade">
+							<div class="mt-5" v-if="selectedGoal">
+								<input v-model.number="selectedGoalAmount" class="input__main" name="amount" />
+							</div>
+						</transition>
+					</div>
+				</dialog-modal>
 			</section>
 		</div>
 	</section>
@@ -184,7 +207,10 @@
 				},
 				currentGoals: null,
 				fileName: "",
-				fileError: null
+				fileError: null,
+				newSavingGoalTransfer: false,
+				selectedGoal: null,
+				selectedGoalAmount: 0
 			};
 		},
 		components: { AccountMainInfo, CopyInfo },
@@ -240,10 +266,10 @@
 					to: { name: this.user.name, accountNumber: this.savingAccount.accountNumber },
 					amount: 0,
 					currency: "PLN",
-                    from: this.user._id,
-                    title: 'Przelew na konto oszczędnościowe',
-                };
-                
+					from: this.user._id,
+					title: "Przelew na konto oszczędnościowe"
+				};
+
 				this.$router.push({
 					name: "account.transfer",
 					params: {
@@ -273,12 +299,39 @@
 			},
 			deleteGoal(id, index) {
 				accountService
-					.deleteGoal(id)
-					.then(() => {
+					.deleteGoal(id, {
+						accountId: this.savingAccount._id
+					})
+					.then(data => {
 						this.currentGoals.splice(index, 1);
+						if (data) {
+							this.savingAccount.balance = data.balance;
+						}
 					})
 					.catch(error => {
 						console.warn(error);
+					});
+			},
+			transferToGoal() {
+				accountService
+					.transferToGoal(this.selectedGoal._id, {
+						accountId: this.savingAccount._id,
+						amount: this.selectedGoalAmount
+					})
+					.then(data => {
+						this.savingAccount.balance = data.accountBalance;
+						const influencedGoal = this.currentGoals.find(goal => goal._id === data.goal._id);
+						influencedGoal.currentAmount = data.goal.currentAmount;
+						influencedGoal.isDone = data.goal.isDone;
+						influencedGoal.updatedAt = data.goal.updatedAt;
+					})
+					.catch(error => {
+						console.warn(error);
+					})
+					.finally(() => {
+						this.selectedGoalAmount = 0;
+						this.selectedGoal = null;
+						this.newSavingGoalTransfer = false;
 					});
 			},
 			addFile(e) {

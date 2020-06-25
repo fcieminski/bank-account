@@ -35,9 +35,15 @@ class AccountService extends BaseService {
       .then(response => response.data);
   }
 
-  deleteGoal(goalId) {
+  deleteGoal(goalId, params) {
     return this.axios
-      .delete(`/account/${goalId}/delete`)
+      .delete(`/account/${goalId}/delete`, params)
+      .then(response => response.data);
+  }
+
+  transferToGoal(goalId, params) {
+    return this.axios
+      .post(`/account/${goalId}/transfer-to-goal`, params)
       .then(response => response.data);
   }
 }

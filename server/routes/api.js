@@ -14,9 +14,8 @@ const storage = multer.diskStorage({
     },
     filename(req, file, cb) {
         const uniqueSuffix = Date.now();
-        const name = file.originalname.split(".").shift();
         const extension = file.originalname.split(".").pop();
-        cb(null, `${name}-${uniqueSuffix}.${extension}`);
+        cb(null, `${checksum(file.buffer)}-${uniqueSuffix}.${extension}`);
     },
 });
 
@@ -48,6 +47,7 @@ app.post(
     }
 );
 app.delete("/account/:goalId/delete", isAuthenticated, AccountController.deleteGoal);
+app.post("/account/:goalId/transfer-to-goal", isAuthenticated, AccountController.transferMoneyToGoal);
 app.get("/account/:accountId/get-goals", isAuthenticated, AccountController.getCurrentGoals);
 
 app.post("/create-new-card", isAuthenticated, CardsController.create);
