@@ -137,10 +137,10 @@ class AccountController {
         SavingGoals.findOneAndDelete({ _id: goalId }).exec((error, goal) => {
             if (error) res.status(500).send(error);
             else {
-            const link = new URL(goal.image);
-            fs.unlinkSync(path.join(__dirname, "..", link.pathname));
-            res.status(202).send();
-            };
+                const link = new URL(goal.image);
+                fs.unlinkSync(path.join(__dirname, "..", link.pathname));
+                res.status(202).send();
+            }
         });
     }
 }

@@ -201,6 +201,7 @@
 				this.loading = false;
 			}
 		},
+		mounted() {},
 		computed: {
 			...mapState(["user"])
 		},
@@ -226,7 +227,7 @@
 				clearInterval(this.interval);
 				accountService
 					.create({
-						description: "Konto złotówa",
+						description: "Konto Złotówa",
 						type: "savings"
 					})
 					.then(data => {
@@ -234,7 +235,22 @@
 						this.creatingAccount = false;
 					});
 			},
-			makeLocalTransfer() {},
+			makeLocalTransfer() {
+				const transaction = {
+					to: { name: this.user.name, accountNumber: this.savingAccount.accountNumber },
+					amount: 0,
+					currency: "PLN",
+                    from: this.user._id,
+                    title: 'Przelew na konto oszczędnościowe',
+                };
+                
+				this.$router.push({
+					name: "account.transfer",
+					params: {
+						transaction
+					}
+				});
+			},
 			createNewGoal() {
 				const form = new FormData();
 

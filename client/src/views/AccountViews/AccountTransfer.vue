@@ -187,11 +187,12 @@
 			this.loading = true;
 			accountService
 				.getUserAccounts(this.user._id)
-				.then(account => {
-					this.accounts = account;
+				.then(accounts => {
+					this.accounts = accounts;
 					this.checkTransactionParams();
 				})
 				.catch(e => {
+                    console.log(e)
 					console.error("error!");
 				})
 				.finally(() => {
@@ -252,8 +253,11 @@
 			},
 			checkTransactionParams() {
 				if (this.$route.params?.transaction) {
-					const { _id, amount, title, to, currency, from } = this.$route.params.transaction;
-					this.activeAccount = this.accounts.find(account => account.history.includes(_id));
+                    const { _id, amount, title, to, currency, from } = this.$route.params.transaction;
+                    this.activeAccount = this.accounts.find(account => account.history.includes(_id));
+                    if(!this.activeAccount){
+                        this.activeAccount = this.accounts.find(account => account.type !== 'savings' )
+                    }
 					this.transferData = {
 						date: Date.now(),
 						amount,
@@ -261,7 +265,7 @@
 						title,
 						from,
 						to,
-						accountId: activeAccount._id
+						accountId: this.activeAccount._id
 					};
 				}
 			}
