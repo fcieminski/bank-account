@@ -35,9 +35,9 @@ class AccountService extends BaseService {
       .then(response => response.data);
   }
 
-  deleteGoal(goalId, params) {
+  deleteGoal(goalId, accountId) {
     return this.axios
-      .delete(`/account/${goalId}/delete`, params)
+      .delete(`/account/${accountId}/goal/${goalId}/delete`)
       .then(response => response.data);
   }
 

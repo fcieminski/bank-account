@@ -53,7 +53,7 @@
 						Nie masz jeszcze żadnych celów oszczędnościowych!
 					</div>
 					<div v-else>
-						<div class="goal__box" v-for="(goal, index) in currentGoals" :key="index">
+						<div class="goal__box" :class="{'goal__done': goal.isDone}" v-for="(goal, index) in currentGoals" :key="index">
 							<img class="goal__image goal__column" :src="goal.image" alt="" />
 							<div class="goal__column pa-5">
 								<span>
@@ -166,7 +166,7 @@
 					<div>
 						<label for="file">Wybierz cel oszczędnościowy</label>
 						<select v-model="selectedGoal" readonly class="input__main cp">
-							<option v-for="(goal, key) in currentGoals" :key="key" :value="goal"
+							<option v-for="(goal, key) in notDoneGoals" :key="key" :value="goal"
 								>{{ goal.name }}, kategoria: {{ goal.category }}</option
 							>
 						</select>
@@ -229,7 +229,10 @@
 		},
 		mounted() {},
 		computed: {
-			...mapState(["user"])
+            ...mapState(["user"]),
+            notDoneGoals() {
+                return this.currentGoals.filter(goal => !goal.isDone);
+            }
 		},
 		methods: {
 			createNewAccount() {
@@ -298,12 +301,12 @@
 					});
 			},
 			deleteGoal(id, index) {
+                console.log(this.savingAccount._id)
 				accountService
-					.deleteGoal(id, {
-						accountId: this.savingAccount._id
-					})
+					.deleteGoal(id, this.savingAccount._id)
 					.then(data => {
-						this.currentGoals.splice(index, 1);
+                        this.currentGoals.splice(index, 1);
+                        console.log(data)
 						if (data) {
 							this.savingAccount.balance = data.balance;
 						}
@@ -354,6 +357,9 @@
 		min-height: 100px;
 	}
 	.goal__box {
+        &.goal__done {
+            border: 2px solid green;
+        }
 		border: 2px solid $mainColor;
 		margin-bottom: 20px;
 		padding: 18px;

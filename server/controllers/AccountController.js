@@ -132,8 +132,7 @@ class AccountController {
     }
 
     deleteGoal(req, res) {
-        const { goalId } = req.params;
-        const { accountId } = req.body;
+        const { goalId, accountId } = req.params;
 
         SavingGoals.findOneAndDelete({ _id: goalId }).exec((error, goal) => {
             if (error) res.status(500).send(error);
@@ -146,13 +145,20 @@ class AccountController {
                             account.balance += goal.currentAmount;
                             account.save();
                             currentAccount = account;
+                            res.status(202).send({ balance: currentAccount.balance });
                         }
                     });
+                } else {
+                    res.status(202).send();
                 }
+
                 const link = new URL(goal.image);
-                console.log(path.join(__dirname, "..", link.pathname), link.pathname);
-                fs.unlinkSync(path.join(__dirname, "..", link.pathname));
-                res.status(202).send(currentAccount ? { balance: currentAccount.balance } : "");
+                const filePath = path.join(__dirname, "..", link.pathname);
+                fs.readFile(filePath, (error, file) => {
+                    if (file) {
+                        fs.unlinkSync(filePath);
+                    }
+                });
             }
         });
     }
