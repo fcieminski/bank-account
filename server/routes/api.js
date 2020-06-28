@@ -7,13 +7,20 @@ const PlannedTransferController = require("../controllers/PlannedTransferControl
 const isAuthenticated = require("../middleware/AuthMiddleware");
 const app = require("../config/app");
 const multer = require("multer");
+const WidgetsController = require("../controllers/WidgetsController");
 
 const storage = multer.diskStorage({
     destination(req, file, cb) {
         cb(null, "uploads/");
     },
     filename(req, file, cb) {
-        const fileName =  Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        const fileName =
+            Math.random()
+                .toString(36)
+                .substring(2, 15) +
+            Math.random()
+                .toString(36)
+                .substring(2, 15);
         const extension = file.originalname.split(".").pop();
         cb(null, `${fileName}.${extension}`);
     },
@@ -65,3 +72,6 @@ app.post("/make-planned/:userId", isAuthenticated, PlannedTransferController.cre
 app.post("/get-planned/:userId", isAuthenticated, PlannedTransferController.index);
 app.put("/update-planned/:transferId", isAuthenticated, PlannedTransferController.updateTransfer);
 app.delete("/delete-planned/:transferId", isAuthenticated, PlannedTransferController.deleteTransfer);
+
+app.post("/make-widget", isAuthenticated, WidgetsController.create);
+app.get("/get-widgets/:userId", isAuthenticated, WidgetsController.index);
