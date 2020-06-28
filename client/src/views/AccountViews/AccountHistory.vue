@@ -53,7 +53,7 @@
 						</div>
 					</div>
 				</form>
-				<div class="card__actions mt-4">
+				<div class="card__actions card__actions--no-padding mt-4">
 					<button @click="clearForm" class="btn--transparent pa-2 mr-4">
 						Wyczyść
 					</button>
@@ -74,15 +74,15 @@
 			<div class="horizontal--divider"></div>
 
 			<section class="pr">
+				<div v-if="searchMessage">
+					{{ searchMessage }}
+				</div>
 				<history
 					v-if="history"
 					:history="history"
 					:raports="raports"
 					@addElementToRaports="reportFromElements"
 				/>
-				<div v-if="searchMessage">
-					{{ searchMessage }}
-				</div>
 				<div class="d-flex align-center" v-else-if="!error">
 					<i class="material-icons mr-2">history</i>
 					Twoja historia jest pusta, wkonaj pierwszy
@@ -186,15 +186,18 @@
 				}
 			},
 			searchInHistory() {
-				historyService
-					.searchInHistory(this.user._id, {
-						searchQuery: this.searchQuery
-					})
-					.then(({ history }) => {
-						this.history = history;
-						this.searchMessage = history.length === 0 ? "Brak wyników" : "Wyniki wyszukiwania:";
-						document.removeEventListener("scroll", this.loadMore);
-					});
+				const isEmpty = Object.values(this.searchQuery).every(value => value === null);
+				if (!isEmpty) {
+					historyService
+						.searchInHistory(this.user._id, {
+							searchQuery: this.searchQuery
+						})
+						.then(({ history }) => {
+							this.history = history;
+							this.searchMessage = history.length === 0 ? "Brak wyników" : "Wyniki wyszukiwania:";
+							document.removeEventListener("scroll", this.loadMore);
+						});
+				}
 			},
 			clearForm() {
 				this.searchQuery = {

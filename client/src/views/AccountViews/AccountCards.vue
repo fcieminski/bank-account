@@ -51,7 +51,7 @@
 					<dialog-modal
 						@yes="blockCard(editCard._id)"
 						@no="blockCardWarning = false"
-						v-if="blockCardWarning"
+						:show="blockCardWarning"
 						:modal="{ text: 'Jesteś pewien?', yes: 'Tak', no: 'Nie' }"
 					>
 						<div>

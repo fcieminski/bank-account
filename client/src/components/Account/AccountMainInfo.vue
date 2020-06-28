@@ -1,7 +1,7 @@
 <template>
 	<div class="account-content__account-balance">
-		<div class="cp big--box">
-			<i class="material-icons icon--white icon--big">{{icon}}</i>
+		<div class="big--box">
+			<i class="material-icons icon--white icon--big">{{ icon }}</i>
 			<div class="text--white">
 				Stan konta
 			</div>
@@ -20,7 +20,7 @@
 			},
 			icon: {
 				type: String,
-				default: 'account_balance'
+				default: "account_balance"
 			}
 		}
 	};

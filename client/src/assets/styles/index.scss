@@ -367,6 +367,9 @@ select {
     display: flex;
     justify-content: flex-end;
     padding: 0 30px 30px 30px;
+    &.card__actions--no-padding{
+        padding: 0;
+    }
     button {
         max-width: 200px;
     }
