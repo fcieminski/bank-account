@@ -53,7 +53,12 @@
 						Nie masz jeszcze żadnych celów oszczędnościowych!
 					</div>
 					<div v-else>
-						<div class="goal__box" :class="{'goal__done': goal.isDone}" v-for="(goal, index) in currentGoals" :key="index">
+						<div
+							class="goal__box"
+							:class="{ goal__done: goal.isDone }"
+							v-for="(goal, index) in currentGoals"
+							:key="index"
+						>
 							<img class="goal__image goal__column" :src="goal.image" alt="" />
 							<div class="goal__column pa-5">
 								<span>
@@ -97,9 +102,20 @@
 							</div>
 							<div class="d-flex align-center pa-5">
 								<div>
-									<i @click="deleteGoal(goal._id, index)" class="material-icons cp">delete</i>
+									<i @click="deleteModal = {id: goal._id, modal: true}" class="material-icons cp">delete</i>
 								</div>
 							</div>
+							<dialog-modal
+								@yes="deleteGoal(goal._id, index)"
+								@no="deleteModal = null"
+								:show="deleteModal && deleteModal.modal && deleteModal.id === goal._id"
+								:modal="{ text: 'Jesteś pewien?', yes: 'Tak', no: 'Nie' }"
+							>
+								<div>
+									Czy na pewno chcesz usunąć ten cel oszczędnościowy? Pieniądzę wrócą na Twoje konto
+									oszczędnościowe.
+								</div>
+							</dialog-modal>
 						</div>
 					</div>
 				</section>
@@ -173,6 +189,7 @@
 						<transition name="fade">
 							<div class="mt-5" v-if="selectedGoal">
 								<input v-model.number="selectedGoalAmount" class="input__main" name="amount" />
+								<input-error left :error="goalError" />
 							</div>
 						</transition>
 					</div>
@@ -210,7 +227,9 @@
 				fileError: null,
 				newSavingGoalTransfer: false,
 				selectedGoal: null,
-				selectedGoalAmount: 0
+				selectedGoalAmount: 0,
+				goalError: null,
+				deleteModal: null
 			};
 		},
 		components: { AccountMainInfo, CopyInfo },
@@ -229,10 +248,10 @@
 		},
 		mounted() {},
 		computed: {
-            ...mapState(["user"]),
-            notDoneGoals() {
-                return this.currentGoals.filter(goal => !goal.isDone);
-            }
+			...mapState(["user"]),
+			notDoneGoals() {
+				return this.currentGoals.filter(goal => !goal.isDone);
+			}
 		},
 		methods: {
 			createNewAccount() {
@@ -301,18 +320,19 @@
 					});
 			},
 			deleteGoal(id, index) {
-                console.log(this.savingAccount._id)
 				accountService
 					.deleteGoal(id, this.savingAccount._id)
 					.then(data => {
-                        this.currentGoals.splice(index, 1);
-                        console.log(data)
+						this.currentGoals.splice(index, 1);
 						if (data) {
 							this.savingAccount.balance = data.balance;
 						}
 					})
 					.catch(error => {
 						console.warn(error);
+					})
+					.finally(() => {
+						this.deleteModal = null;
 					});
 			},
 			transferToGoal() {
@@ -327,14 +347,16 @@
 						influencedGoal.currentAmount = data.goal.currentAmount;
 						influencedGoal.isDone = data.goal.isDone;
 						influencedGoal.updatedAt = data.goal.updatedAt;
-					})
-					.catch(error => {
-						console.warn(error);
-					})
-					.finally(() => {
 						this.selectedGoalAmount = 0;
 						this.selectedGoal = null;
 						this.newSavingGoalTransfer = false;
+					})
+					.catch(error => {
+						this.goalError = error.response.data.error;
+						console.warn(error);
+						setTimeout(() => {
+							this.goalError = null;
+						}, 2000);
 					});
 			},
 			addFile(e) {
@@ -357,9 +379,9 @@
 		min-height: 100px;
 	}
 	.goal__box {
-        &.goal__done {
-            border: 2px solid green;
-        }
+		&.goal__done {
+			border: 2px solid green;
+		}
 		border: 2px solid $mainColor;
 		margin-bottom: 20px;
 		padding: 18px;
