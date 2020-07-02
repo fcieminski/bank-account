@@ -11,8 +11,9 @@
 					<div
 						v-for="(account, key) in accounts"
 						:key="key"
-						@click="makeActiveAccount($event, account)"
+						@click="makeActiveAccount(account)"
 						class="account--name"
+						:class="{ active: activeAccount && activeAccount._id === account._id }"
 					>
 						{{ account.description }}
 					</div>
@@ -23,7 +24,7 @@
 						<div :key="1" v-if="!activeAccount && !transferDone" class="d-flex align-center info--data">
 							<i class="material-icons mr-2">error</i>Najpierw wybierz konto!
 						</div>
-						<div :key="2" v-else-if="activeAccount && !transferDone">
+						<div :key="activeAccount._id" v-else-if="activeAccount && !transferDone">
 							<validation-observer v-slot="{ invalid }">
 								<form @submit.prevent="modal = true" action="">
 									<validation-provider
@@ -130,7 +131,7 @@
 		</div>
 		<loading-indicator v-else />
 		<dialog-modal
-            @yes="makeTransfer"
+			@yes="makeTransfer"
 			:show="modal"
 			:modal="{ text: 'Przepisz kod, aby potwierdzić przelew', yes: 'Wykonaj' }"
 		>
@@ -192,7 +193,7 @@
 					this.checkTransactionParams();
 				})
 				.catch(e => {
-                    console.log(e)
+					console.log(e);
 					console.error("error!");
 				})
 				.finally(() => {
@@ -217,9 +218,8 @@
 			}
 		},
 		methods: {
-			makeActiveAccount(event, account) {
+			makeActiveAccount(account) {
 				this.activeAccount = account;
-				event.target.classList.toggle("active");
 			},
 			makeTransfer() {
 				historyService
@@ -235,7 +235,7 @@
 								currency: "PLN",
 								name: "transfer",
 								accountId: this.activeAccount._id
-                            };
+							};
 							setTimeout(
 								() => {
 									historyService.create(this.user._id, transfer).catch(() => {
@@ -253,11 +253,11 @@
 			},
 			checkTransactionParams() {
 				if (this.$route.params?.transaction) {
-                    const { _id, amount, title, to, currency, from } = this.$route.params.transaction;
-                    this.activeAccount = this.accounts.find(account => account.history.includes(_id));
-                    if(!this.activeAccount){
-                        this.activeAccount = this.accounts.find(account => account.type !== 'savings' )
-                    }
+					const { _id, amount, title, to, currency, from } = this.$route.params.transaction;
+					this.activeAccount = this.accounts.find(account => account.history.includes(_id));
+					if (!this.activeAccount) {
+						this.activeAccount = this.accounts.find(account => account.type !== "savings");
+					}
 					this.transferData = {
 						date: Date.now(),
 						amount,

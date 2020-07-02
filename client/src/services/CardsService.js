@@ -18,6 +18,12 @@ class CardsService extends BaseService {
       .patch(`/update/${cardId}`, params)
       .then(response => response.data);
   }
+
+  delete(cardId) {
+      return this.axios
+        .delete(`/delete/${cardId}`)
+        .then(response => response.data);
+  }
 }
 
 const cardsService = new CardsService();

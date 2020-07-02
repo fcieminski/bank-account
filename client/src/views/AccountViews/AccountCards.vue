@@ -11,13 +11,13 @@
 					</div>
 				</div>
 				<div class="horizontal--divider"></div>
-				<div v-if="cards.length !== 3">
+				<div v-if="cards.length !== 3" class="mb-6">
 					<div class="d-flex align-center mt-5">
 						<i class="material-icons mr-2">credit_card</i>
 						Potrzebujesz kolejnej karty? Pamiętaj, możesz wnioskować jeszcze tylko o
 						{{ 3 - cards.length }} kar{{ languageFix }}
 					</div>
-					<button class="btn btn--auto mt-5" @click="createCardForm = !createCardForm">
+					<button class="btn btn--auto mt-5" @click="createNewCardForm">
 						{{ createCardForm ? "Zamknij wniosek" : "Złóż wniosek" }}
 					</button>
 				</div>
@@ -29,8 +29,8 @@
 				</div>
 				<button class="btn btn--auto mt-5" @click="createCardForm = true">Złóż wniosek</button>
 			</section>
-			<transition name="fade">
-				<section class="mt-5" v-if="editCard">
+			<transition name="fade" mode="out-in">
+				<section :key="editCard._id" v-if="editCard">
 					<div>Limity karty {{ editCard.cardNumber }}</div>
 					<div v-for="(limits, key) in editCard.limits" :key="key">
 						<label for="daily">Limit dzienny transakcji</label>
@@ -59,9 +59,13 @@
 						</div>
 					</dialog-modal>
 				</section>
-			</transition>
-			<transition name="fade">
-				<div v-if="createCardForm" class="mt-5">
+				<section :key="editBlockedCard._id" v-else-if="editBlockedCard">
+					<div>Nieaktywna karta {{ editBlockedCard.cardNumber }}</div>
+					<button @click="deleteCard" class="btn btn--auto mt-5">
+						Usuń kartę
+					</button>
+				</section>
+				<div v-if="createCardForm" :key="3" class="mt-5">
 					<div class="input__box" name="Numer konta">
 						<label for="accountNumber">Waluta karty</label>
 						<select v-model="currency" class="input__main" name="type" type="text">
@@ -98,7 +102,8 @@
 				cardType: "Visa",
 				editCard: null,
 				blockCardWarning: false,
-				limitsChangedInfo: ""
+				limitsChangedInfo: "",
+				editBlockedCard: null
 			};
 		},
 		components: {
@@ -121,6 +126,11 @@
 			}
 		},
 		methods: {
+			createNewCardForm() {
+				this.createCardForm = !this.createCardForm;
+				this.editCard = null;
+				this.editBlockedCard = null;
+			},
 			createCard() {
 				cardsService
 					.create({
@@ -140,7 +150,15 @@
 					});
 			},
 			showCardInfo(e) {
-				this.editCard = this.cards.filter(card => card.cardValid).find(card => card._id === e);
+				this.createCardForm = false;
+				const currentCard = this.cards.find(card => card._id === e);
+				if (currentCard.cardValid) {
+					this.editCard = currentCard;
+					this.editBlockedCard = null;
+				} else {
+					this.editBlockedCard = currentCard;
+					this.editCard = null;
+				}
 			},
 			changeCardLimits() {
 				cardsService
@@ -185,6 +203,18 @@
 					expDate: `${new Date(card.expirationDate).getMonth()} ${new Date(card.expirationDate).getFullYear()}`,
 					user: `${this.user.name} ${this.user.surname}`
 				};
+			},
+			deleteCard() {
+				cardsService
+					.delete(this.editBlockedCard._id)
+					.then(data => {
+						const index = this.cards.find(card => card._id === this.editBlockedCard._id);
+						this.cards.splice(index, 1);
+						this.editBlockedCard = null;
+					})
+					.catch(error => {
+						console.warn(error);
+					});
 			}
 		}
 	};

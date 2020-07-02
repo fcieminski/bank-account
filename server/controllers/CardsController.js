@@ -66,6 +66,15 @@ class CardsController {
             }
         });
     }
+
+    delete(req, res) {
+        const { cardId } = req.params;
+
+        Cards.deleteOne({ _id: cardId }).exec((error) => {
+            if (error) res.send("error");
+            else res.status(200).send("deleted");
+        });
+    }
 }
 
 module.exports = new CardsController();

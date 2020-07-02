@@ -60,6 +60,7 @@ app.get("/account/:accountId/get-goals", isAuthenticated, AccountController.getC
 app.post("/create-new-card", isAuthenticated, CardsController.create);
 app.patch("/update/:cardId", isAuthenticated, CardsController.updateCard);
 app.post("/find-card/:userId", isAuthenticated, CardsController.findUserCards);
+app.delete("/delete/:cardId", isAuthenticated, CardsController.delete);
 
 app.post("/history/:userId", isAuthenticated, HistoryController.index);
 app.post("/history/:userId/search", isAuthenticated, HistoryController.searchInHistory);
