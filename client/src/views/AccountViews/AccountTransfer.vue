@@ -163,7 +163,6 @@
 				accounts: null,
 				loading: false,
 				transferData: {
-					date: Date.now(),
 					amount: null,
 					currency: "",
 					title: "",
@@ -259,7 +258,6 @@
 						this.activeAccount = this.accounts.find(account => account.type !== "savings");
 					}
 					this.transferData = {
-						date: Date.now(),
 						amount,
 						currency,
 						title,
