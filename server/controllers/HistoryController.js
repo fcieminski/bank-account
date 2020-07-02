@@ -1,5 +1,4 @@
 const History = require("../models/History");
-const User = require("../models/User");
 const Account = require("../models/Account");
 const PDFDocument = require("pdfkit");
 const path = require("path");
@@ -56,43 +55,50 @@ class HistoryController {
     }
 
     makeTransfer = async (req, res) => {
-        const { date, name, amount, currency, title, to, accountId, from } = req.body;
-        const { userId } = req.params;
+        const { type, amount, currency, title, to, accountId, from } = req.body;
         const history = {
-            date,
-            name,
+            type,
             amount,
             currency,
             title,
             accountId,
             from,
             to: {
-                name: to.name,
+                ...to,
                 accountNumber: to.accountNumber.toString(),
             },
         };
         try {
-            const historySaved = await new History(history).save();
-            Account.findOne({ _id: accountId })
-                .populate("history")
-                .exec((error, account) => {
-                    if (error) {
-                        res.status(404).send();
-                    } else {
-                        account.history.push(historySaved._id);
-                        account.save();
-                        res.send({ history: account.history });
-                    }
-                });
-            Account.findOne({ accountNumber: to.accountNumber.toString() })
-                .populate("history")
-                .exec((error, account) => {
-                    if (error) {
-                        return;
-                    } else {
-                        this.receiveTransfer(history, account);
-                    }
-                });
+            if (typeof history.amount === "number") {
+                const historySaved = await new History(history).save();
+
+                Account.findOne({ _id: accountId })
+                    .populate("history")
+                    .exec((error, account) => {
+                        if (error) {
+                            res.status(404).send();
+                        } else {
+                            if (account.balance >= history.amount) {
+                                account.history.push(historySaved._id);
+                                account.balance -= history.amount;
+                                account.save();
+                                res.send({ history: account.history });
+                            } else {
+                                res.status(406).send({ error: "Za mało środków!" });
+                            }
+                        }
+                    });
+
+                Account.findOne({ accountNumber: to.accountNumber.toString() })
+                    .populate("history")
+                    .exec((error, account) => {
+                        if (error) {
+                            return;
+                        } else {
+                            this.receiveTransfer(history, account);
+                        }
+                    });
+            }
         } catch (error) {
             res.status(404).send();
         }
@@ -100,7 +106,7 @@ class HistoryController {
 
     async receiveTransfer(history, acc) {
         try {
-            const newHistory = await new History({ ...history, name: "income" }).save();
+            const newHistory = await new History({ ...history, type: "income" }).save();
             acc.history.push(newHistory._id);
             acc.balance += newHistory.amount;
             acc.save();

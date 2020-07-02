@@ -57,16 +57,72 @@
 										/>
 										<input-error left :error="errors[0]" />
 									</validation-provider>
-									<validation-provider
-										class="input__box"
-										rules="required"
-										name="Dane adresowe"
-										v-slot="{ errors }"
-									>
-										<label for="adress">Dane adresowe</label>
-										<textarea class="input__main" name="adress" type="text" />
-										<input-error left :error="errors[0]" />
-									</validation-provider>
+									<div class="input__group">
+										<validation-provider
+											class="input__box"
+											rules="required"
+											name="Miasto"
+											v-slot="{ errors }"
+										>
+											<label for="city">Miasto</label>
+											<input
+												v-model="transferData.to.city"
+												class="input__main"
+												name="city"
+												type="text"
+											/>
+											<input-error left :error="errors[0]" />
+										</validation-provider>
+
+										<validation-provider
+											class="input__box"
+											rules="required"
+											name="Adres"
+											v-slot="{ errors }"
+										>
+											<label for="postalCode">Kod pocztowy</label>
+											<input
+												v-model="transferData.to.postalCode"
+												class="input__main"
+												name="postalCode"
+												type="text"
+											/>
+											<input-error left :error="errors[0]" />
+										</validation-provider>
+									</div>
+									<div class="input__group">
+										<validation-provider
+											class="input__box"
+											rules="required"
+											name="Adres"
+											v-slot="{ errors }"
+										>
+											<label for="address">Ulica</label>
+											<input
+												v-model="transferData.to.street"
+												class="input__main"
+												name="address"
+												type="text"
+											/>
+											<input-error left :error="errors[0]" />
+										</validation-provider>
+										<validation-provider
+											class="input__box"
+											rules="required"
+											name="Numer domu"
+											v-slot="{ errors }"
+										>
+											<label for="home">Numer domu/mieszkania</label>
+											<input
+												v-model="transferData.to.home"
+												class="input__main"
+												name="home"
+												type="text"
+											/>
+											<input-error left :error="errors[0]" />
+										</validation-provider>
+									</div>
+
 									<validation-provider
 										class="input__box"
 										rules="required"
@@ -169,7 +225,11 @@
 					from: null,
 					to: {
 						name: "",
-						accountNumber: ""
+						accountNumber: "",
+						city: "",
+						street: "",
+						home: "",
+						postalCode: ""
 					}
 				},
 				transferType: null,
@@ -232,7 +292,7 @@
 								...this.transferData,
 								from: this.user._id,
 								currency: "PLN",
-								name: "transfer",
+								type: "transfer",
 								accountId: this.activeAccount._id
 							};
 							setTimeout(
