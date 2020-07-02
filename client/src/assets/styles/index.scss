@@ -367,7 +367,7 @@ select {
     display: flex;
     justify-content: flex-end;
     padding: 0 30px 30px 30px;
-    &.card__actions--no-padding{
+    &.card__actions--no-padding {
         padding: 0;
     }
     button {
@@ -396,4 +396,17 @@ select {
 
 .mx-datepicker.mx-datepicker-range {
     display: block;
+}
+
+.more-box__widgets {
+    .widget--margin {
+        margin-bottom: 16px;
+        .widget--title {
+            line-height: 18px;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    }
 }

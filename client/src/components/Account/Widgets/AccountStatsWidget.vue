@@ -1,7 +1,10 @@
 <template>
 	<div class="widget--margin">
 		<div class="widget--title">
-			Stan konta w tym miesiącu
+			<div>
+				Stan konta w tym miesiącu
+			</div>
+			<i @click="$emit('delete')" class="material-icons cp">delete</i>
 		</div>
 		<div v-if="stats">
 			<div class="d-flex justify-between pt-2">
@@ -31,7 +34,7 @@
 			const accountsPromises = this.user.accounts.map(account => accountService.getAccountStats(account));
 			Promise.all(accountsPromises)
 				.then(stats => {
-					[this.stats] = stats
+					[this.stats] = stats;
 				})
 				.catch(error => {
 					console.warn(error);
@@ -43,6 +46,3 @@
 		methods: {}
 	};
 </script>
-
-<style lang='scss' scoped>
-</style>

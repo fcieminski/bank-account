@@ -17,6 +17,15 @@ class WidgetsController {
             else res.status(200).send(widgets);
         });
     }
+
+    delete(req, res) {
+        const { widgetId } = req.params;
+
+        Widgets.deleteOne({ _id: widgetId }).exec((err) => {
+            if (err) res.send("error");
+            else res.status(200).send("deleted");
+        });
+    }
 }
 
 module.exports = new WidgetsController();

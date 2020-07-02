@@ -75,3 +75,4 @@ app.delete("/delete-planned/:transferId", isAuthenticated, PlannedTransferContro
 
 app.post("/make-widget", isAuthenticated, WidgetsController.create);
 app.get("/get-widgets/:userId", isAuthenticated, WidgetsController.index);
+app.delete("/delete-widget/:widgetId", isAuthenticated, WidgetsController.delete);

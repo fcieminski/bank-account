@@ -1,7 +1,10 @@
 <template>
 	<div class="widget--margin">
 		<div class="widget--title">
-			Przelewy zaplanowane
+			<div>
+				Przelewy zaplanowane
+			</div>
+			<i @click="$emit('delete')" class="material-icons cp">delete</i>
 		</div>
 		<div v-if="plannedInfo && plannedInfo.amount > 0">
 			<span class="pt-2">{{ plannedInfo.date }}</span>
@@ -50,6 +53,3 @@
 		methods: {}
 	};
 </script>
-
-<style lang='scss' scoped>
-</style>

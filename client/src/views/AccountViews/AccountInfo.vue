@@ -114,7 +114,7 @@
 			this.loading = true;
 			try {
 				const account = await accountService.findUserAccount(this.user._id);
-				const { history } = await historyService.getHistory(this.user._id, "?limit=4");
+				const { history } = await historyService.getHistory(this.user._id, "?limit=8");
 				this.history = history;
 				this.account = account;
 			} catch {

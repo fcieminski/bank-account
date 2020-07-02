@@ -12,6 +12,12 @@ class WidgetsService extends BaseService {
       .post("/make-widget", params)
       .then(response => response.data);
   }
+
+  delete(widgetId) {
+    return this.axios
+      .delete(`/delete-widget/${widgetId}`)
+      .then(response => response.data);
+  }
 }
 
 const widgetsService = new WidgetsService();

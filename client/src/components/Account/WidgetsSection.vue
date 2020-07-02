@@ -1,13 +1,19 @@
 <template>
 	<div class="account__more-box">
-		<div class="more-box__widgets">
-			<loading-indicator v-if="loading" />
-			<component v-else :is="`${widget.name}Widget`" v-for="(widget, key) in widgets" :key="key" />
-		</div>
-		<div class="actions--container">
+		<div class="actions--container mb-4">
 			<div @click="createWidgetModal = true" class="btn pa-2">
 				dodaj widget
 			</div>
+		</div>
+		<div class="more-box__widgets">
+			<loading-indicator v-if="loading" />
+			<component
+				v-else
+				:is="`${widget.name}Widget`"
+				v-for="(widget, key) in widgets"
+				:key="key"
+				@delete="removeWidget(widget._id)"
+			/>
 		</div>
 		<dialog-modal
 			@yes="createWidget"
@@ -74,7 +80,7 @@
 		computed: {
 			...mapState(["user"]),
 			availableWidgets() {
-				return this.widgetOptions.filter(option => this.widgets.some(current => current.name !== option.value));
+				return this.widgetOptions.filter(option => this.widgets.every(current => current.name !== option.value));
 			}
 		},
 		methods: {
@@ -90,6 +96,17 @@
 					.catch(error => {
 						console.warn(error);
 					});
+			},
+			removeWidget(widgetId) {
+				widgetsService
+					.delete(widgetId)
+					.then(data => {
+						const index = this.widgets.findIndex(widget => widget._id === widgetId);
+						this.widgets.splice(index, 1);
+					})
+					.catch(error => {
+						console.warn(error);
+					});
 			}
 		}
 	};
@@ -99,18 +116,6 @@
 	.account__more-box {
 		margin-top: 30px;
 		padding-left: 16px;
-		display: flex;
-		flex-direction: column;
-		justify-content: space-between;
 		grid-area: more;
-		.more-box__widgets {
-			.widget--margin {
-				margin-bottom: 16px;
-			}
-			.widget--title {
-				line-height: 18px;
-				margin-bottom: 5px;
-			}
-		}
 	}
 </style>
