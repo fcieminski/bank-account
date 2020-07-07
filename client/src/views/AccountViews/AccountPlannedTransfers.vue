@@ -162,14 +162,17 @@
 				loading: false,
 				modal: false,
 				plannedTransfer: {
-					date: "2020-06-10",
 					amount: null,
 					currency: "",
 					title: "",
 					name: "",
 					to: {
 						name: "",
-						accountNumber: ""
+						accountNumber: "",
+						city: "",
+						street: "",
+						home: "",
+						postalCode: ""
 					},
 					period: ""
 				},
@@ -210,7 +213,8 @@
 							...this.plannedTransfer,
 							currency: "PLN",
 							startDate: this.plannedTransfer.date[0],
-							endDate: this.plannedTransfer.date[1]
+							endDate: this.plannedTransfer.date[1],
+							accountId: this.user.accounts[0]
 						}
 					})
 					.then(({ newTransfer }) => {
@@ -222,14 +226,17 @@
 					.finally(() => {
 						this.modal = false;
 						this.plannedTransfer = {
-							date: "2020-06-10",
 							amount: null,
 							currency: "",
 							title: "",
 							name: "",
 							to: {
 								name: "",
-								accountNumber: ""
+								accountNumber: "",
+								city: "",
+								street: "",
+								home: "",
+								postalCode: ""
 							},
 							period: ""
 						};
@@ -251,14 +258,17 @@
 					.finally(() => {
 						this.modal = false;
 						this.plannedTransfer = {
-							date: "2020-06-10",
 							amount: null,
 							currency: "",
 							title: "",
 							name: "",
 							to: {
 								name: "",
-								accountNumber: ""
+								accountNumber: "",
+								city: "",
+								street: "",
+								home: "",
+								postalCode: ""
 							},
 							period: ""
 						};
@@ -282,14 +292,17 @@
 			cleanForm() {
 				this.modal = false;
 				this.plannedTransfer = {
-					date: "2020-06-10",
 					amount: null,
 					currency: "",
 					title: "",
 					name: "",
 					to: {
 						name: "",
-						accountNumber: ""
+						accountNumber: "",
+						city: "",
+						street: "",
+						home: "",
+						postalCode: ""
 					},
 					period: ""
 				};

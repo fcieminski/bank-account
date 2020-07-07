@@ -68,6 +68,7 @@ class HistoryController {
                 accountNumber: to.accountNumber.toString(),
             },
         };
+        console.log(history);
         try {
             if (typeof history.amount === "number") {
                 const historySaved = await new History(history).save();
