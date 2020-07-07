@@ -1,6 +1,6 @@
 const PlannedTransfers = require("../models/PlannedTransfers");
 const Account = require("../models/Account");
-const { serializeUser } = require("passport");
+const agenda = require("../config/agenda");
 
 class PlannedTransferController {
     index(req, res) {
@@ -27,6 +27,10 @@ class PlannedTransferController {
                 else {
                     account.plannedTransfers.push(newTransfer._id);
                     account.save();
+                    const job = agenda.create("planned transfer", { transfer: newTransfer._id });
+                    job.schedule("* * * * *");
+                    job.repeatEvery("* * * * *");
+                    job.save();
                     res.status(201).send({ newTransfer });
                 }
             });
