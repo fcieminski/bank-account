@@ -1,6 +1,7 @@
 const PlannedTransfers = require("../models/PlannedTransfers");
 const Account = require("../models/Account");
 const agenda = require("../config/agenda");
+const Mongoose = require("mongoose");
 
 class PlannedTransferController {
     index(req, res) {
@@ -27,7 +28,7 @@ class PlannedTransferController {
                 else {
                     account.plannedTransfers.push(newTransfer._id);
                     account.save();
-                    const job = agenda.create("planned transfer", { transfer: newTransfer._id });
+                    const job = agenda.create("plannedTransfer", { transfer: newTransfer._id });
                     job.schedule("* * * * *");
                     job.repeatEvery("* * * * *");
                     job.save();
@@ -65,7 +66,10 @@ class PlannedTransferController {
 
         PlannedTransfers.deleteOne({ _id: transferId }).exec((err) => {
             if (err) res.send("error");
-            else res.status(200).send("deleted");
+            else {
+                agenda.cancel({ data: { transfer: Mongoose.Types.ObjectId(transferId) } });
+                res.status(200).send("deleted");
+            }
         });
     }
 }
