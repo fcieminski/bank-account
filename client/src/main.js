@@ -12,11 +12,13 @@ import {
 import LoadingIndicator from "@utils/LoadingIndicator";
 import InputError from "@utils/InputError.vue";
 import DialogModal from "@utils/DialogModal.vue";
+import { pl } from "date-fns/locale";
 
 window.axios = axios;
 axios.defaults.withCredentials = true;
 
 Vue.config.productionTip = false;
+Vue.prototype.$localePl = pl;
 Vue.component("ValidationProvider", ValidationProvider);
 Vue.component("ValidationObserver", ValidationObserver);
 Vue.component("loading-indicator", LoadingIndicator);

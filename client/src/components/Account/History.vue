@@ -3,7 +3,9 @@
 		<div>
 			<div class="history-box__element" v-for="element in history" :key="element._id">
 				<div class="element__about">
-					<div>{{ new Date(element.date).toLocaleDateString() }}</div>
+					<div>
+						{{ format(new Date(element.createdAt), "eeee do LLLL yyyy", { locale: $localePl }) }}
+					</div>
 					<div class="wrap--text">{{ element.to.name }}</div>
 					<div class="wrap--text">{{ element.accountType }}</div>
 					<div class="wrap--text text--end" :class="{ 'amount--less': element.name !== 'income' }">
@@ -56,29 +58,31 @@
 
 <script>
 	import historyService from "@services/HistoryService";
+	import { format } from "date-fns";
 	export default {
 		name: "History",
 		data() {
 			return {
 				expandElement: {
-					id: null
+					id: null,
 				},
-				raport: []
+				raport: [],
+				format,
 			};
 		},
 		props: {
 			history: {
 				type: Array,
-				default: () => []
+				default: () => [],
 			},
 			moreInfo: {
 				type: Boolean,
-				default: true
+				default: true,
 			},
 			raports: {
 				type: Boolean,
-				default: false
-			}
+				default: false,
+			},
 		},
 		components: {},
 		created() {},
@@ -95,8 +99,8 @@
 				if (typeof transactions === "object") {
 					transactions = [transactions];
 				}
-				const ids = transactions.map(ele => ele._id);
-				historyService.getPDF(ids).then(response => {
+				const ids = transactions.map((ele) => ele._id);
+				historyService.getPDF(ids).then((response) => {
 					const blob = new Blob([response.data], { type: '"application/pdf' });
 					const link = document.createElement("a");
 					link.href = URL.createObjectURL(blob);
@@ -110,11 +114,11 @@
 				this.$router.push({
 					name: "account.transfer",
 					params: {
-						transaction
-					}
+						transaction,
+					},
 				});
-			}
-		}
+			},
+		},
 	};
 </script>
 
@@ -134,10 +138,6 @@
 			display: flex;
 			margin-bottom: 10px;
 			div {
-				&:first-of-type {
-					flex: 0;
-					margin-right: 20px;
-				}
 				flex: 1;
 				margin-right: 5px;
 				font-size: 1rem;
