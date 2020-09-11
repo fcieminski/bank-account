@@ -1,9 +1,9 @@
 <template>
 	<div class="login__title">
 		<h3 class="title__text">Zaloguj się do bankowości</h3>
-		<validation-observer v-slot="{ invalid }">
+		<ValidationObserver v-slot="{ invalid }">
 			<form class="login__form" @submit.prevent="logIn($event)" action="">
-				<validation-provider class="input__box" rules="required" name="Login" v-slot="{ errors }">
+				<ValidationProvider class="input__box" rules="required" name="Login" v-slot="{ errors }">
 					<label for="username">Kod pin</label>
 					<input
 						v-model.number="user.username"
@@ -13,12 +13,12 @@
 						type="text"
 					/>
 					<input-error left :error="errors[0]" />
-				</validation-provider>
-				<validation-provider class="input__box" rules="required" name="Hasło" v-slot="{ errors }">
+				</ValidationProvider>
+				<ValidationProvider class="input__box" rules="required" name="Hasło" v-slot="{ errors }">
 					<label for="password">Hasło</label>
 					<input v-model="user.password" class="input__main" name="password" type="password" />
 					<input-error left :error="errors[0]" />
-				</validation-provider>
+				</ValidationProvider>
 				<button class="btn btn__login" :disabled="invalid" type="submit">Zaloguj</button>
 				<div class="input__password">
 					<router-link tag="span" :to="{ name: 'main.signup' }"> Załóż konto </router-link>
@@ -26,7 +26,7 @@
 				</div>
 			</form>
 			<input-error center :error="error" />
-		</validation-observer>
+		</ValidationObserver>
 	</div>
 </template>
 

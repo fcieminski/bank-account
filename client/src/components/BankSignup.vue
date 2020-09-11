@@ -1,19 +1,19 @@
 <template>
 	<div class="signup__title">
 		<h3 class="title__text">Zarejestruj swoje konto</h3>
-		<validation-observer v-slot="{ invalid }">
+		<ValidationObserver v-slot="{ invalid }">
 			<form class="signup__form" @submit.prevent="submitForm($event)" action="">
-				<validation-provider class="input__box" rules="required|alpha" name="Imię" v-slot="{ errors }">
+				<ValidationProvider class="input__box" rules="required|alpha" name="Imię" v-slot="{ errors }">
 					<label for="name">Imię</label>
 					<input class="input__main" v-model="newUser.name" type="text" name="name" />
 					<input-error left :error="errors[0]" />
-				</validation-provider>
-				<validation-provider class="input__box" rules="required|alpha" name="Nazwisko" v-slot="{ errors }">
+				</ValidationProvider>
+				<ValidationProvider class="input__box" rules="required|alpha" name="Nazwisko" v-slot="{ errors }">
 					<label for="surname">Nazwisko</label>
 					<input class="input__main" v-model="newUser.surname" type="text" name="surname" />
 					<input-error left :error="errors[0]" />
-				</validation-provider>
-				<validation-provider class="input__box" rules="required" name="Login" v-slot="{ errors }">
+				</ValidationProvider>
+				<ValidationProvider class="input__box" rules="required" name="Login" v-slot="{ errors }">
 					<label for="username">Kod pin</label>
 					<input
 						class="input__main"
@@ -23,13 +23,13 @@
 						name="username"
 					/>
 					<input-error left :error="errors[0]" />
-				</validation-provider>
-				<validation-provider class="input__box" rules="required|email" name="Adres e-mail" v-slot="{ errors }">
+				</ValidationProvider>
+				<ValidationProvider class="input__box" rules="required|email" name="Adres e-mail" v-slot="{ errors }">
 					<label for="email">Adres e-mail</label>
 					<input class="input__main" v-model="newUser.email" type="text" name="email" />
 					<input-error left :error="errors[0]" />
-				</validation-provider>
-				<validation-provider class="input__box" rules="required" name="Hasło" v-slot="{ errors }">
+				</ValidationProvider>
+				<ValidationProvider class="input__box" rules="required" name="Hasło" v-slot="{ errors }">
 					<label for="password">Hasło</label>
 					<div class="password__reveal">
 						<i @click="reveal = !reveal" class="cp material-icons">{{
@@ -43,10 +43,10 @@
 						/>
 					</div>
 					<input-error left :error="errors[0]" />
-				</validation-provider>
+				</ValidationProvider>
 				<button class="btn btn__login" :disabled="invalid" type="submit">Wyślij</button>
 			</form>
-		</validation-observer>
+		</ValidationObserver>
 	</div>
 </template>
 
