@@ -5,11 +5,11 @@ import {
   localize
 } from "vee-validate";
 import pl from "vee-validate/dist/locale/pl.json";
-import * as Rules from "vee-validate/dist/rules";
+import * as rules from "vee-validate/dist/rules";
 
-for (var rule in Rules) {
-  extend(rule, Rules[rule]);
-}
+Object.keys(rules).forEach(rule => {
+  extend(rule, rules[rule]);
+});
 
 localize("pl", pl);
 

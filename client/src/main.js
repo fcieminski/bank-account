@@ -9,13 +9,15 @@ import LoadingIndicator from "@utils/LoadingIndicator";
 import InputError from "@utils/InputError.vue";
 import DialogModal from "@utils/DialogModal.vue";
 import { pl } from "date-fns/locale";
-import {ValidationProvider, ValidationObserver } from './veeValidate'
+import { ValidationProvider, ValidationObserver } from "./veeValidate";
+import VueTheMask from "vue-the-mask";
 
 window.axios = axios;
 axios.defaults.withCredentials = true;
 
 Vue.config.productionTip = false;
 Vue.prototype.$localePl = pl;
+Vue.use(VueTheMask);
 Vue.component("ValidationProvider", ValidationProvider);
 Vue.component("ValidationObserver", ValidationObserver);
 Vue.component("loading-indicator", LoadingIndicator);

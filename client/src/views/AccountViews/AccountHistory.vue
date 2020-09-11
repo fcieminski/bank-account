@@ -4,9 +4,7 @@
 			<div>Historia</div>
 			<div class="horizontal--divider"></div>
 			<section>
-				<span>
-					Wyszukiwarka
-				</span>
+				<span> Wyszukiwarka </span>
 				<form>
 					<label for="date">Data</label>
 					<date-picker
@@ -35,8 +33,8 @@
 							<label for="amount-from">Kwota od</label>
 							<input
 								v-model.number="searchQuery.amountFrom"
-								@keypress="isNumber"
-								type="number"
+								v-mask="['#########']"
+								type="text"
 								class="input__main"
 								name="amount-from"
 							/>
@@ -45,8 +43,8 @@
 							<label for="amount-to">Kwota do</label>
 							<input
 								v-model.number="searchQuery.amountTo"
-								@keypress="isNumber"
-								type="number"
+								v-mask="['#########']"
+								type="text"
 								class="input__main"
 								name="amount-to"
 							/>
@@ -54,12 +52,8 @@
 					</div>
 				</form>
 				<div class="card__actions card__actions--no-padding mt-4">
-					<button @click="clearForm" class="btn--transparent pa-2 mr-4">
-						Wyczyść
-					</button>
-					<button @click="searchInHistory" class="btn pa-2">
-						Szukaj
-					</button>
+					<button @click="clearForm" class="btn--transparent pa-2 mr-4">Wyczyść</button>
+					<button @click="searchInHistory" class="btn pa-2">Szukaj</button>
 				</div>
 			</section>
 			<section>
@@ -67,9 +61,7 @@
 					<input name="raports" v-model="raports" type="checkbox" />
 					<label @click="raports = !raports" for="raports" class="ml-4">Raport zbiorowy</label>
 				</div>
-				<button v-if="raports" @click="createRaports" class="btn btn--auto pa-2 mt-5">
-					Generuj raport
-				</button>
+				<button v-if="raports" @click="createRaports" class="btn btn--auto pa-2 mt-5">Generuj raport</button>
 			</section>
 			<div class="horizontal--divider"></div>
 
@@ -126,17 +118,17 @@
 					type: null,
 					amountFrom: null,
 					amountTo: null,
-					title: null
+					title: null,
 				},
 				searchInfo: "",
 				raports: false,
 				raportIds: [],
-				searchMessage: ""
+				searchMessage: "",
 			};
 		},
 		components: {
 			History,
-			DatePicker
+			DatePicker,
 		},
 		created() {
 			this.loading = true;
@@ -144,13 +136,13 @@
 		},
 		mounted() {},
 		computed: {
-			...mapState(["user"])
+			...mapState(["user"]),
 		},
 		methods: {
 			getHistory() {
 				historyService
 					.getHistory(this.user._id, `?limit=10&offset=0`)
-					.then(data => {
+					.then((data) => {
 						this.history = data.history;
 						this.pagination = data.pagination;
 						document.addEventListener("scroll", this.loadMore);
@@ -174,7 +166,7 @@
 					this.loadingMoreHistory = true;
 					historyService
 						.getHistory(this.user._id, `?limit=${this.limit}&offset=${this.offset}`)
-						.then(data => {
+						.then((data) => {
 							this.history.push(...data.history);
 						})
 						.catch(() => {
@@ -186,11 +178,11 @@
 				}
 			},
 			searchInHistory() {
-				const isEmpty = Object.values(this.searchQuery).every(value => value === null);
+				const isEmpty = Object.values(this.searchQuery).every((value) => value === null);
 				if (!isEmpty) {
 					historyService
 						.searchInHistory(this.user._id, {
-							searchQuery: this.searchQuery
+							searchQuery: this.searchQuery,
 						})
 						.then(({ history }) => {
 							this.history = history;
@@ -205,7 +197,7 @@
 					type: null,
 					amountFrom: null,
 					amountTo: null,
-					title: null
+					title: null,
 				};
 				this.searchMessage = "";
 				this.getHistory();
@@ -216,7 +208,7 @@
 
 			createRaports() {
 				if (this.raportIds.length !== 0) {
-					historyService.getPDF(this.raportIds).then(response => {
+					historyService.getPDF(this.raportIds).then((response) => {
 						const blob = new Blob([response.data], { type: '"application/pdf' });
 						const link = document.createElement("a");
 						link.href = URL.createObjectURL(blob);
@@ -227,19 +219,10 @@
 					});
 				}
 			},
-			isNumber(evt) {
-				evt = evt ? evt : window.event;
-				const charCode = evt.which ? evt.which : evt.keyCode;
-				if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode !== 46) {
-					evt.preventDefault();
-				} else {
-					return true;
-				}
-			}
 		},
 		destroyed() {
 			document.removeEventListener("scroll", this.loadMore);
-		}
+		},
 	};
 </script>
 

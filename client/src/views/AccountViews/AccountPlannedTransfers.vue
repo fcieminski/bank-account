@@ -5,23 +5,17 @@
 			<div class="horizontal--divider"></div>
 		</div>
 		<section>
-			<button class="btn btn--auto mb-5" @click="modal = !modal">
-				Zaplanuj nowy transfer
-			</button>
+			<button class="btn btn--auto mb-5" @click="modal = !modal">Zaplanuj nowy transfer</button>
 			<div v-if="allPlannedTransfers.length !== 0">
 				<div class="planned__box d-flex" v-for="(transfer, key) in allPlannedTransfers" :key="key">
 					<div class="column box__column wrap--text">
-						<span>
-							Nazwa
-						</span>
+						<span> Nazwa </span>
 						<div>
 							{{ transfer.name }}
 						</div>
 					</div>
 					<div class="column box__column wrap--text">
-						<span>
-							Okres
-						</span>
+						<span> Okres </span>
 						<div>
 							{{ new Date(transfer.startDate).toLocaleDateString() }}
 							-
@@ -29,33 +23,25 @@
 						</div>
 					</div>
 					<div class="column box__column wrap--text">
-						<span>
-							Kwota
-						</span>
+						<span> Kwota </span>
 						<div>
 							{{ transfer.amount }}
 						</div>
 					</div>
 					<div class="column box__column wrap--text">
-						<span>
-							Powtarzalność
-						</span>
+						<span> Powtarzalność </span>
 						<div class="wrap--text">
 							{{ transfer.period === "d" ? "codziennie" : "raz w miesiącu" }}
 						</div>
 					</div>
 					<div class="column box__column wrap--text">
-						<span>
-							Tytuł przelewu
-						</span>
+						<span> Tytuł przelewu </span>
 						<div>
 							{{ transfer.title }}
 						</div>
 					</div>
 					<div class="column box__column wrap--text">
-						<span>
-							Odbiorca
-						</span>
+						<span> Odbiorca </span>
 						<div>
 							{{ transfer.to.name }}
 						</div>
@@ -78,72 +64,135 @@
 			:modal="{
 				text: this.editingTransfer ? 'Edytuj zaplanowany transfer' : 'Utwórz nowy zaplanowany transfer',
 				yes: 'Zapisz',
-				no: 'Anuluj'
+				no: 'Anuluj',
 			}"
 		>
 			<div class="mt-5">
-				<form ref="form" @submit.prevent>
-					<div class="d-flex flex-column input__box">
-						<label for="date">Okres działania zlecenia stałego</label>
-						<date-picker
-							value-type="format"
-							type="date"
-							input-class="input__main"
-							v-model="plannedTransfer.date"
-							name="date"
-							:default-value="new Date()"
-							:disabled-date="disabledDates"
-							range
-						/>
-					</div>
-					<div class="input__box">
-						<label for="period">Powtarzalność</label>
-						<select v-model="plannedTransfer.period" class="input__main" name="period" type="text">
-							<option value="d">codziennie</option>
-							<option value="m">raz w miesiącu</option>
-						</select>
-					</div>
-					<div class="input__box mr-2" name="Nazwa przelewu">
-						<label for="name">Nazwa przelewu</label>
-						<input v-model="plannedTransfer.name" class="input__main" name="name" type="text" />
-					</div>
-					<div class="d-flex">
-						<div class="input__box column mr-2" name="Numer konta">
-							<label for="accountNumber">Numer konta</label>
-							<input
-								v-model="plannedTransfer.to.accountNumber"
-								class="input__main"
-								name="accountNumber"
-								type="text"
+				<ValidationObserver ref="validationObserver">
+					<form ref="form" @submit.prevent>
+						<ValidationProvider
+							class="d-flex flex-column input__box"
+							rules="required"
+							name="data"
+							v-slot="{ errors }"
+						>
+							<label for="date">Okres działania zlecenia stałego</label>
+							<date-picker
+								value-type="format"
+								type="date"
+								input-class="input__main"
+								v-model="date"
+								name="date"
+								:default-value="new Date()"
+								:disabled-date="disabledDates"
+								range
 							/>
+							<input-error left :error="errors[0]" />
+						</ValidationProvider>
+						<ValidationProvider
+							class="input__box"
+							rules="required"
+							name="powtarzalność"
+							v-slot="{ errors }"
+						>
+							<label for="period">Powtarzalność</label>
+							<select v-model="plannedTransfer.period" class="input__main" name="period" type="text">
+								<option value="d">codziennie</option>
+								<option value="m">raz w miesiącu</option>
+							</select>
+							<input-error left :error="errors[0]" />
+						</ValidationProvider>
+						<ValidationProvider
+							class="input__box"
+							rules="required"
+							name="nazwa przelewu"
+							v-slot="{ errors }"
+						>
+							<label for="name">Nazwa przelewu</label>
+							<input v-model="plannedTransfer.name" class="input__main" name="name" type="text" />
+							<input-error left :error="errors[0]" />
+						</ValidationProvider>
+						<div class="d-flex">
+							<ValidationProvider
+								class="input__box column mr-2"
+								rules="required"
+								name="numer konta"
+								v-slot="{ errors }"
+							>
+								<label for="accountNumber">Numer konta</label>
+								<the-mask
+									v-model="plannedTransfer.to.accountNumber"
+									class="input__main"
+									name="accountNumber"
+									type="text"
+									:mask="['##-####-####-####-####-####-####']"
+									:masked="false"
+								/>
+								<input-error left :error="errors[0]" />
+							</ValidationProvider>
+							<ValidationProvider
+								class="input__box column ml-2"
+								rules="required"
+								name="nazwa odbiorcy"
+								v-slot="{ errors }"
+							>
+								<label for="name">Nazwa odbiorcy</label>
+								<input v-model="plannedTransfer.to.name" class="input__main" name="name" type="text" />
+								<input-error left :error="errors[0]" />
+							</ValidationProvider>
 						</div>
-						<div class="input__box column ml-2" name="Nazwa odbiorcy">
-							<label for="name">Nazwa odbiorcy</label>
-							<input v-model="plannedTransfer.to.name" class="input__main" name="name" type="text" />
+						<div class="d-flex">
+							<ValidationProvider
+								class="input__box column mr-2"
+								rules="required"
+								name="dane adresowe"
+								v-slot="{ errors }"
+							>
+								<label for="adress">Dane adresowe</label>
+								<textarea
+									v-model="plannedTransfer.to.street"
+									class="input__main"
+									name="adress"
+									type="text"
+								/>
+								<input-error left :error="errors[0]" />
+							</ValidationProvider>
+							<ValidationProvider
+								class="input__box column ml-2"
+								rules="required"
+								name="tytuł przelewu"
+								v-slot="{ errors }"
+							>
+								<label for="title">Tytuł przelewu</label>
+								<textarea
+									v-model="plannedTransfer.title"
+									class="input__main"
+									name="title"
+									type="text"
+								/>
+								<input-error left :error="errors[0]" />
+							</ValidationProvider>
 						</div>
-					</div>
-					<div class="d-flex">
-						<div class="input__box column mr-2" name="Dane adresowe">
-							<label for="adress">Dane adresowe</label>
-							<textarea class="input__main" name="adress" type="text" />
+						<div class="input__container--right">
+							<ValidationProvider
+								class="input__box input__box--small"
+								rules="required"
+								name="kwota"
+								v-slot="{ errors }"
+							>
+								<label for="amount">Kwota</label>
+								<input
+									v-model.number="plannedTransfer.amount"
+									class="input__main"
+									name="amount"
+									type="text"
+									v-mask="['#######']"
+								/>
+								<input-error left :error="errors[0]" />
+							</ValidationProvider>
 						</div>
-						<div class="input__box column ml-2" name="Tytuł">
-							<label for="title">Tytuł przelewu</label>
-							<textarea v-model="plannedTransfer.title" class="input__main" name="title" type="text" />
-						</div>
-					</div>
-					<div class="input__container--right">
-						<div class="input__box input__box--small" name="Kwota">
-							<label for="amount">Kwota</label>
-							<input
-								v-model.number="plannedTransfer.amount"
-								class="input__main"
-								name="amount"
-								type="number"
-							/>
-						</div>
-					</div>
-				</form>
+					</form>
+				</ValidationObserver>
 			</div>
 		</dialog-modal>
 	</section>
@@ -155,6 +204,7 @@
 	import "vue2-datepicker/locale/pl";
 	import plannedTransferService from "@services/PlannedTransferService";
 	import { mapState } from "vuex";
+	import { format } from "date-fns";
 	export default {
 		name: "AccountPlannedTransfers",
 		data() {
@@ -172,20 +222,22 @@
 						city: "",
 						street: "",
 						home: "",
-						postalCode: ""
+						postalCode: "",
 					},
-					period: ""
+					period: "",
+					startDate: "",
+					endDate: "",
 				},
 				allPlannedTransfers: [],
 				plannedError: "",
-				editingTransfer: false
+				editingTransfer: false,
 			};
 		},
 		components: { DatePicker },
 		created() {
 			plannedTransferService
 				.getUserPlannedTransfers(this.user._id)
-				.then(response => {
+				.then((response) => {
 					this.allPlannedTransfers = response;
 				})
 				.catch(() => {
@@ -193,17 +245,37 @@
 				});
 		},
 		computed: {
-			...mapState(["user"])
+			...mapState(["user"]),
+			date: {
+				get() {
+					const start = this.plannedTransfer.startDate;
+					const end = this.plannedTransfer.endDate;
+					if (start && end) {
+						return [
+							format(new Date(start), "yyyy-MM-dd", { locale: this.$localePl }),
+							format(new Date(end), "yyyy-MM-dd", { locale: this.$localePl }),
+						];
+					}
+					return "";
+				},
+				set(value) {
+					this.plannedTransfer.startDate = value[0];
+					this.plannedTransfer.endDate = value[1];
+				},
+			},
 		},
 		methods: {
 			disabledDates(date) {
 				return date < new Date(Date.now());
 			},
-			saveTransfer() {
-				if (!this.editingTransfer) {
-					this.createPlannedTransfer();
-				} else {
-					this.updatePlannedTransfer();
+			async saveTransfer() {
+				const valid = await this.$refs.validationObserver.validate();
+				if (valid) {
+					if (!this.editingTransfer) {
+						this.createPlannedTransfer();
+					} else {
+						this.updatePlannedTransfer();
+					}
 				}
 			},
 			createPlannedTransfer() {
@@ -212,10 +284,8 @@
 						transfer: {
 							...this.plannedTransfer,
 							currency: "PLN",
-							startDate: this.plannedTransfer.date[0],
-							endDate: this.plannedTransfer.date[1],
-							accountId: this.user.accounts[0]
-						}
+							accountId: this.user.accounts[0],
+						},
 					})
 					.then(({ newTransfer }) => {
 						this.allPlannedTransfers.push(newTransfer);
@@ -236,9 +306,9 @@
 								city: "",
 								street: "",
 								home: "",
-								postalCode: ""
+								postalCode: "",
 							},
-							period: ""
+							period: "",
 						};
 					});
 			},
@@ -248,9 +318,7 @@
 						update: {
 							...this.plannedTransfer,
 							currency: "PLN",
-							startDate: this.plannedTransfer.date[0],
-							endDate: this.plannedTransfer.date[1]
-						}
+						},
 					})
 					.catch(() => {
 						console.warn("error");
@@ -268,9 +336,9 @@
 								city: "",
 								street: "",
 								home: "",
-								postalCode: ""
+								postalCode: "",
 							},
-							period: ""
+							period: "",
 						};
 					});
 			},
@@ -302,12 +370,12 @@
 						city: "",
 						street: "",
 						home: "",
-						postalCode: ""
+						postalCode: "",
 					},
-					period: ""
+					period: "",
 				};
-			}
-		}
+			},
+		},
 	};
 </script>
 

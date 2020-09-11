@@ -197,10 +197,9 @@ i {
 }
 
 .input__box {
-    margin-bottom: 20px;
     width: 100%;
     &.input__box--small {
-        width: 150px;
+        width: 200px;
         margin: 0;
     }
 }
@@ -418,4 +417,10 @@ select {
             align-items: center;
         }
     }
+}
+
+button[disabled] {
+    background: #8080802b;
+    color: #a954ee;
+    cursor: inherit;
 }
