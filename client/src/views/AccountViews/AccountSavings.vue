@@ -12,25 +12,19 @@
 					<div class="column">
 						<div>
 							<div>
-								<span>
-									Wykonaj przelew ze swojego konta głównego, na konto oszczędnościowe
-								</span>
+								<span> Wykonaj przelew ze swojego konta głównego, na konto oszczędnościowe </span>
 							</div>
 							<button class="btn btn--auto mt-5" @click="makeLocalTransfer">Wykonaj przelew</button>
 						</div>
 						<div class="mt-5">
 							<div>
-								<span>
-									Ustal nowy cel oszczędnościowy
-								</span>
+								<span> Ustal nowy cel oszczędnościowy </span>
 							</div>
 							<button class="btn btn--auto mt-5" @click="newSavingGoal = true">Ustal cel</button>
 						</div>
 						<div v-if="this.currentGoals.length !== 0" class="mt-5">
 							<div>
-								<span>
-									Wpłać pieniądze na cel oszczędnościowy
-								</span>
+								<span> Wpłać pieniądze na cel oszczędnościowy </span>
 							</div>
 							<button class="btn btn--auto mt-5" @click="newSavingGoalTransfer = true">Wpłać</button>
 						</div>
@@ -61,48 +55,40 @@
 						>
 							<img class="goal__image goal__column" :src="goal.image" alt="" />
 							<div class="goal__column pa-5">
-								<span>
-									Nazwa celu
-								</span>
+								<span>Nazwa celu</span>
 								<div>
 									{{ goal.name }}
 								</div>
 							</div>
 							<div class="goal__column pa-5">
-								<span>
-									Opis celu
-								</span>
+								<span>Opis celu</span>
 								<div>
 									{{ goal.description }}
 								</div>
 							</div>
 							<div class="goal__column pa-5">
-								<span>
-									Kwota
-								</span>
+								<span>Kwota</span>
 								<div>
 									{{ goal.amount }}
 								</div>
 							</div>
 							<div class="goal__column pa-5">
-								<span>
-									Mam już
-								</span>
+								<span>Mam już</span>
 								<div>
 									{{ goal.currentAmount }}
 								</div>
 							</div>
 							<div class="goal__column pa-5">
-								<span>
-									Kategoria
-								</span>
+								<span>Kategoria</span>
 								<div>
 									{{ goal.category }}
 								</div>
 							</div>
 							<div class="d-flex align-center pa-5">
 								<div>
-									<i @click="deleteModal = {id: goal._id, modal: true}" class="material-icons cp">delete</i>
+									<i @click="deleteModal = { id: goal._id, modal: true }" class="material-icons cp"
+										>delete</i
+									>
 								</div>
 							</div>
 							<dialog-modal
@@ -125,53 +111,79 @@
 					:show="newSavingGoal"
 					:modal="{ text: 'Nowy cel', yes: 'Stwórz', no: 'Anuluj' }"
 				>
-					<div class="d-flex">
-						<div class="input__box column mr-2">
-							<label for="name">Nazwa celu</label>
-							<input v-model="goal.name" class="input__main" name="name" />
+					<ValidationObserver ref="validationObserver">
+						<div class="d-flex">
+							<ValidationProvider
+								class="input__box column mr-2"
+								rules="required"
+								name="nazwa celu"
+								v-slot="{ errors }"
+							>
+								<label for="name">Nazwa celu</label>
+								<input v-model="goal.name" class="input__main" name="name" />
+								<input-error left :error="errors[0]" />
+							</ValidationProvider>
+							<ValidationProvider
+								class="input__box column mr-2 ml-2"
+								rules="required"
+								name="kwota celu"
+								v-slot="{ errors }"
+							>
+								<label for="amount">Kwota celu</label>
+								<input
+									v-model.number="goal.amount"
+									v-mask="['######']"
+									class="input__main"
+									name="amount"
+								/>
+								<input-error left :error="errors[0]" />
+							</ValidationProvider>
+							<ValidationProvider
+								class="input__box column ml-2"
+								rules="required"
+								name="kategoria celu"
+								v-slot="{ errors }"
+							>
+								<label for="category">Kategoria celu</label>
+								<select v-model="goal.category" class="input__main" name="category">
+									<option value="samochód">Samochód</option>
+									<option value="wakacje">Wakacje</option>
+									<option value="dom">Dom</option>
+									<option value="marzenia">Marzenia</option>
+									<option value="emerytura">Emerytura</option>
+									<option value="zaręczyny">Zaręczyny</option>
+									<option value="komputer">Komputer</option>
+									<option value="telefon">Telefon</option>
+									<option value="inne">Inne</option>
+								</select>
+								<input-error left :error="errors[0]" />
+							</ValidationProvider>
 						</div>
-						<div class="input__box column ml-2">
-							<label for="amount">Kwota celu</label>
-							<input v-model.number="goal.amount" class="input__main" name="amount" />
+						<ValidationProvider class="input__box" rules="required" name="opis celu" v-slot="{ errors }">
+							<label for="description">Opis celu</label>
+							<textarea v-model="goal.description" class="input__main" name="description" />
+							<input-error left :error="errors[0]" />
+						</ValidationProvider>
+						<div class="input__box">
+							<label for="file">Opcjonalnie, dodaj zdjęcie celu</label>
+							<input
+								@click="$refs.fileInput.click()"
+								v-model="fileName"
+								readonly
+								name="file"
+								class="input__main cp"
+							/>
+							<input
+								@change="addFile"
+								accept="image/x-png,image/jpeg"
+								ref="fileInput"
+								style="display: none"
+								type="file"
+								name="description"
+							/>
+							<input-error left :error="fileError" />
 						</div>
-						<div class="input__box column ml-2">
-							<label for="category">Kategoria celu</label>
-							<select v-model="goal.category" class="input__main" name="category">
-								<option value="samochód">Samochód</option>
-								<option value="wakacje">Wakacje</option>
-								<option value="dom">Dom</option>
-								<option value="marzenia">Marzenia</option>
-								<option value="emerytura">Emerytura</option>
-								<option value="zaręczyny">Zaręczyny</option>
-								<option value="komputer">Komputer</option>
-								<option value="telefon">Telefon</option>
-								<option value="inne">Inne</option>
-							</select>
-						</div>
-					</div>
-					<div class="input__box">
-						<label for="description">Opis celu</label>
-						<textarea v-model="goal.description" class="input__main" name="description" />
-					</div>
-					<div class="input__box">
-						<label for="file">Opcjonalnie, dodaj zdjęcie celu</label>
-						<input
-							@click="$refs.fileInput.click()"
-							v-model="fileName"
-							readonly
-							name="file"
-							class="input__main cp"
-						/>
-						<input
-							@change="addFile"
-							accept="image/x-png,image/jpeg"
-							ref="fileInput"
-							style="display: none;"
-							type="file"
-							name="description"
-						/>
-						<input-error left :error="fileError" />
-					</div>
+					</ValidationObserver>
 				</dialog-modal>
 				<dialog-modal
 					@yes="transferToGoal"
@@ -179,20 +191,23 @@
 					:show="newSavingGoalTransfer"
 					:modal="{ text: 'Wpłać na cel', yes: 'Wpłać', no: 'Anuluj' }"
 				>
-					<div>
-						<label for="file">Wybierz cel oszczędnościowy</label>
-						<select v-model="selectedGoal" readonly class="input__main cp">
-							<option v-for="(goal, key) in notDoneGoals" :key="key" :value="goal"
-								>{{ goal.name }}, kategoria: {{ goal.category }}</option
-							>
-						</select>
-						<transition name="fade">
-							<div class="mt-5" v-if="selectedGoal">
-								<input v-model.number="selectedGoalAmount" class="input__main" name="amount" />
-								<input-error left :error="goalError" />
-							</div>
-						</transition>
-					</div>
+					<label for="file">Wybierz cel oszczędnościowy</label>
+					<select v-model="selectedGoal" readonly class="input__main cp">
+						<option v-for="(goal, key) in notDoneGoals" :key="key" :value="goal">
+							{{ goal.name }}, kategoria: {{ goal.category }}
+						</option>
+					</select>
+					<transition name="fade">
+						<div class="mt-5" v-if="selectedGoal">
+							<input
+								v-model.number="selectedGoalAmount"
+								v-mask="['######']"
+								class="input__main"
+								name="amount"
+							/>
+							<input-error left :error="goalError" />
+						</div>
+					</transition>
 				</dialog-modal>
 			</section>
 		</div>
@@ -217,19 +232,19 @@
 				newSavingGoal: false,
 				goal: {
 					name: "",
-					amount: 0,
+					amount: null,
 					description: "",
 					category: "",
-					image: null
+					image: null,
 				},
 				currentGoals: null,
 				fileName: "",
 				fileError: null,
 				newSavingGoalTransfer: false,
 				selectedGoal: null,
-				selectedGoalAmount: 0,
+				selectedGoalAmount: null,
 				goalError: null,
-				deleteModal: null
+				deleteModal: null,
 			};
 		},
 		components: { AccountMainInfo, CopyInfo },
@@ -237,7 +252,7 @@
 			this.loading = true;
 			try {
 				const accounts = await accountService.getUserAccounts(this.user._id);
-				this.savingAccount = accounts.find(account => account.type === "savings");
+				this.savingAccount = accounts.find((account) => account.type === "savings");
 				const goals = await accountService.getGoals(this.savingAccount._id);
 				this.currentGoals = goals;
 			} catch (error) {
@@ -250,8 +265,8 @@
 		computed: {
 			...mapState(["user"]),
 			notDoneGoals() {
-				return this.currentGoals.filter(goal => !goal.isDone);
-			}
+				return this.currentGoals.filter((goal) => !goal.isDone);
+			},
 		},
 		methods: {
 			createNewAccount() {
@@ -276,9 +291,9 @@
 				accountService
 					.create({
 						description: "Konto Złotówa",
-						type: "savings"
+						type: "savings",
 					})
-					.then(data => {
+					.then((data) => {
 						this.savingAccount = data;
 						this.creatingAccount = false;
 					});
@@ -289,46 +304,49 @@
 					amount: 0,
 					currency: "PLN",
 					from: this.user._id,
-					title: "Przelew na konto oszczędnościowe"
+					title: "Przelew na konto oszczędnościowe",
 				};
 
 				this.$router.push({
 					name: "account.transfer",
 					params: {
-						transaction
-					}
+						transaction,
+					},
 				});
 			},
-			createNewGoal() {
-				const form = new FormData();
+			async createNewGoal() {
+				const valid = await this.$refs.validationObserver.validate();
+				if (valid) {
+					const form = new FormData();
 
-				form.append("file", this.goal.image);
-				form.append("fileName", this.fileName);
-				form.append("name", this.goal.name);
-				form.append("amount", this.goal.amount);
-				form.append("description", this.goal.description);
-				form.append("category", this.goal.category);
+					form.append("file", this.goal.image);
+					form.append("fileName", this.fileName);
+					form.append("name", this.goal.name);
+					form.append("amount", this.goal.amount);
+					form.append("description", this.goal.description);
+					form.append("category", this.goal.category);
 
-				accountService
-					.createSavingGoal(this.savingAccount._id, form)
-					.then(data => {
-						this.currentGoals.push(data);
-						this.newSavingGoal = false;
-					})
-					.catch(error => {
-						this.fileError = error.response.data.error;
-					});
+					accountService
+						.createSavingGoal(this.savingAccount._id, form)
+						.then((data) => {
+							this.currentGoals.push(data);
+							this.newSavingGoal = false;
+						})
+						.catch((error) => {
+							this.fileError = error.response.data.error;
+						});
+				}
 			},
 			deleteGoal(id, index) {
 				accountService
 					.deleteGoal(id, this.savingAccount._id)
-					.then(data => {
+					.then((data) => {
 						this.currentGoals.splice(index, 1);
 						if (data) {
 							this.savingAccount.balance = data.balance;
 						}
 					})
-					.catch(error => {
+					.catch((error) => {
 						console.warn(error);
 					})
 					.finally(() => {
@@ -339,11 +357,11 @@
 				accountService
 					.transferToGoal(this.selectedGoal._id, {
 						accountId: this.savingAccount._id,
-						amount: this.selectedGoalAmount
+						amount: this.selectedGoalAmount,
 					})
-					.then(data => {
+					.then((data) => {
 						this.savingAccount.balance = data.accountBalance;
-						const influencedGoal = this.currentGoals.find(goal => goal._id === data.goal._id);
+						const influencedGoal = this.currentGoals.find((goal) => goal._id === data.goal._id);
 						influencedGoal.currentAmount = data.goal.currentAmount;
 						influencedGoal.isDone = data.goal.isDone;
 						influencedGoal.updatedAt = data.goal.updatedAt;
@@ -351,7 +369,7 @@
 						this.selectedGoal = null;
 						this.newSavingGoalTransfer = false;
 					})
-					.catch(error => {
+					.catch((error) => {
 						this.goalError = error.response.data.error;
 						console.warn(error);
 						setTimeout(() => {
@@ -364,8 +382,8 @@
 				const [file] = e.target.files;
 				this.fileName = file.name;
 				this.goal.image = file;
-			}
-		}
+			},
+		},
 	};
 </script>
 

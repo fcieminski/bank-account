@@ -34,36 +34,40 @@
 					<div>Limity karty {{ editCard.cardNumber }}</div>
 					<div v-for="(limits, key) in editCard.limits" :key="key">
 						<label for="daily">Limit dzienny transakcji</label>
-						<input class="input__main" v-model.number="limits.daily" type="number" name="daily" />
+						<input
+							class="input__main"
+							v-model.number="limits.daily"
+							type="text"
+							v-mask="['######']"
+							name="daily"
+						/>
 						<label for="monthly">Limit miesięczny transakcji</label>
-						<input class="input__main" v-model.number="limits.monthly" type="number" name="monthly" />
-						<button @click="changeCardLimits" class="btn btn--auto mt-5">
-							Zmień
-						</button>
+						<input
+							class="input__main"
+							v-model.number="limits.monthly"
+							type="text"
+							v-mask="['######']"
+							name="monthly"
+						/>
+						<button @click="changeCardLimits" class="btn btn--auto mt-5">Zmień</button>
 						<transition name="fade">
 							<span class="ml-5" v-if="limitsChangedInfo">{{ limitsChangedInfo }}</span>
 						</transition>
 					</div>
 					<div class="mt-5">Inne opcje</div>
-					<button @click="blockCardWarning = true" class="btn btn--auto mt-5">
-						Zablokuj kartę
-					</button>
+					<button @click="blockCardWarning = true" class="btn btn--auto mt-5">Zablokuj kartę</button>
 					<dialog-modal
 						@yes="blockCard(editCard._id)"
 						@no="blockCardWarning = false"
 						:show="blockCardWarning"
 						:modal="{ text: 'Jesteś pewien?', yes: 'Tak', no: 'Nie' }"
 					>
-						<div>
-							Czy na pewno chcesz zablokować kartę? Tej operacji nie da się odwrócić!
-						</div>
+						<div>Czy na pewno chcesz zablokować kartę? Tej operacji nie da się odwrócić!</div>
 					</dialog-modal>
 				</section>
 				<section :key="editBlockedCard._id" v-else-if="editBlockedCard">
 					<div>Nieaktywna karta {{ editBlockedCard.cardNumber }}</div>
-					<button @click="deleteCard" class="btn btn--auto mt-5">
-						Usuń kartę
-					</button>
+					<button @click="deleteCard" class="btn btn--auto mt-5">Usuń kartę</button>
 				</section>
 				<div v-if="createCardForm" :key="3" class="mt-5">
 					<div class="input__box" name="Numer konta">
@@ -103,11 +107,11 @@
 				editCard: null,
 				blockCardWarning: false,
 				limitsChangedInfo: "",
-				editBlockedCard: null
+				editBlockedCard: null,
 			};
 		},
 		components: {
-			BankCard
+			BankCard,
 		},
 		created() {
 			cardsService
@@ -115,7 +119,7 @@
 				.then(({ cards }) => {
 					this.cards = cards.map(this.mapCard);
 				})
-				.catch(error => {
+				.catch((error) => {
 					console.warn(error);
 				});
 		},
@@ -123,7 +127,7 @@
 			...mapState(["user"]),
 			languageFix() {
 				return this.cards.length === 2 ? "tę" : "ty";
-			}
+			},
 		},
 		methods: {
 			createNewCardForm() {
@@ -137,12 +141,12 @@
 						userId: this.user._id,
 						accountId: this.user.accounts[0],
 						cardCurrency: this.currency,
-						cardType: this.cardType
+						cardType: this.cardType,
 					})
 					.then(({ card }) => {
 						this.cards.push(this.mapCard(card));
 					})
-					.catch(error => {
+					.catch((error) => {
 						console.warn(error);
 					})
 					.finally(() => {
@@ -151,7 +155,7 @@
 			},
 			showCardInfo(e) {
 				this.createCardForm = false;
-				const currentCard = this.cards.find(card => card._id === e);
+				const currentCard = this.cards.find((card) => card._id === e);
 				if (currentCard.cardValid) {
 					this.editCard = currentCard;
 					this.editBlockedCard = null;
@@ -163,13 +167,13 @@
 			changeCardLimits() {
 				cardsService
 					.update(this.editCard._id, {
-						cardToUpdate: this.editCard
+						cardToUpdate: this.editCard,
 					})
 					.then(({ card }) => {
-						let current = this.cards.find(current => current._id === card._id);
+						let current = this.cards.find((current) => current._id === card._id);
 						current.limits = card.limits;
 					})
-					.catch(error => {
+					.catch((error) => {
 						console.warn(error);
 					})
 					.finally(() => {
@@ -183,13 +187,13 @@
 				this.editCard.cardValid = false;
 				cardsService
 					.update(id, {
-						cardToUpdate: this.editCard
+						cardToUpdate: this.editCard,
 					})
 					.then(({ card }) => {
-						let current = this.cards.find(current => current._id === card._id);
+						let current = this.cards.find((current) => current._id === card._id);
 						current.cardValid = card.cardValid;
 					})
-					.catch(error => {
+					.catch((error) => {
 						console.warn(error);
 					})
 					.finally(() => {
@@ -201,22 +205,22 @@
 				return {
 					...card,
 					expDate: `${new Date(card.expirationDate).getMonth()} ${new Date(card.expirationDate).getFullYear()}`,
-					user: `${this.user.name} ${this.user.surname}`
+					user: `${this.user.name} ${this.user.surname}`,
 				};
 			},
 			deleteCard() {
 				cardsService
 					.delete(this.editBlockedCard._id)
-					.then(data => {
-						const index = this.cards.find(card => card._id === this.editBlockedCard._id);
+					.then((data) => {
+						const index = this.cards.find((card) => card._id === this.editBlockedCard._id);
 						this.cards.splice(index, 1);
 						this.editBlockedCard = null;
 					})
-					.catch(error => {
+					.catch((error) => {
 						console.warn(error);
 					});
-			}
-		}
+			},
+		},
 	};
 </script>
 

@@ -13,19 +13,20 @@
 					<input class="input__main" v-model="newUser.surname" type="text" name="surname" />
 					<input-error left :error="errors[0]" />
 				</validation-provider>
-				<validation-provider class="input__box" rules="required|alpha" name="Login" v-slot="{ errors }">
-					<label for="username">Login</label>
-					<input class="input__main" v-model="newUser.username" type="text" name="username" />
+				<validation-provider class="input__box" rules="required" name="Login" v-slot="{ errors }">
+					<label for="username">Kod pin</label>
+					<input
+						class="input__main"
+						v-model.number="newUser.username"
+						v-mask="['########']"
+						type="text"
+						name="username"
+					/>
 					<input-error left :error="errors[0]" />
 				</validation-provider>
 				<validation-provider class="input__box" rules="required|email" name="Adres e-mail" v-slot="{ errors }">
 					<label for="email">Adres e-mail</label>
 					<input class="input__main" v-model="newUser.email" type="text" name="email" />
-					<input-error left :error="errors[0]" />
-				</validation-provider>
-				<validation-provider class="input__box" rules="required" name="Numer telefonu" v-slot="{ errors }">
-					<label for="phone">Numer telefonu</label>
-					<input class="input__main" v-model.number="newUser.phone" min="0" type="number" name="phone" />
 					<input-error left :error="errors[0]" />
 				</validation-provider>
 				<validation-provider class="input__box" rules="required" name="Hasło" v-slot="{ errors }">
@@ -50,18 +51,9 @@
 </template>
 
 <script>
-	import { extend } from "vee-validate";
-	import { required, email, alpha } from "vee-validate/dist/rules";
 	import userService from "../services/UserService";
 	import accountService from "../services/AccountService";
 	import InputError from "@utils/InputError.vue";
-
-	extend("required", {
-		...required,
-		message: "Pole obowiązkowe!"
-	});
-	extend("email", { ...email });
-	extend("alpha", { ...alpha });
 
 	export default {
 		name: "BankSignup",
@@ -74,13 +66,13 @@
 					username: "",
 					email: "",
 					surname: "",
-					phone: ""
+					phone: "",
 				},
-				error: null
+				error: null,
 			};
 		},
 		components: {
-			InputError
+			InputError,
 		},
 		created() {},
 		computed: {},
@@ -88,7 +80,7 @@
 			submitForm(e) {
 				userService
 					.create(this.newUser)
-					.then(response => {
+					.then((response) => {
 						if (response.redirect) {
 							delete response.user.hash;
 							delete response.user.salt;
@@ -100,8 +92,8 @@
 					.catch(({ message }) => {
 						this.error = message;
 					});
-			}
-		}
+			},
+		},
 	};
 </script>
 
