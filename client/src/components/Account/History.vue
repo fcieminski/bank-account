@@ -43,12 +43,8 @@
 							<div>Tytuł: {{ element.title }}</div>
 							<div>Konto: {{ element.to.accountNumber }}</div>
 						</div>
-						<div @click="getPDF(element)" class="text--end mt-5 cp">
-							Wygeneruj potwierdzenie
-						</div>
-						<div @click="makeTransactionAgain(element)" class="text--end mt-5 cp">
-							Powtórz przelew
-						</div>
+						<div @click="getPDF(element)" class="text--end mt-5 cp">Wygeneruj potwierdzenie</div>
+						<div @click="makeTransactionAgain(element)" class="text--end mt-5 cp">Powtórz przelew</div>
 					</div>
 				</div>
 			</div>

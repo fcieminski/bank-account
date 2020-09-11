@@ -5,9 +5,7 @@
 			<div class="horizontal--divider"></div>
 			<div class="transfer__container">
 				<div class="container__account">
-					<div>
-						Wybierz konto
-					</div>
+					<div>Wybierz konto</div>
 					<div
 						v-for="(account, key) in accounts"
 						:key="key"
@@ -25,162 +23,151 @@
 							<i class="material-icons mr-2">error</i>Najpierw wybierz konto!
 						</div>
 						<div :key="activeAccount._id" v-else-if="activeAccount && !transferDone">
-							<validation-observer v-slot="{ invalid }">
-								<form @submit.prevent="modal = true" action="">
-									<validation-provider
+							<form @submit.prevent="modal = true" action="">
+								<ValidationProvider
+									class="input__box"
+									:rules="{ required: true, numeric: true, length: 26 }"
+									name="Numer konta"
+									v-slot="{ errors }"
+								>
+									<label for="accountNumber">Numer konta</label>
+									<input
+										v-model="transferData.to.accountNumber"
+										class="input__main"
+										name="accountNumber"
+										type="text"
+									/>
+									<input-error left :error="errors[0]" />
+								</ValidationProvider>
+								<ValidationProvider
+									class="input__box"
+									rules="required"
+									name="Nazwa odbiorcy"
+									v-slot="{ errors }"
+								>
+									<label for="name">Nazwa odbiorcy</label>
+									<input v-model="transferData.to.name" class="input__main" name="name" type="text" />
+									<input-error left :error="errors[0]" />
+								</ValidationProvider>
+								<div class="input__group">
+									<ValidationProvider
 										class="input__box"
-										:rules="{ required: true, numeric: true, length: 26 }"
-										name="Numer konta"
+										rules="required"
+										name="Miasto"
 										v-slot="{ errors }"
 									>
-										<label for="accountNumber">Numer konta</label>
+										<label for="city">Miasto</label>
 										<input
-											v-model="transferData.to.accountNumber"
+											v-model="transferData.to.city"
 											class="input__main"
-											name="accountNumber"
+											name="city"
 											type="text"
 										/>
 										<input-error left :error="errors[0]" />
-									</validation-provider>
-									<validation-provider
+									</ValidationProvider>
+
+									<ValidationProvider
 										class="input__box"
 										rules="required"
-										name="Nazwa odbiorcy"
+										name="Adres"
 										v-slot="{ errors }"
 									>
-										<label for="name">Nazwa odbiorcy</label>
+										<label for="postalCode">Kod pocztowy</label>
 										<input
-											v-model="transferData.to.name"
+											v-model="transferData.to.postalCode"
 											class="input__main"
-											name="name"
+											name="postalCode"
 											type="text"
 										/>
 										<input-error left :error="errors[0]" />
-									</validation-provider>
-									<div class="input__group">
-										<validation-provider
-											class="input__box"
-											rules="required"
-											name="Miasto"
-											v-slot="{ errors }"
-										>
-											<label for="city">Miasto</label>
-											<input
-												v-model="transferData.to.city"
-												class="input__main"
-												name="city"
-												type="text"
-											/>
-											<input-error left :error="errors[0]" />
-										</validation-provider>
-
-										<validation-provider
-											class="input__box"
-											rules="required"
-											name="Adres"
-											v-slot="{ errors }"
-										>
-											<label for="postalCode">Kod pocztowy</label>
-											<input
-												v-model="transferData.to.postalCode"
-												class="input__main"
-												name="postalCode"
-												type="text"
-											/>
-											<input-error left :error="errors[0]" />
-										</validation-provider>
-									</div>
-									<div class="input__group">
-										<validation-provider
-											class="input__box"
-											rules="required"
-											name="Adres"
-											v-slot="{ errors }"
-										>
-											<label for="address">Ulica</label>
-											<input
-												v-model="transferData.to.street"
-												class="input__main"
-												name="address"
-												type="text"
-											/>
-											<input-error left :error="errors[0]" />
-										</validation-provider>
-										<validation-provider
-											class="input__box"
-											rules="required"
-											name="Numer domu"
-											v-slot="{ errors }"
-										>
-											<label for="home">Numer domu/mieszkania</label>
-											<input
-												v-model="transferData.to.home"
-												class="input__main"
-												name="home"
-												type="text"
-											/>
-											<input-error left :error="errors[0]" />
-										</validation-provider>
-									</div>
-
-									<validation-provider
+									</ValidationProvider>
+								</div>
+								<div class="input__group">
+									<ValidationProvider
 										class="input__box"
 										rules="required"
-										name="Tytuł"
+										name="Adres"
 										v-slot="{ errors }"
 									>
-										<label for="title">Tytuł przelewu</label>
-										<textarea
-											v-model="transferData.title"
+										<label for="address">Ulica</label>
+										<input
+											v-model="transferData.to.street"
 											class="input__main"
-											name="title"
+											name="address"
 											type="text"
 										/>
 										<input-error left :error="errors[0]" />
-									</validation-provider>
-
-									<validation-provider
+									</ValidationProvider>
+									<ValidationProvider
 										class="input__box"
 										rules="required"
-										name="Rodzaj przelewu"
+										name="Numer domu"
 										v-slot="{ errors }"
 									>
-										<label for="type">Rodzaj przelewu</label>
-										<select v-model="transferType" class="input__main" name="type" type="text">
-											<option :value="1">Przelew ekspressowy + 5 zł</option>
-											<option :value="0">Przelew zwykły</option>
-										</select>
+										<label for="home">Numer domu/mieszkania</label>
+										<input
+											v-model="transferData.to.home"
+											class="input__main"
+											name="home"
+											type="text"
+										/>
 										<input-error left :error="errors[0]" />
-									</validation-provider>
+									</ValidationProvider>
+								</div>
 
-									<div class="input__container--right">
-										<validation-provider
-											class="input__box input__box--small"
-											rules="required|numeric"
-											name="Kwota"
-											v-slot="{ errors }"
-										>
-											<label for="amount">Kwota</label>
-											<input
-												v-model="transferData.amount"
-												class="input__main"
-												name="amount"
-												type="number"
-											/>
-											<input-error left :error="errors[0]" />
-										</validation-provider>
-									</div>
-									<div class="actions--container">
-										<button :disabled="invalid" class="btn pa-2">
-											Wykonaj
-										</button>
-									</div>
-								</form>
-							</validation-observer>
+								<ValidationProvider
+									class="input__box"
+									rules="required"
+									name="Tytuł"
+									v-slot="{ errors }"
+								>
+									<label for="title">Tytuł przelewu</label>
+									<textarea
+										v-model="transferData.title"
+										class="input__main"
+										name="title"
+										type="text"
+									/>
+									<input-error left :error="errors[0]" />
+								</ValidationProvider>
+
+								<ValidationProvider
+									class="input__box"
+									rules="required"
+									name="Rodzaj przelewu"
+									v-slot="{ errors }"
+								>
+									<label for="type">Rodzaj przelewu</label>
+									<select v-model="transferType" class="input__main" name="type" type="text">
+										<option :value="1">Przelew ekspressowy + 5 zł</option>
+										<option :value="0">Przelew zwykły</option>
+									</select>
+									<input-error left :error="errors[0]" />
+								</ValidationProvider>
+
+								<div class="input__container--right">
+									<ValidationProvider
+										class="input__box input__box--small"
+										rules="required|numeric"
+										name="Kwota"
+										v-slot="{ errors }"
+									>
+										<label for="amount">Kwota</label>
+										<input
+											v-model="transferData.amount"
+											class="input__main"
+											name="amount"
+											type="number"
+										/>
+										<input-error left :error="errors[0]" />
+									</ValidationProvider>
+								</div>
+								<div class="actions--container">
+									<button :disabled="invalid" class="btn pa-2">Wykonaj</button>
+								</div>
+							</form>
 						</div>
-						<div v-else>
-							Przelew w trakcie realizacji...
-						</div>
+						<div v-else>Przelew w trakcie realizacji...</div>
 					</transition>
 				</div>
 			</div>
@@ -229,29 +216,29 @@
 						city: "",
 						street: "",
 						home: "",
-						postalCode: ""
-					}
+						postalCode: "",
+					},
 				},
 				transferType: null,
 				transferDone: false,
 				modal: false,
 				code: "",
 				checkCode: "",
-				codeError: null
+				codeError: null,
 			};
 		},
 		components: {
-			InputError
+			InputError,
 		},
 		created() {
 			this.loading = true;
 			accountService
 				.getUserAccounts(this.user._id)
-				.then(accounts => {
+				.then((accounts) => {
 					this.accounts = accounts;
 					this.checkTransactionParams();
 				})
-				.catch(e => {
+				.catch((e) => {
 					console.log(e);
 					console.error("error!");
 				})
@@ -260,21 +247,21 @@
 				});
 		},
 		computed: {
-			...mapState(["user"])
+			...mapState(["user"]),
 		},
 		watch: {
 			modal(value) {
 				if (value) {
 					historyService
 						.getCode(this.user._id)
-						.then(data => {
+						.then((data) => {
 							this.code = data.code;
 						})
 						.catch(() => {
 							console.error("error!");
 						});
 				}
-			}
+			},
 		},
 		methods: {
 			makeActiveAccount(account) {
@@ -283,9 +270,9 @@
 			makeTransfer() {
 				historyService
 					.sendCode(this.user._id, {
-						code: this.checkCode
+						code: this.checkCode,
 					})
-					.then(data => {
+					.then((data) => {
 						if (data.status === "success") {
 							this.modal = false;
 							const transfer = {
@@ -293,7 +280,7 @@
 								from: this.user._id,
 								currency: "PLN",
 								type: "transfer",
-								accountId: this.activeAccount._id
+								accountId: this.activeAccount._id,
 							};
 							setTimeout(
 								() => {
@@ -313,9 +300,9 @@
 			checkTransactionParams() {
 				if (this.$route.params?.transaction) {
 					const { _id, amount, title, to, currency, from } = this.$route.params.transaction;
-					this.activeAccount = this.accounts.find(account => account.history.includes(_id));
+					this.activeAccount = this.accounts.find((account) => account.history.includes(_id));
 					if (!this.activeAccount) {
-						this.activeAccount = this.accounts.find(account => account.type !== "savings");
+						this.activeAccount = this.accounts.find((account) => account.type !== "savings");
 					}
 					this.transferData = {
 						amount,
@@ -323,11 +310,11 @@
 						title,
 						from,
 						to,
-						accountId: this.activeAccount._id
+						accountId: this.activeAccount._id,
 					};
 				}
-			}
-		}
+			},
+		},
 	};
 </script>
 
