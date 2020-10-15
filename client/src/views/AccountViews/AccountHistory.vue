@@ -4,7 +4,7 @@
 			<div>Historia</div>
 			<div class="horizontal--divider"></div>
 			<section>
-				<span> Wyszukiwarka </span>
+				<span>Wyszukiwarka</span>
 				<form>
 					<label for="date">Data</label>
 					<date-picker
@@ -53,41 +53,44 @@
 				</form>
 				<div class="card__actions card__actions--no-padding mt-4">
 					<button @click="clearForm" class="btn--transparent pa-2 mr-4">Wyczyść</button>
-					<button @click="searchInHistory" class="btn pa-2">Szukaj</button>
+					<button @click="searchInHistory" :disabled="history.length === 0" class="btn pa-2">Szukaj</button>
 				</div>
-			</section>
-			<section>
-				<div>
-					<input name="raports" v-model="raports" type="checkbox" />
-					<label @click="raports = !raports" for="raports" class="ml-4">Raport zbiorowy</label>
-				</div>
-				<button v-if="raports" @click="createRaports" class="btn btn--auto pa-2 mt-5">Generuj raport</button>
-			</section>
-			<div class="horizontal--divider"></div>
+				<section>
+					<div>
+						<input name="reports" :disabled="history.length === 0" v-model="reports" type="checkbox" />
+						<label @click="reports = !reports" for="reports" class="ml-4">Raport zbiorowy</label>
+					</div>
+					<button v-if="reports" @click="createReports" class="btn btn--auto pa-2 mt-5">
+						Generuj raport
+					</button>
+				</section>
+				<div class="horizontal--divider"></div>
 
-			<section class="pr">
-				<div v-if="searchMessage">
-					{{ searchMessage }}
-				</div>
-				<history
-					v-if="history"
-					:history="history"
-					:raports="raports"
-					@addElementToRaports="reportFromElements"
-				/>
-				<div class="d-flex align-center" v-else-if="!error">
-					<i class="material-icons mr-2">history</i>
-					Twoja historia jest pusta, wkonaj pierwszy
-					<router-link class="link__inline ml-2" to="/">przelew!</router-link>
-				</div>
-				<div v-if="loadingMoreHistory" class="loading__box">
-					<loading-indicator />
-				</div>
-				<div v-if="searchInfo">
-					{{ searchInfo }}
-				</div>
+				<section class="pr">
+					<div v-if="searchMessage">
+						{{ searchMessage }}
+					</div>
+					<history
+						v-if="history"
+						:history="history"
+						:reports="reports"
+						@addElementToReports="reportFromElements"
+					/>
+					<div class="d-flex align-center" v-else-if="!error">
+						<i class="material-icons mr-2">history</i>
+						Twoja historia jest pusta, wkonaj pierwszy
+						<router-link class="link__inline ml-2" to="/">przelew!</router-link>
+					</div>
+					<div v-if="loadingMoreHistory" class="loading__box">
+						<loading-indicator />
+					</div>
+					<div v-if="searchInfo">
+						{{ searchInfo }}
+					</div>
+				</section>
 			</section>
 		</div>
+
 		<loading-indicator v-else-if="!history && !error" />
 		<div v-if="error">
 			{{ error }}
@@ -121,8 +124,8 @@
 					title: null,
 				},
 				searchInfo: "",
-				raports: false,
-				raportIds: [],
+				reports: false,
+				reportIds: [],
 				searchMessage: "",
 			};
 		},
@@ -203,12 +206,12 @@
 				this.getHistory();
 			},
 			reportFromElements(e) {
-				this.raportIds = e;
+				this.reportIds = e;
 			},
 
-			createRaports() {
-				if (this.raportIds.length !== 0) {
-					historyService.getPDF(this.raportIds).then((response) => {
+			createReports() {
+				if (this.reportIds.length !== 0) {
+					historyService.getPDF(this.reportIds).then((response) => {
 						const blob = new Blob([response.data], { type: '"application/pdf' });
 						const link = document.createElement("a");
 						link.href = URL.createObjectURL(blob);

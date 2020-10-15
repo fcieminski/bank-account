@@ -1,5 +1,5 @@
 <template>
-	<div @click="$emit('showCardInfo', card._id)" :class="[card.cardValid ? 'card' : 'card card--disabled']">
+	<div @click="$emit('show-card-info', card._id)" :class="[card.cardValid ? 'card' : 'card card--disabled']">
 		<div class="card__container">
 			<div class="cointainer__top">
 				<div class="container__mark"></div>

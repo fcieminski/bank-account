@@ -1,7 +1,7 @@
 <template>
 	<div class="main">
 		<div class="login">
-            <router-view />
+			<router-view />
 		</div>
 	</div>
 </template>
@@ -9,14 +9,6 @@
 <script>
 	export default {
 		name: "Main",
-		data() {
-			return {};
-		},
-		components: {
-		},
-		created() {},
-		computed: {},
-		methods: {}
 	};
 </script>
 
@@ -34,11 +26,12 @@
 		align-items: center;
 	}
 	.login {
+		transform: translateX(0);
 		width: auto;
 		height: auto;
 		background-color: white;
 		border-radius: 10px;
-        padding: 30px;
+		padding: 30px;
 		border: 1px solid $mainColor;
 	}
 </style>

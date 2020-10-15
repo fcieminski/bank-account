@@ -29,6 +29,73 @@
 							<button class="btn btn--auto mt-5" @click="newSavingGoalTransfer = true">Wpłać</button>
 						</div>
 					</div>
+					<section>
+						<div class="horizontal--divider"></div>
+						<div v-if="!currentGoals" class="d-flex align-center">
+							<i class="material-icons mr-2">account_balance_wallet</i>
+							Nie masz jeszcze żadnych celów oszczędnościowych!
+						</div>
+						<div v-else>
+							<div
+								class="goal__box"
+								:class="{ goal__done: goal.isDone }"
+								v-for="(goal, index) in currentGoals"
+								:key="index"
+							>
+								<img class="goal__image goal__column" :src="goal.image" alt="" />
+								<div class="goal__column pa-5">
+									<span>Nazwa celu</span>
+									<div>
+										{{ goal.name }}
+									</div>
+								</div>
+								<div class="goal__column pa-5">
+									<span>Opis celu</span>
+									<div>
+										{{ goal.description }}
+									</div>
+								</div>
+								<div class="goal__column pa-5">
+									<span>Kwota</span>
+									<div>
+										{{ goal.amount }}
+									</div>
+								</div>
+								<div class="goal__column pa-5">
+									<span>Mam już</span>
+									<div>
+										{{ goal.currentAmount }}
+									</div>
+								</div>
+								<div class="goal__column pa-5">
+									<span>Kategoria</span>
+									<div>
+										{{ goal.category }}
+									</div>
+								</div>
+								<div class="d-flex align-center pa-5">
+									<div>
+										<i
+											@click="deleteModal = { id: goal._id, modal: true }"
+											class="material-icons cp"
+											>delete</i
+										>
+									</div>
+								</div>
+								<dialog-modal
+									@yes="deleteGoal(goal._id, index)"
+									@no="deleteModal = null"
+									:show="deleteModal && deleteModal.modal && deleteModal.id === goal._id"
+									:modal="{ text: 'Jesteś pewien?', yes: 'Tak', no: 'Nie' }"
+								>
+									<div>
+										Czy na pewno chcesz usunąć ten cel oszczędnościowy? Pieniądzę wrócą na Twoje
+										konto oszczędnościowe.
+									</div>
+								</dialog-modal>
+							</div>
+						</div>
+					</section>
 				</section>
 				<section v-else>
 					<div class="d-flex align-center">
@@ -40,71 +107,7 @@
 						Przygotowywanie Twojego wniosku, nie wyłączaj tej strony{{ dots }}
 					</div>
 				</section>
-				<section>
-					<div class="horizontal--divider"></div>
-					<div v-if="!currentGoals" class="d-flex align-center">
-						<i class="material-icons mr-2">account_balance_wallet</i>
-						Nie masz jeszcze żadnych celów oszczędnościowych!
-					</div>
-					<div v-else>
-						<div
-							class="goal__box"
-							:class="{ goal__done: goal.isDone }"
-							v-for="(goal, index) in currentGoals"
-							:key="index"
-						>
-							<img class="goal__image goal__column" :src="goal.image" alt="" />
-							<div class="goal__column pa-5">
-								<span>Nazwa celu</span>
-								<div>
-									{{ goal.name }}
-								</div>
-							</div>
-							<div class="goal__column pa-5">
-								<span>Opis celu</span>
-								<div>
-									{{ goal.description }}
-								</div>
-							</div>
-							<div class="goal__column pa-5">
-								<span>Kwota</span>
-								<div>
-									{{ goal.amount }}
-								</div>
-							</div>
-							<div class="goal__column pa-5">
-								<span>Mam już</span>
-								<div>
-									{{ goal.currentAmount }}
-								</div>
-							</div>
-							<div class="goal__column pa-5">
-								<span>Kategoria</span>
-								<div>
-									{{ goal.category }}
-								</div>
-							</div>
-							<div class="d-flex align-center pa-5">
-								<div>
-									<i @click="deleteModal = { id: goal._id, modal: true }" class="material-icons cp"
-										>delete</i
-									>
-								</div>
-							</div>
-							<dialog-modal
-								@yes="deleteGoal(goal._id, index)"
-								@no="deleteModal = null"
-								:show="deleteModal && deleteModal.modal && deleteModal.id === goal._id"
-								:modal="{ text: 'Jesteś pewien?', yes: 'Tak', no: 'Nie' }"
-							>
-								<div>
-									Czy na pewno chcesz usunąć ten cel oszczędnościowy? Pieniądzę wrócą na Twoje konto
-									oszczędnościowe.
-								</div>
-							</dialog-modal>
-						</div>
-					</div>
-				</section>
+
 				<dialog-modal
 					@yes="createNewGoal"
 					@no="newSavingGoal = false"
@@ -191,23 +194,25 @@
 					:show="newSavingGoalTransfer"
 					:modal="{ text: 'Wpłać na cel', yes: 'Wpłać', no: 'Anuluj' }"
 				>
-					<label for="file">Wybierz cel oszczędnościowy</label>
-					<select v-model="selectedGoal" readonly class="input__main cp">
-						<option v-for="(goal, key) in notDoneGoals" :key="key" :value="goal">
-							{{ goal.name }}, kategoria: {{ goal.category }}
-						</option>
-					</select>
-					<transition name="fade">
-						<div class="mt-5" v-if="selectedGoal">
-							<input
-								v-model.number="selectedGoalAmount"
-								v-mask="['######']"
-								class="input__main"
-								name="amount"
-							/>
-							<input-error left :error="goalError" />
-						</div>
-					</transition>
+					<div v-if="currentGoals">
+						<label for="file">Wybierz cel oszczędnościowy</label>
+						<select v-model="selectedGoal" readonly class="input__main cp">
+							<option v-for="(goal, key) in notDoneGoals" :key="key" :value="goal">
+								{{ goal.name }}, kategoria: {{ goal.category }}
+							</option>
+						</select>
+						<transition name="fade">
+							<div class="mt-5" v-if="selectedGoal">
+								<input
+									v-model.number="selectedGoalAmount"
+									v-mask="['######']"
+									class="input__main"
+									name="amount"
+								/>
+								<input-error left :error="goalError" />
+							</div>
+						</transition>
+					</div>
 				</dialog-modal>
 			</section>
 		</div>

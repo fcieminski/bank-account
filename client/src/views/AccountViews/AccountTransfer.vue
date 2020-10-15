@@ -175,7 +175,7 @@
 										</ValidationProvider>
 									</div>
 									<div class="actions--container">
-										<button :disabled="invalid" class="btn pa-2">Wykonaj</button>
+										<button :disabled="invalid || activeAccount.balance < transferData.amount" class="btn pa-2">Wykonaj</button>
 									</div>
 								</form>
 							</ValidationObserver>

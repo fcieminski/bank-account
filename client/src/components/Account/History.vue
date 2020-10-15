@@ -1,6 +1,7 @@
 <template>
 	<div class="account__history-box">
-		<div>
+		<div>Ostatnie transakcje</div>
+		<div v-if="history.length !== 0">
 			<div class="history-box__element" v-for="element in history" :key="element._id">
 				<div class="element__about">
 					<div>
@@ -18,11 +19,11 @@
 					</div>
 					<div class="d-flex justify-between align-center">
 						<input
-							@change="$emit('addElementToRaports', raport)"
-							v-if="raports"
+							@change="emit('add-element-to-reports', report)"
+							v-if="reports"
 							type="checkbox"
-							name="raport"
-							v-model="raport"
+							name="report"
+							v-model="report"
 							:value="element._id"
 						/>
 						<i v-if="moreInfo" @click="toggleExpand(element._id)" class="material-icons cp">{{
@@ -49,6 +50,10 @@
 				</div>
 			</div>
 		</div>
+		<div v-else class="d-flex align-center mt-2">
+			<i class="material-icons mr-2">history</i>
+			Historia jest pusta
+		</div>
 	</div>
 </template>
 
@@ -62,7 +67,7 @@
 				expandElement: {
 					id: null,
 				},
-				raport: [],
+				report: [],
 				format,
 			};
 		},
@@ -75,7 +80,7 @@
 				type: Boolean,
 				default: true,
 			},
-			raports: {
+			reports: {
 				type: Boolean,
 				default: false,
 			},

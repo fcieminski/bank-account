@@ -74,8 +74,6 @@
 		components: {
 			InputError,
 		},
-		created() {},
-		computed: {},
 		methods: {
 			submitForm(e) {
 				userService
