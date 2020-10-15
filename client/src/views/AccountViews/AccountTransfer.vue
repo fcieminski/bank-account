@@ -175,12 +175,18 @@
 										</ValidationProvider>
 									</div>
 									<div class="actions--container">
-										<button :disabled="invalid || activeAccount.balance < transferData.amount" class="btn pa-2">Wykonaj</button>
+										<button
+											:disabled="invalid || activeAccount.balance < transferData.amount"
+											class="btn pa-2"
+										>
+											Wykonaj
+										</button>
 									</div>
 								</form>
 							</ValidationObserver>
 						</div>
-						<div v-else>Przelew w trakcie realizacji...</div>
+						<div v-else-if="transferDone && !balanceError">Przelew w trakcie realizacji...</div>
+						<div v-else>Masz za mało środków na koncie, aby wykonać przelew.</div>
 					</transition>
 				</div>
 			</div>
@@ -238,6 +244,7 @@
 				code: "",
 				checkCode: "",
 				codeError: null,
+				balanceError: null,
 			};
 		},
 		components: {
@@ -278,7 +285,8 @@
 		},
 		methods: {
 			makeActiveAccount(account) {
-				this.activeAccount = account;
+                this.activeAccount = account;
+                this.balanceError = false
 			},
 			makeTransfer() {
 				historyService
@@ -290,6 +298,7 @@
 							this.modal = false;
 							const transfer = {
 								...this.transferData,
+								amount: Number(this.transferData.amount),
 								from: this.user._id,
 								currency: "PLN",
 								type: "transfer",
@@ -298,12 +307,12 @@
 							setTimeout(
 								() => {
 									historyService.create(this.user._id, transfer).catch(() => {
-										console.error("error!");
+										this.balanceError = true;
 									});
 								},
 								this.transferType === 0 ? 5000 : 10
 							);
-							this.transferDone = true;
+							this.transferDone = !this.balanceError;
 							this.activeAccount = null;
 						} else {
 							this.codeError = "Kod nieprawidłowy!";
