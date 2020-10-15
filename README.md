@@ -36,6 +36,7 @@ MEVN (mongoDB, express.js, Vue, Node.js) stack app, quite a big project, so it's
 - [x] Planned transfers
 	- [x] Posibility to set a periodical transfers
 	- [x] Sending transfers with agenda package
+    - [ ] Fix styles
 - [x] Cover all empty value posibilities
 - [ ] Check app with fresh account
 

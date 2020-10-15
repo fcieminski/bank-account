@@ -71,6 +71,25 @@
 				<ValidationObserver ref="validationObserver">
 					<form ref="form" @submit.prevent>
 						<ValidationProvider
+							class="input__box"
+							rules="required"
+							name="powtarzalność"
+							v-slot="{ errors }"
+						>
+							<label for="period">Powtarzalność</label>
+							<select
+								v-model="plannedTransfer.period"
+								@input="date = ''"
+								class="input__main"
+								name="period"
+								type="text"
+							>
+								<option value="d">codziennie</option>
+								<option value="m">raz w miesiącu</option>
+							</select>
+							<input-error left :error="errors[0]" />
+						</ValidationProvider>
+						<ValidationProvider
 							class="d-flex flex-column input__box"
 							rules="required"
 							name="data"
@@ -79,7 +98,7 @@
 							<label for="date">Okres działania zlecenia stałego</label>
 							<date-picker
 								value-type="format"
-								type="date"
+								:type="plannedTransfer.period === 'd' ? 'date' : 'month'"
 								input-class="input__main"
 								v-model="date"
 								name="date"
@@ -87,19 +106,6 @@
 								:disabled-date="disabledDates"
 								range
 							/>
-							<input-error left :error="errors[0]" />
-						</ValidationProvider>
-						<ValidationProvider
-							class="input__box"
-							rules="required"
-							name="powtarzalność"
-							v-slot="{ errors }"
-						>
-							<label for="period">Powtarzalność</label>
-							<select v-model="plannedTransfer.period" class="input__main" name="period" type="text">
-								<option value="d">codziennie</option>
-								<option value="m">raz w miesiącu</option>
-							</select>
 							<input-error left :error="errors[0]" />
 						</ValidationProvider>
 						<ValidationProvider

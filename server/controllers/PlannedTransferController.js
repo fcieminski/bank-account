@@ -29,8 +29,10 @@ class PlannedTransferController {
                     account.plannedTransfers.push(newTransfer._id);
                     account.save();
                     const job = agenda.create("plannedTransfer", { transfer: newTransfer._id });
-                    job.schedule("* * * * *");
-                    job.repeatEvery("* * * * *");
+                    job.repeatEvery(newTransfer.period === "d" ? "every day" : "every month", {
+                        timezone: "Europe/Warsaw",
+                        skipImmediate: true,
+                    });
                     job.save();
                     res.status(201).send({ newTransfer });
                 }
