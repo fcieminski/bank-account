@@ -12,6 +12,7 @@ class AccountController {
         if (user) {
             const Accounts = new Account({
                 owner: user.id,
+                balance: 2500,
                 ...(type && { type }),
                 ...(description && { description }),
             });
@@ -70,9 +71,7 @@ class AccountController {
         const today = new Date();
 
         try {
-            const accountHistoryStats = await Account.findOne({ _id: accountId })
-                .select("history")
-                .populate("history", "name amount date");
+            const accountHistoryStats = await Account.findOne({ _id: accountId }).select("history").populate("history", "name amount date");
 
             const sumUp = accountHistoryStats.history
                 .filter((history) => {

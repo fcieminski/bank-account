@@ -46,9 +46,9 @@ class HistoryController {
         History.find({
             from: userId,
             ...(searchQuery.title && { title: { $regex: searchQuery.title, $options: "i" } }),
-            ...(searchQuery.date && { date: { $gte: searchQuery.date[0], $lt: searchQuery.date[1] } }),
+            ...(searchQuery.date && { createdAt: { $gte: searchQuery.date[0], $lt: searchQuery.date[1] } }),
             ...(searchQuery.amountFrom && { amount: { $gte: searchQuery.amountFrom, $lt: searchQuery.amountTo } }),
-            ...(searchQuery.type !== 0 && { name: searchQuery.type === 1 ? "income" : "transfer" }),
+            ...(searchQuery.type && { type: searchQuery.type === 1 ? "income" : "transfer" }),
         }).exec((error, history) => {
             res.send({ history });
         });
@@ -68,27 +68,22 @@ class HistoryController {
                 accountNumber: to.accountNumber.toString(),
             },
         };
-        console.log("preparing");
-        console.log(history.amount, typeof history.amount);
         try {
             if (typeof history.amount === "number") {
                 const historySaved = await new History(history).save();
-                console.log(accountId);
+
                 Account.findOne({ _id: accountId })
                     .populate("history")
                     .exec((error, account) => {
-                        console.log("making");
                         if (error) {
                             res.status(404).send();
                         } else {
                             if (account.balance >= history.amount) {
-                                console.log("money ok");
                                 account.history.push(historySaved._id);
                                 account.balance -= history.amount;
                                 account.save();
                                 res.send({ history: account.history });
                             } else {
-                                console.log("money wrong");
                                 res.status(406).send({ error: "Za mało środków!" });
                             }
                         }

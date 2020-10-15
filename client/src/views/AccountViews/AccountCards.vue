@@ -7,7 +7,7 @@
 				<div class="d-flex">
 					<div class="column" v-for="card in cards" :key="card._id">
 						<p class="mb-2">{{ card.cardType }} {{ card.cardCurrency }}</p>
-						<bank-card @showCardInfo="showCardInfo" :card="card" />
+						<bank-card @show-card-info="showCardInfo" :card="card" />
 					</div>
 				</div>
 				<div class="horizontal--divider"></div>

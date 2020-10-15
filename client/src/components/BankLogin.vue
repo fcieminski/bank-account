@@ -7,7 +7,7 @@
 					<label for="username">Kod pin</label>
 					<input
 						v-model.number="user.username"
-						v-mask="['######']"
+						v-mask="['##################']"
 						class="input__main"
 						name="username"
 						type="text"

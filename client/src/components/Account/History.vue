@@ -1,6 +1,5 @@
 <template>
 	<div class="account__history-box">
-		<div>Ostatnie transakcje</div>
 		<div v-if="history.length !== 0">
 			<div class="history-box__element" v-for="element in history" :key="element._id">
 				<div class="element__about">
@@ -19,7 +18,7 @@
 					</div>
 					<div class="d-flex justify-between align-center">
 						<input
-							@change="emit('add-element-to-reports', report)"
+							@change="$emit('add-element-to-reports', report)"
 							v-if="reports"
 							type="checkbox"
 							name="report"

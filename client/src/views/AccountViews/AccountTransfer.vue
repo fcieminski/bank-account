@@ -285,8 +285,8 @@
 		},
 		methods: {
 			makeActiveAccount(account) {
-                this.activeAccount = account;
-                this.balanceError = false
+				this.activeAccount = account;
+				this.balanceError = false;
 			},
 			makeTransfer() {
 				historyService

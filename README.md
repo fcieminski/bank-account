@@ -11,10 +11,11 @@ MEVN (mongoDB, express.js, Vue, Node.js) stack app, quite a big project, so it's
 	- [x] Advanced search and filtering options
 	- [x] Posibility to export transfer confirmations
 	- [x] Multiple exports
+    - [ ] More options in transfer confirmations
 - [x] Transfers view
 	- [x] Posibility to make a transfer
 	- [x]  Transfer code confirmation coming from backend
-	- [ ] Disable transfer if there isn't enough money on account  
+	- [x] Disable transfer if there isn't enough money on account  
 - [x] Credit cards view
 	- [x] Adding cards
 	- [x] Removing cards

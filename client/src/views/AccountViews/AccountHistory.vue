@@ -7,13 +7,7 @@
 				<span>Wyszukiwarka</span>
 				<form>
 					<label for="date">Data</label>
-					<date-picker
-						value-type="timestamp"
-						input-class="input__main"
-						v-model="searchQuery.date"
-						name="date"
-						range
-					/>
+					<date-picker input-class="input__main" v-model="searchQuery.date" name="date" range />
 					<div class="d-flex">
 						<div class="column mr-2">
 							<label for="title">Tytuł</label>
@@ -53,14 +47,19 @@
 				</form>
 				<div class="card__actions card__actions--no-padding mt-4">
 					<button @click="clearForm" class="btn--transparent pa-2 mr-4">Wyczyść</button>
-					<button @click="searchInHistory" :disabled="history.length === 0" class="btn pa-2">Szukaj</button>
+					<button @click="searchInHistory" class="btn pa-2">Szukaj</button>
 				</div>
 				<section>
 					<div>
 						<input name="reports" :disabled="history.length === 0" v-model="reports" type="checkbox" />
 						<label @click="reports = !reports" for="reports" class="ml-4">Raport zbiorowy</label>
 					</div>
-					<button v-if="reports" @click="createReports" class="btn btn--auto pa-2 mt-5">
+					<button
+						v-if="reports"
+						@click="createReports"
+						:disabled="reportIds.length === 0"
+						class="btn btn--auto pa-2 mt-5"
+					>
 						Generuj raport
 					</button>
 				</section>
@@ -74,7 +73,7 @@
 						v-if="history"
 						:history="history"
 						:reports="reports"
-						@addElementToReports="reportFromElements"
+						@add-element-to-reports="reportFromElements"
 					/>
 					<div class="d-flex align-center" v-else-if="!error">
 						<i class="material-icons mr-2">history</i>
@@ -142,6 +141,9 @@
 			...mapState(["user"]),
 		},
 		methods: {
+			myFormat(e) {
+				console.log(e);
+			},
 			getHistory() {
 				historyService
 					.getHistory(this.user._id, `?limit=10&offset=0`)
@@ -179,6 +181,15 @@
 							this.loadingMoreHistory = false;
 						});
 				}
+			},
+			formatQuery() {
+				if (this.searchQuery.date.length !== 0) {
+					return {
+						...this.searchQuery,
+						date: this.searchQuery.date.map((date) => new Date(date).toISOString()),
+					};
+				}
+				return this.searchQuery;
 			},
 			searchInHistory() {
 				const isEmpty = Object.values(this.searchQuery).every((value) => value === null);
