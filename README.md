@@ -28,7 +28,7 @@ MEVN (mongoDB, express.js, Vue, Node.js) stack app, quite a big project, so it's
 	- [x] Making direct transfer from saving account
 	- [x] Uploading goal picture
 	- [x] Transfering money from saving account to saving goals
-	- [ ]  Validate account money before making any transfers
+	- [x]  Validate account money before making any transfers
 - [x] Blik code generator
 - [x] Widgets
 	- [x] Transaction overall
@@ -38,7 +38,7 @@ MEVN (mongoDB, express.js, Vue, Node.js) stack app, quite a big project, so it's
 	- [x] Sending transfers with agenda package
     - [ ] Fix styles
 - [x] Cover all empty value posibilities
-- [ ] Check app with fresh account
+- [x] Check app with fresh account
 
 After that, i'll publish version 1.0
 
